@@ -12,7 +12,7 @@ import logging
 import subprocess
 import numpy as np
 from PIL import Image, ImageDraw, ImageOps, ImageFilter
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Any, Optional, Tuple
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 logger = logging.getLogger("VisualEngine")
