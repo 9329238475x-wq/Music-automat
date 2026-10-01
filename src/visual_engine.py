@@ -8,6 +8,7 @@ DJ Visual Engine Module
 import os
 import sys
 import math
+import time
 import logging
 import subprocess
 import numpy as np

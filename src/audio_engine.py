@@ -77,16 +77,18 @@ class DJAudioEngine:
         master_output_path = os.path.join(self.output_dir, output_name)
         tracklist_path = os.path.join(self.output_dir, "tracklist.txt")
 
-        # Step 1: Normalize all tracks
-        normalized_tracks = []
-        for i, t in enumerate(tracks, 1):
+        # Step 1: Normalize all tracks in parallel (6 workers)
+        from concurrent.futures import ThreadPoolExecutor
+        logger.info(f"🚀 Normalizing {len(tracks)} tracks concurrently (6 workers)...")
+
+        def _process_norm(item):
+            i, t = item
             src_audio = t.get("audio_path")
             if not src_audio or not os.path.exists(src_audio):
-                continue
-
+                return None
             norm_audio = os.path.join(self.temp_dir, f"norm_{i:02d}.mp3")
             if not os.path.exists(norm_audio):
-                logger.info(f"[{i}/{len(tracks)}] Normalizing audio: {t['title'][:40]}...")
+                logger.info(f"[{i}/{len(tracks)}] Normalizing audio: {t['title'][:35]}...")
                 ok = self.normalize_track(src_audio, norm_audio)
                 if not ok:
                     norm_audio = src_audio
@@ -95,7 +97,13 @@ class DJAudioEngine:
                 t_copy = dict(t)
                 t_copy["norm_path"] = norm_audio
                 t_copy["exact_duration"] = dur
-                normalized_tracks.append(t_copy)
+                return (i, t_copy)
+            return None
+
+        with ThreadPoolExecutor(max_workers=6) as executor:
+            results = list(executor.map(_process_norm, enumerate(tracks, 1)))
+
+        normalized_tracks = [res[1] for res in results if res is not None]
 
         if not normalized_tracks:
             raise RuntimeError("No tracks successfully normalized.")
