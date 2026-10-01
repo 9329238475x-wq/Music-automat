@@ -2,10 +2,10 @@ name: Run Autonomous DJ Remix Pipeline
 
 on:
   schedule:
-    # 06:00 UTC (11:30 AM IST) - Daily Nagpuri Mix
-    - cron: '0 6 * * *'
-    # 12:00 UTC (05:30 PM IST) - Daily Vibration Mix
-    - cron: '0 12 * * *'
+    # 09:06 AM IST (03:36 UTC) - Daily Morning Nagpuri DJ Mix
+    - cron: '36 3 * * *'
+    # 07:00 PM IST (13:30 UTC) - Daily Evening Hard Vibration DJ Mix
+    - cron: '30 13 * * *'
   workflow_dispatch:
     inputs:
       profile:
@@ -58,7 +58,7 @@ jobs:
             echo "tracks=${{ github.event.inputs.target_tracks }}" >> $GITHUB_OUTPUT
             echo "skip_upload=${{ github.event.inputs.skip_upload }}" >> $GITHUB_OUTPUT
           else
-            # Check schedule hour
+            # Check schedule hour (UTC): 3 is morning (Nagpuri), 13 is evening (Vibration)
             HOUR=$(date -u +%H)
             if [ "$HOUR" -ge 10 ]; then
               echo "profile=vibration" >> $GITHUB_OUTPUT
@@ -80,7 +80,6 @@ jobs:
           REFRESH_TOKEN_VIBRATION: ${{ secrets.YOUTUBE_REFRESH_TOKEN_VIBRATION }}
         run: |
           echo "Configuring Kaggle Runner for profile: $PROFILE"
-          # Prepend environment variables directly into kaggle_runner.py
           cat << 'EOF' > kaggle/env_header.py
           import os
           os.environ["DJ_PROFILE"] = "$PROFILE"
@@ -105,12 +104,9 @@ jobs:
         run: |
           KERNEL_ID="man709/music-automat-worker"
           echo "Monitoring Kaggle execution for $KERNEL_ID..."
-          
-          # Poll status up to 30 minutes
           for i in {1..30}; do
             STATUS=$(kaggle kernels status "$KERNEL_ID" | grep -oE "running|queued|complete|error" || echo "unknown")
             echo "Kaggle Status: $STATUS (check $i/30)"
-            
             if [ "$STATUS" = "complete" ]; then
               echo "🎉 Kaggle production completed successfully!"
               kaggle kernels output "$KERNEL_ID" -p kaggle_logs/ || true
