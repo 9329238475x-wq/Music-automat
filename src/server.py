@@ -88,7 +88,7 @@ async def auth_login(profile: str = Query("nagpuri"), request: Request = None):
         return JSONResponse({"error": "client_secrets.json missing in project root"}, status_code=500)
 
     # Use exact callback URL matching client_secrets.json
-    redirect_uri = f"{request.base_url._url.rstrip('/')}/api/channels/oauth2callback"
+    redirect_uri = "http://localhost:8000/api/channels/oauth2callback"
 
     flow = Flow.from_client_secrets_file(
         str(CLIENT_SECRETS_FILE),
@@ -118,7 +118,7 @@ async def oauth2_callback(request: Request, code: str = Query(None), state: str 
     profile = state_data.get("profile", "nagpuri")
     code_verifier = state_data.get("verifier")
 
-    redirect_uri = f"{request.base_url._url.rstrip('/')}/api/channels/oauth2callback"
+    redirect_uri = "http://localhost:8000/api/channels/oauth2callback"
 
     flow = Flow.from_client_secrets_file(
         str(CLIENT_SECRETS_FILE),
