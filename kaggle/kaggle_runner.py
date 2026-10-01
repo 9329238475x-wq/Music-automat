@@ -1,53 +1,111 @@
+# -*- coding: utf-8 -*-
 """
-Kaggle Headless Cloud Runner for Music-Automat
-Runs on free Kaggle cloud instances with high-speed internet and zero local resources.
+Music-Automat Autonomous Unified Cloud Production Pipeline
+Kaggle Headless Script Runner (Zero GPU quota required, CPU-only, 100% Free & Unlimited)
 """
-
 import os
 import sys
-import subprocess
+import json
 import shutil
+import subprocess
+import traceback
 
-def run_cmd(cmd, check=True):
-    print(f"==> Running: {' '.join(cmd)}")
-    res = subprocess.run(cmd, text=True)
-    if check and res.returncode != 0:
-        raise RuntimeError(f"Command failed with code {res.returncode}")
-    return res.returncode
+if hasattr(sys.stdout, "reconfigure"):
+    try:
+        sys.stdout.reconfigure(line_buffering=True)
+    except Exception:
+        pass
 
-def main():
-    print("==================================================")
-    print("🚀 Music-Automat Cloud Runner Initializing...")
-    print("==================================================")
+print("=" * 65, flush=True)
+print("🚀 [MUSIC-AUTOMAT CLOUD RUNNER] STARTING PRODUCTION PIPELINE", flush=True)
+print("=" * 65, flush=True)
 
-    # 1. Install & upgrade necessary tools
-    run_cmd([sys.executable, "-m", "pip", "install", "-q", "--upgrade", "yt-dlp", "google-api-python-client", "google-auth-oauthlib"])
+try:
+    # ─── 1. VERIFY FFMPEG ───
+    print("[1/5] Checking FFmpeg availability...", flush=True)
+    if not shutil.which("ffmpeg"):
+        print("FFmpeg not found in PATH. Installing via apt-get...", flush=True)
+        subprocess.run(["apt-get", "update", "-y"], check=True)
+        subprocess.run(["apt-get", "install", "-y", "ffmpeg"], check=True)
+    ffmpeg_ver = subprocess.run(["ffmpeg", "-version"], capture_output=True, text=True)
+    first_line = ffmpeg_ver.stdout.split("\n")[0] if ffmpeg_ver.stdout else "FFmpeg available"
+    print(f"✓ {first_line}", flush=True)
 
-    # 2. Determine target profile from env or default
-    profile = os.environ.get("DJ_PROFILE", "nagpuri").lower()
+    # ─── 2. INITIALIZE WORKSPACE & CLONE ───
+    print("\n[2/5] Initializing workspace & fetching latest repository...", flush=True)
+    WORK_DIR = "/kaggle/working/Music-automat"
+    if os.path.exists(WORK_DIR):
+        print(f"Removing old workspace {WORK_DIR}...", flush=True)
+        shutil.rmtree(WORK_DIR, ignore_errors=True)
+
+    git_url = "https://github.com/9329238475x-wq/Music-automat.git"
+    print(f"Cloning {git_url}...", flush=True)
+    subprocess.run(["git", "clone", git_url, WORK_DIR], check=True)
+    print("✓ Git clone successful!", flush=True)
+
+    # ─── 3. INSTALL PYTHON DEPENDENCIES ───
+    print("\n[3/5] Installing cloud dependencies...", flush=True)
+    pip_cmd = [
+        sys.executable, "-m", "pip", "install", "-q", "--upgrade",
+        "yt-dlp",
+        "google-api-python-client",
+        "google-auth-oauthlib",
+        "google-auth-httplib2",
+        "pillow",
+        "numpy",
+        "scipy"
+    ]
+    subprocess.run(pip_cmd, check=True)
+    print("✓ Dependencies verified & ready!", flush=True)
+
+    # ─── 4. CONFIGURE RUNNER & REPOSITORIES ───
+    print("\n[4/5] Setting up environment & credentials...", flush=True)
+    os.chdir(WORK_DIR)
+    sys.path.insert(0, WORK_DIR)
+
+    client_id = os.environ.get("YOUTUBE_CLIENT_ID")
+    client_secret = os.environ.get("YOUTUBE_CLIENT_SECRET")
+    if client_id and client_secret:
+        cs_data = {
+            "installed": {
+                "client_id": client_id,
+                "client_secret": client_secret,
+                "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+                "token_uri": "https://oauth2.googleapis.com/token",
+                "redirect_uris": ["http://localhost"]
+            }
+        }
+        with open(os.path.join(WORK_DIR, "client_secrets.json"), "w", encoding="utf-8") as f:
+            json.dump(cs_data, f, indent=2)
+        print("✓ Hydrated client_secrets.json", flush=True)
+
+    # Determine profile: check hour or env
+    from datetime import datetime
+    utc_hour = datetime.utcnow().hour
+    default_profile = "vibration" if utc_hour >= 10 else "nagpuri"
+    profile = os.environ.get("DJ_PROFILE") or default_profile
+    profile = profile.lower()
     target_tracks = int(os.environ.get("DJ_TARGET_TRACKS", "25"))
     skip_upload = os.environ.get("DJ_SKIP_UPLOAD", "0") == "1"
 
-    print(f"Target Profile: {profile.upper()}")
-    print(f"Target Tracks: {target_tracks}")
-    print(f"Skip Upload: {skip_upload}")
+    print(f"Selected Profile : {profile.upper()} (UTC Hour: {utc_hour})", flush=True)
+    print(f"Target Tracks    : {target_tracks}", flush=True)
+    print(f"Skip Upload      : {skip_upload}", flush=True)
 
-    # 3. Add current directory to PYTHONPATH
-    cur_dir = os.path.abspath(os.path.dirname(__file__))
-    project_root = os.path.abspath(os.path.join(cur_dir, ".."))
-    sys.path.insert(0, project_root)
-
-    # 4. Execute production pipeline
+    # ─── 5. EXECUTE PRODUCTION PIPELINE ───
+    print("\n[5/5] Launching autonomous DJ production pipeline...", flush=True)
     from src.pipeline import DJProductionPipeline
 
-    pipeline = DJProductionPipeline(profile=profile, base_dir=project_root)
+    pipeline = DJProductionPipeline(profile=profile, base_dir=WORK_DIR)
     success = pipeline.run(target_tracks=target_tracks, skip_upload=skip_upload)
 
     if success:
-        print("🎉 Cloud execution completed successfully!")
+        print("\n🎉 [COMPLETE] Autonomous DJ Remix Pipeline Succeeded!", flush=True)
     else:
-        print("❌ Cloud execution encountered errors.")
+        print("\n❌ [FAILED] Pipeline finished with errors.", flush=True)
         sys.exit(1)
 
-if __name__ == "__main__":
-    main()
+except Exception as exc:
+    print(f"\n❌ FATAL EXCEPTION: {exc}", flush=True)
+    traceback.print_exc()
+    sys.exit(1)
