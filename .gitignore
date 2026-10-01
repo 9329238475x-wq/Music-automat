@@ -24,3 +24,8 @@ kaggle.json
 client_secrets.json
 tokens/
 *.token
+ 
+kaggle_logs/
+pulled_kernel/
+pulled_meta/
+temp_deploy/

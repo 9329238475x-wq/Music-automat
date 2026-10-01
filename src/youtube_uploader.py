@@ -64,6 +64,12 @@ class YouTubeUploader:
             client_secret=client_secret,
             scopes=["https://www.googleapis.com/auth/youtube.upload"]
         )
+        try:
+            if not creds.valid:
+                from google.auth.transport.requests import Request
+                creds.refresh(Request())
+        except Exception as e:
+            logger.warning(f"Failed to refresh YouTube credentials: {e}")
         return build("youtube", "v3", credentials=creds)
 
     def generate_metadata(self, tracklist_text: str, total_duration_str: str = "2:30:00") -> Dict[str, Any]:

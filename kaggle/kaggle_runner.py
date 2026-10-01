@@ -79,6 +79,35 @@ try:
             json.dump(cs_data, f, indent=2)
         print("✓ Hydrated client_secrets.json", flush=True)
 
+    # Hydrate tokens directory for both profiles
+    tokens_dir = os.path.join(WORK_DIR, "tokens")
+    os.makedirs(tokens_dir, exist_ok=True)
+    ref_nag = os.environ.get("YOUTUBE_REFRESH_TOKEN_NAGPURI")
+    if ref_nag:
+        with open(os.path.join(tokens_dir, "token_nagpuri.json"), "w", encoding="utf-8") as f:
+            json.dump({
+                "profile": "nagpuri",
+                "refresh_token": ref_nag,
+                "client_id": client_id,
+                "client_secret": client_secret,
+                "token_uri": "https://oauth2.googleapis.com/token",
+                "scopes": ["https://www.googleapis.com/auth/youtube.upload"]
+            }, f, indent=2)
+        print("✓ Hydrated token_nagpuri.json", flush=True)
+
+    ref_vib = os.environ.get("YOUTUBE_REFRESH_TOKEN_VIBRATION")
+    if ref_vib:
+        with open(os.path.join(tokens_dir, "token_vibration.json"), "w", encoding="utf-8") as f:
+            json.dump({
+                "profile": "vibration",
+                "refresh_token": ref_vib,
+                "client_id": client_id,
+                "client_secret": client_secret,
+                "token_uri": "https://oauth2.googleapis.com/token",
+                "scopes": ["https://www.googleapis.com/auth/youtube.upload"]
+            }, f, indent=2)
+        print("✓ Hydrated token_vibration.json", flush=True)
+
     # Determine profile: check hour or env
     from datetime import datetime
     utc_hour = datetime.utcnow().hour

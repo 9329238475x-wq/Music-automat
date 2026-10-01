@@ -79,6 +79,7 @@ class DJScraper:
 
             cmd = [
                 "yt-dlp",
+                "--extractor-args", "youtube:player_client=android,web",
                 "--flat-playlist",
                 "--dump-single-json",
                 "--playlist-end", str(max_per_channel),
@@ -159,6 +160,7 @@ class DJScraper:
 
             cmd = [
                 "yt-dlp",
+                "--extractor-args", "youtube:player_client=android,web",
                 "-x",
                 "--audio-format", "mp3",
                 "--audio-quality", "320k",
@@ -190,7 +192,8 @@ class DJScraper:
                     downloaded_tracks.append(track)
                     self.history.append(vid_id)
                 else:
-                    logger.warning(f"Audio file was not created for {vid_id}")
+                    err_msg = res.stderr[:200].strip() if res.stderr else "Unknown reason"
+                    logger.warning(f"Audio file was not created for {vid_id}: {err_msg}")
             except Exception as e:
                 logger.error(f"Failed to download {vid_id}: {e}")
 
