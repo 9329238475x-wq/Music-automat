@@ -6,26 +6,8 @@ on:
     - cron: '36 3 * * *'
     # 07:00 PM IST (13:30 UTC) - Daily Evening Hard Vibration DJ Mix
     - cron: '30 13 * * *'
+
   workflow_dispatch:
-    inputs:
-      profile:
-        description: 'Choose DJ Channel Profile'
-        required: true
-        default: 'nagpuri'
-        type: choice
-        options:
-          - nagpuri
-          - vibration
-      target_tracks:
-        description: 'Number of Tracks to Include'
-        required: true
-        default: '25'
-        type: string
-      skip_upload:
-        description: 'Skip YouTube Upload (Test Render Only)'
-        required: false
-        default: false
-        type: boolean
 
 jobs:
   launch-kaggle-production:
@@ -41,8 +23,7 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          pip install --upgrade pip
-          pip install kaggle
+          pip install --upgrade kaggle requests
 
       - name: Configure Kaggle API
         run: |
@@ -50,73 +31,6 @@ jobs:
           echo '{"username":"${{ secrets.KAGGLE_USERNAME }}","key":"${{ secrets.KAGGLE_KEY }}"}' > ~/.kaggle/kaggle.json
           chmod 600 ~/.kaggle/kaggle.json
 
-      - name: Determine Profile for Scheduled Run
-        id: select_profile
+      - name: Deploy & Trigger Kaggle Autonomous Runner
         run: |
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            echo "profile=${{ github.event.inputs.profile }}" >> $GITHUB_OUTPUT
-            echo "tracks=${{ github.event.inputs.target_tracks }}" >> $GITHUB_OUTPUT
-            echo "skip_upload=${{ github.event.inputs.skip_upload }}" >> $GITHUB_OUTPUT
-          else
-            HOUR=$(date -u +%H)
-            if [ "$HOUR" -ge 10 ]; then
-              echo "profile=vibration" >> $GITHUB_OUTPUT
-            else
-              echo "profile=nagpuri" >> $GITHUB_OUTPUT
-            fi
-            echo "tracks=25" >> $GITHUB_OUTPUT
-            echo "skip_upload=false" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Inject Configuration & Secrets into Kaggle Runner
-        env:
-          PROFILE: ${{ steps.select_profile.outputs.profile }}
-          TRACKS: ${{ steps.select_profile.outputs.tracks }}
-          SKIP_UPLOAD: ${{ steps.select_profile.outputs.skip_upload }}
-          CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
-          CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
-          REFRESH_TOKEN_NAGPURI: ${{ secrets.YOUTUBE_REFRESH_TOKEN_NAGPURI }}
-          REFRESH_TOKEN_VIBRATION: ${{ secrets.YOUTUBE_REFRESH_TOKEN_VIBRATION }}
-        run: |
-          echo "Configuring Kaggle Runner for profile: $PROFILE"
-          cat << 'EOF' > kaggle/env_header.py
-          import os
-          os.environ["DJ_PROFILE"] = "$PROFILE"
-          os.environ["DJ_TARGET_TRACKS"] = "$TRACKS"
-          os.environ["DJ_SKIP_UPLOAD"] = "1" if "$SKIP_UPLOAD" == "true" else "0"
-          os.environ["YOUTUBE_CLIENT_ID"] = "$CLIENT_ID"
-          os.environ["YOUTUBE_CLIENT_SECRET"] = "$CLIENT_SECRET"
-          os.environ["YOUTUBE_REFRESH_TOKEN_NAGPURI"] = "$REFRESH_TOKEN_NAGPURI"
-          os.environ["YOUTUBE_REFRESH_TOKEN_VIBRATION"] = "$REFRESH_TOKEN_VIBRATION"
-          EOF
-          envsubst < kaggle/env_header.py > kaggle/injected_header.py
-          cat kaggle/injected_header.py kaggle/kaggle_runner.py > kaggle/temp_runner.py
-          mv kaggle/temp_runner.py kaggle/kaggle_runner.py
-          rm -f kaggle/env_header.py kaggle/injected_header.py
-
-      - name: Trigger Kaggle Kernel Execution
-        run: |
-          echo "Pushing kernel to Kaggle..."
-          kaggle kernels push -p kaggle/
-
-      - name: Monitor Kaggle Kernel Execution
-        run: |
-          KERNEL_ID="sonuji93/music-automat-worker"
-          echo "Monitoring Kaggle execution for $KERNEL_ID..."
-          for i in {1..30}; do
-            STATUS=$(kaggle kernels status "$KERNEL_ID" | grep -oE "running|queued|complete|error" || echo "unknown")
-            echo "Kaggle Status: $STATUS (check $i/30)"
-            if [ "$STATUS" = "complete" ]; then
-              echo "🎉 Kaggle production completed successfully!"
-              kaggle kernels output "$KERNEL_ID" -p kaggle_logs/ || true
-              cat kaggle_logs/*.log || true
-              exit 0
-            elif [ "$STATUS" = "error" ]; then
-              echo "❌ Kaggle kernel execution failed!"
-              kaggle kernels output "$KERNEL_ID" -p kaggle_logs/ || true
-              cat kaggle_logs/*.log || true
-              exit 1
-            fi
-            sleep 60
-          done
-          echo "⚠️ Execution is still running in background on Kaggle."
+          python push_to_kaggle.py
