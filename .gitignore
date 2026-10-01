@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.env
+.venv/
+venv/
+env/
+
+# Output & Temp media
+output/
+downloads/
+temp/
+*.mp3
+*.mp4
+*.wav
+*.jpg
+*.png
+!assets/
+!assets/*
+
+# API credentials
+kaggle.json
+client_secrets.json
+tokens/
+*.token
