@@ -16,6 +16,7 @@ from src.scraper import DJScraper
 from src.audio_engine import DJAudioEngine
 from src.visual_engine import DJVisualEngine
 from src.youtube_uploader import YouTubeUploader
+from src.notifier import send_upload_success_email
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 logger = logging.getLogger("Pipeline")
@@ -97,6 +98,15 @@ class DJProductionPipeline:
             )
             if video_url:
                 logger.info(f"🎉 Pipeline Succeeded! Video live at: {video_url}")
+                # Send email notification
+                send_upload_success_email(
+                    video_title=f"NONSTOP {self.profile.upper()} DJ REMIX",
+                    youtube_url=video_url,
+                    profile=self.profile,
+                    channel_name=f"{self.profile.capitalize()} DJ Channel",
+                    duration_str="2-4 Hours Nonstop",
+                    track_count=len(tracks)
+                )
             else:
                 logger.warning("Upload step did not return video URL (check credentials).")
 
