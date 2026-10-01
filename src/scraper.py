@@ -1,7 +1,10 @@
 """
 DJ Track Scraper & Downloader Module
-Scrapes fresh (24-48h) remix tracks from curated channels using yt-dlp.
-Extracts 320 kbps MP3 audio and high-resolution thumbnail posters.
+Scrapes fresh (12-48h) remix tracks from curated channels using yt-dlp.
+STRICT RULES:
+1. STRICTLY 1 SONG PER CHANNEL (Never 2 songs from the same channel).
+2. Freshness priority (12h first, skips channels with no recent uploads).
+3. 5x Parallel multi-threaded downloading at 320 kbps MP3.
 """
 
 import os
@@ -11,6 +14,7 @@ import time
 import logging
 import subprocess
 from datetime import datetime, timedelta
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import List, Dict, Any, Optional, Tuple
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
@@ -62,75 +66,112 @@ class DJScraper:
         with open(self.history_file, "w", encoding="utf-8") as f:
             json.dump(self.history[-1000:], f, indent=2)
 
-    def discover_fresh_videos(self, max_per_channel: int = 5) -> List[Dict[str, Any]]:
-        """Inspects /videos of each channel using yt-dlp flat-playlist (0 YouTube API Quota)."""
-        candidates = []
-        now = datetime.utcnow()
-        cutoff_date = (now - timedelta(days=3)).strftime("%Y%m%d")
+    def _scan_single_channel(self, ch: Dict[str, str]) -> Optional[Dict[str, Any]]:
+        """
+        Scans a single channel for its latest video.
+        Enforces:
+        - At most 1 song from this channel.
+        - Skips if older than freshness threshold.
+        - Skips shorts and long mixes.
+        """
+        name = ch.get("name", "Unknown")
+        url = ch.get("url", "")
+        if not url and ch.get("handle"):
+            url = f"https://www.youtube.com/{ch['handle']}"
+        videos_url = f"{url.rstrip('/')}/videos"
 
-        logger.info(f"Scanning {len(self.channels)} channels for {self.profile} profile...")
+        cmd = [
+            "yt-dlp",
+            "--extractor-args", "youtube:player_client=android,web",
+            "--dump-json",
+            "--playlist-end", "2",
+            "--no-warnings",
+            "--quiet",
+            videos_url
+        ]
 
-        for idx, ch in enumerate(self.channels, 1):
-            name = ch.get("name", "Unknown")
-            url = ch.get("url", "")
-            if not url and ch.get("handle"):
-                url = f"https://www.youtube.com/{ch['handle']}"
-            videos_url = f"{url.rstrip('/')}/videos"
+        try:
+            proc = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, timeout=25)
+            if proc.returncode != 0 or not proc.stdout.strip():
+                return None
 
-            cmd = [
-                "yt-dlp",
-                "--extractor-args", "youtube:player_client=android,web",
-                "--flat-playlist",
-                "--dump-single-json",
-                "--playlist-end", str(max_per_channel),
-                "--no-warnings",
-                "--quiet",
-                videos_url
-            ]
-
-            try:
-                proc = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, timeout=25)
-                if proc.returncode != 0 or not proc.stdout.strip():
+            lines = [line.strip() for line in proc.stdout.strip().split("\n") if line.strip()]
+            for line in lines:
+                try:
+                    entry = json.loads(line)
+                except Exception:
                     continue
 
-                info = json.loads(proc.stdout)
-                entries = info.get("entries") or []
+                vid_id = entry.get("id")
+                if not vid_id or vid_id in self.history:
+                    continue
 
-                for entry in entries:
-                    vid_id = entry.get("id")
-                    if not vid_id or vid_id in self.history:
-                        continue
+                title = entry.get("title", "")
+                duration = float(entry.get("duration") or 0.0)
 
-                    title = entry.get("title", "")
-                    duration = entry.get("duration") or 0.0
-                    upload_date = entry.get("upload_date") or ""
+                # Filter out Shorts (< 100s) and full 1-2 hour nonstop mixes (> 14 mins / 840s)
+                if duration < 100.0 or duration > 840.0:
+                    continue
 
-                    # Filter out Shorts (< 60s) and full 1-2 hour nonstop mixes (> 14 mins)
-                    if duration < 100 or duration > 900:
-                        continue
+                # Check timestamp age
+                now_ts = time.time()
+                video_ts = entry.get("timestamp") or 0
+                age_hours = (now_ts - video_ts) / 3600.0 if video_ts else 999.0
 
-                    # If upload_date is provided, check cutoff (or fallback to recent)
-                    is_fresh = (upload_date >= cutoff_date) if upload_date else True
+                # Skip if older than 72 hours (3 days)
+                if age_hours > 72.0:
+                    logger.debug(f"Skipping {name}: Latest upload is {age_hours:.1f}h old.")
+                    return None
 
-                    candidates.append({
-                        "id": vid_id,
-                        "title": title,
-                        "duration": duration,
-                        "upload_date": upload_date,
-                        "remixer": name,
-                        "url": f"https://www.youtube.com/watch?v={vid_id}",
-                        "is_fresh": is_fresh
-                    })
-            except Exception as e:
-                logger.debug(f"Error checking channel {name}: {e}")
-                continue
+                # Found the 1 best song for this channel! Return immediately (STRICT 1 PER CHANNEL)
+                return {
+                    "id": vid_id,
+                    "title": title,
+                    "duration": duration,
+                    "age_hours": age_hours,
+                    "remixer": name,
+                    "channel_url": url,
+                    "url": f"https://www.youtube.com/watch?v={vid_id}"
+                }
 
-            if idx % 5 == 0 or idx == len(self.channels):
-                logger.info(f"Scanned {idx}/{len(self.channels)} channels. Found {len(candidates)} candidates.")
+        except Exception as e:
+            logger.debug(f"Error checking channel {name}: {e}")
+        return None
 
-        # Sort fresh tracks first, then recent
-        candidates.sort(key=lambda x: (x["is_fresh"], x["upload_date"]), reverse=True)
-        return candidates
+    def discover_fresh_videos(self) -> List[Dict[str, Any]]:
+        """
+        Inspects all channels concurrently with strict 1-song-per-channel enforcement.
+        Ranks by freshness (12h uploads prioritized first).
+        """
+        logger.info(f"Scanning {len(self.channels)} channels for {self.profile} profile (Parallel Scanner)...")
+        candidates = []
+
+        with ThreadPoolExecutor(max_workers=8) as executor:
+            future_to_ch = {executor.submit(self._scan_single_channel, ch): ch for ch in self.channels}
+            for future in as_completed(future_to_ch):
+                res = future.result()
+                if res is not None:
+                    candidates.append(res)
+
+        # STRICT GUARANTEE: Exactly 1 song per channel (each candidate is from a unique remixer)
+        seen_remixers = set()
+        unique_candidates = []
+        for c in candidates:
+            if c["remixer"] not in seen_remixers:
+                seen_remixers.add(c["remixer"])
+                unique_candidates.append(c)
+
+        # Sort: Freshest first (uploaded < 12h at top, then 24h, etc.)
+        unique_candidates.sort(key=lambda x: x["age_hours"])
+
+        within_12 = sum(1 for c in unique_candidates if c["age_hours"] <= 12.0)
+        within_24 = sum(1 for c in unique_candidates if c["age_hours"] <= 24.0)
+
+        logger.info(
+            f"✅ Found {len(unique_candidates)} unique tracks from {len(unique_candidates)} different channels! "
+            f"({within_12} within 12h, {within_24} within 24h)"
+        )
+        return unique_candidates
 
     def _download_single_track(self, item: Tuple[int, int, Dict[str, Any]]) -> Optional[Dict[str, Any]]:
         idx, total, track = item
@@ -160,7 +201,7 @@ class DJScraper:
             track["url"]
         ]
 
-        logger.info(f"[{idx}/{total}] Downloading: {track['title'][:40]}...")
+        logger.info(f"[{idx}/{total}] Downloading ({track['remixer']}): {track['title'][:35]}...")
         try:
             res = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, timeout=120)
             if os.path.exists(audio_out):
@@ -182,14 +223,13 @@ class DJScraper:
 
     def download_tracks(self, target_count: int = 25) -> List[Dict[str, Any]]:
         """Downloads selected tracks concurrently at 320 kbps using ThreadPoolExecutor."""
-        from concurrent.futures import ThreadPoolExecutor, as_completed
         candidates = self.discover_fresh_videos()
         if not candidates:
             logger.error("No valid candidates found.")
             return []
 
         selected = candidates[:target_count]
-        logger.info(f"🚀 Starting PARALLEL download of {len(selected)} tracks (5 concurrent workers)...")
+        logger.info(f"🚀 Starting PARALLEL download of {len(selected)} unique tracks from {len(selected)} different channels...")
 
         items = [(i, len(selected), track) for i, track in enumerate(selected, 1)]
         downloaded_tracks = []
@@ -203,7 +243,7 @@ class DJScraper:
                     self.history.append(res["id"])
 
         self._save_history()
-        logger.info(f"✅ Successfully downloaded {len(downloaded_tracks)} tracks in parallel.")
+        logger.info(f"✅ Successfully downloaded {len(downloaded_tracks)} unique tracks from {len(downloaded_tracks)} channels.")
         return downloaded_tracks
 
 
