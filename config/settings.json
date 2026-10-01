@@ -1,0 +1,82 @@
+{
+  "profiles": {
+    "nagpuri": {
+      "channel_title": "Nonstop Nagpuri DJ Remix",
+      "genre": "Nagpuri DJ Remix",
+      "min_duration_minutes": 120,
+      "max_duration_minutes": 240,
+      "target_tracks": 25,
+      "logo_file": "assets/logo_nagpuri.png",
+      "tags": [
+        "nagpuri dj song",
+        "nagpuri dj remix",
+        "theth nagpuri dj",
+        "nonstop nagpuri dj",
+        "nagpuri dance mix",
+        "jharkhandi dj song",
+        "nagpuri mashup",
+        "dj remix 2026",
+        "purulia nagpuri dj",
+        "khortha dj song",
+        "sadri dj song",
+        "new nagpuri dj mix"
+      ]
+    },
+    "vibration": {
+      "channel_title": "Hard Vibration DJ Remix",
+      "genre": "Vibration Hard Bass DJ",
+      "min_duration_minutes": 120,
+      "max_duration_minutes": 240,
+      "target_tracks": 25,
+      "logo_file": "assets/logo_vibration.png",
+      "tags": [
+        "vibration dj song",
+        "hard bass dj remix",
+        "cg vibration dj",
+        "competition dj remix",
+        "chhattisgarhi dj song",
+        "dj vibration 2026",
+        "hard kick dj",
+        "bhojpuri vibration dj",
+        "bass boosted dj",
+        "dj competition mix",
+        "nonstop vibration mix",
+        "tapori vibration dj"
+      ]
+    }
+  },
+  "audio": {
+    "bitrate": "320k",
+    "sample_rate": 44100,
+    "target_lufs": -14.0,
+    "true_peak": -1.0,
+    "transition_sound": "assets/wooosh.wav",
+    "crossfade_duration": 1.5
+  },
+  "video": {
+    "resolution": [
+      1920,
+      1080
+    ],
+    "fps": 30,
+    "crf": 24,
+    "preset": "veryfast",
+    "background_darkness": 0.08,
+    "visualizer": {
+      "num_bars": 72,
+      "base_radius": 170,
+      "max_bar_height": 130,
+      "bass_scale": 1.4,
+      "bar_color": [
+        0,
+        220,
+        255
+      ],
+      "accent_color": [
+        255,
+        60,
+        180
+      ]
+    }
+  }
+}
