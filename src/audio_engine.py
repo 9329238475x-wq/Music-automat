@@ -49,11 +49,25 @@ class DJAudioEngine:
         return f"{hrs:02d}:{mins:02d}:{secs:02d}"
 
     def normalize_track(self, in_file: str, out_file: str) -> bool:
-        """Normalizes audio to 44.1kHz stereo with EBU R128 (-14 LUFS, -1.0 dBTP)."""
+        """
+        Anti-Fingerprint Audio Engine:
+        1. Disrupts YouTube Content ID acoustic hash matching via micro-pitch shift (+2.5%) and micro-tempo offset.
+        2. Applies DJ Dynamic EQ (+2.5 dB sub-bass boost around 60Hz and +1.5 dB crisp treble).
+        3. Normalizes audio to broadcast standard EBU R128 (-14 LUFS, -1.0 dBTP).
+        4. Re-encodes to pristine 320 kbps MP3 at 44.1kHz stereo.
+        """
+        af_filter = (
+            "asetrate=44100*1.025,"
+            "aresample=44100,"
+            "equalizer=f=60:width_type=h:width=50:g=2.5,"
+            "treble=g=1.5,"
+            "loudnorm=I=-14:TP=-1.0:LRA=11,"
+            "aformat=sample_fmts=s16:sample_rates=44100:channel_layouts=stereo"
+        )
         cmd = [
             "ffmpeg", "-y",
             "-i", in_file,
-            "-af", "loudnorm=I=-14:TP=-1.0:LRA=11,aformat=sample_fmts=s16:sample_rates=44100:channel_layouts=stereo",
+            "-af", af_filter,
             "-b:a", "320k",
             out_file
         ]
