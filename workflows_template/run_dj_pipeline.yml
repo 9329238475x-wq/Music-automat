@@ -102,7 +102,7 @@ jobs:
 
       - name: Monitor Kaggle Kernel Execution
         run: |
-          KERNEL_ID="man709/music-automat-worker"
+          KERNEL_ID="sonuji93/music-automat-worker"
           echo "Monitoring Kaggle execution for $KERNEL_ID..."
           for i in {1..30}; do
             STATUS=$(kaggle kernels status "$KERNEL_ID" | grep -oE "running|queued|complete|error" || echo "unknown")

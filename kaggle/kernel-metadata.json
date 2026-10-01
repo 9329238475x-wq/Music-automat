@@ -1,6 +1,6 @@
 {
-  "id": "man709/music-automat-worker",
-  "title": "music-automat-worker",
+  "id": "sonuji93/music-automat-worker",
+  "title": "Music Automat Worker",
   "code_file": "kaggle_runner.py",
   "language": "python",
   "kernel_type": "script",
