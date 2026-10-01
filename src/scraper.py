@@ -132,73 +132,78 @@ class DJScraper:
         candidates.sort(key=lambda x: (x["is_fresh"], x["upload_date"]), reverse=True)
         return candidates
 
+    def _download_single_track(self, item: Tuple[int, int, Dict[str, Any]]) -> Optional[Dict[str, Any]]:
+        idx, total, track = item
+        vid_id = track["id"]
+        out_prefix = os.path.join(self.downloads_dir, f"track_{idx:02d}_{vid_id}")
+        audio_out = f"{out_prefix}.mp3"
+        thumb_out = f"{out_prefix}.jpg"
+
+        if os.path.exists(audio_out) and os.path.exists(thumb_out):
+            logger.info(f"[{idx}/{total}] Already cached: {track['title'][:40]}")
+            track["audio_path"] = audio_out
+            track["thumb_path"] = thumb_out
+            return track
+
+        cmd = [
+            "yt-dlp",
+            "--extractor-args", "youtube:player_client=android,web",
+            "-x",
+            "--audio-format", "mp3",
+            "--audio-quality", "320k",
+            "--write-thumbnail",
+            "--convert-thumbnails", "jpg",
+            "-o", f"{out_prefix}.%(ext)s",
+            "--no-playlist",
+            "--no-warnings",
+            "--quiet",
+            track["url"]
+        ]
+
+        logger.info(f"[{idx}/{total}] Downloading: {track['title'][:40]}...")
+        try:
+            res = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, timeout=120)
+            if os.path.exists(audio_out):
+                track["audio_path"] = audio_out
+                actual_thumb = None
+                for ext in [".jpg", ".webp", ".png"]:
+                    p = f"{out_prefix}{ext}"
+                    if os.path.exists(p):
+                        actual_thumb = p
+                        break
+                track["thumb_path"] = actual_thumb
+                return track
+            else:
+                err_msg = res.stderr[:150].strip() if res.stderr else "Unknown error"
+                logger.warning(f"Download failed for {vid_id}: {err_msg}")
+        except Exception as e:
+            logger.error(f"Error downloading {vid_id}: {e}")
+        return None
+
     def download_tracks(self, target_count: int = 25) -> List[Dict[str, Any]]:
-        """Downloads selected tracks in 320 kbps MP3 with maxres thumbnails."""
+        """Downloads selected tracks concurrently at 320 kbps using ThreadPoolExecutor."""
+        from concurrent.futures import ThreadPoolExecutor, as_completed
         candidates = self.discover_fresh_videos()
         if not candidates:
             logger.error("No valid candidates found.")
             return []
 
         selected = candidates[:target_count]
-        logger.info(f"Starting download of {len(selected)} tracks at 320 kbps...")
+        logger.info(f"🚀 Starting PARALLEL download of {len(selected)} tracks (5 concurrent workers)...")
 
+        items = [(i, len(selected), track) for i, track in enumerate(selected, 1)]
         downloaded_tracks = []
 
-        for i, track in enumerate(selected, 1):
-            vid_id = track["id"]
-            out_prefix = os.path.join(self.downloads_dir, f"track_{i:02d}_{vid_id}")
-            audio_out = f"{out_prefix}.mp3"
-            thumb_out = f"{out_prefix}.jpg"
-
-            # Check if already downloaded
-            if os.path.exists(audio_out) and os.path.exists(thumb_out):
-                logger.info(f"[{i}/{len(selected)}] Already cached: {track['title'][:40]}")
-                track["audio_path"] = audio_out
-                track["thumb_path"] = thumb_out
-                downloaded_tracks.append(track)
-                continue
-
-            cmd = [
-                "yt-dlp",
-                "--extractor-args", "youtube:player_client=android,web",
-                "-x",
-                "--audio-format", "mp3",
-                "--audio-quality", "320k",
-                "--write-thumbnail",
-                "--convert-thumbnails", "jpg",
-                "-o", f"{out_prefix}.%(ext)s",
-                "--no-playlist",
-                "--no-warnings",
-                track["url"]
-            ]
-
-            logger.info(f"[{i}/{len(selected)}] Downloading: {track['title'][:45]}...")
-            try:
-                res = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, timeout=120)
-                
-                # Check resulting files
-                if os.path.exists(audio_out):
-                    track["audio_path"] = audio_out
-                    
-                    # Locate thumbnail (.jpg or .webp)
-                    actual_thumb = None
-                    for ext in [".jpg", ".webp", ".png"]:
-                        p = f"{out_prefix}{ext}"
-                        if os.path.exists(p):
-                            actual_thumb = p
-                            break
-                    track["thumb_path"] = actual_thumb
-
-                    downloaded_tracks.append(track)
-                    self.history.append(vid_id)
-                else:
-                    err_msg = res.stderr[:200].strip() if res.stderr else "Unknown reason"
-                    logger.warning(f"Audio file was not created for {vid_id}: {err_msg}")
-            except Exception as e:
-                logger.error(f"Failed to download {vid_id}: {e}")
+        with ThreadPoolExecutor(max_workers=5) as executor:
+            future_to_track = {executor.submit(self._download_single_track, item): item for item in items}
+            for future in as_completed(future_to_track):
+                res = future.result()
+                if res and res.get("audio_path"):
+                    downloaded_tracks.append(res)
+                    self.history.append(res["id"])
 
         self._save_history()
-        logger.info(f"Successfully downloaded {len(downloaded_tracks)} tracks.")
+        logger.info(f"✅ Successfully downloaded {len(downloaded_tracks)} tracks in parallel.")
         return downloaded_tracks
 
 

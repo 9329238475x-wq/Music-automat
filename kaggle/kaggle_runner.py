@@ -53,7 +53,8 @@ try:
         "google-auth-httplib2",
         "pillow",
         "numpy",
-        "scipy"
+        "scipy",
+        "opencv-python-headless"
     ]
     subprocess.run(pip_cmd, check=True)
     print("✓ Dependencies verified & ready!", flush=True)
