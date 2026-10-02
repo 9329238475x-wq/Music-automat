@@ -32,9 +32,9 @@ def send_upload_success_email(
     """
     Sends a rich, responsive dark-mode HTML email confirmation to the user's Gmail.
     """
-    sender = os.environ.get("ALERT_GMAIL_SENDER", DEFAULT_SENDER)
-    app_pass = os.environ.get("ALERT_GMAIL_APP_PASS", DEFAULT_APP_PASS)
-    recipient = recipient_email or os.environ.get("ALERT_GMAIL_RECIPIENT", DEFAULT_RECIPIENT)
+    sender = os.environ.get("ALERT_GMAIL_SENDER") or DEFAULT_SENDER or "9329238475x@gmail.com"
+    app_pass = os.environ.get("ALERT_GMAIL_APP_PASS") or DEFAULT_APP_PASS or "ziqkkzjwffqnzrgn"
+    recipient = recipient_email or os.environ.get("ALERT_GMAIL_RECIPIENT") or DEFAULT_RECIPIENT or "9329238475x@gmail.com"
 
     if not app_pass:
         logger.warning("No Gmail App Password found. Skipping email notification.")
