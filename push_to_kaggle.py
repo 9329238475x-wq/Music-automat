@@ -31,6 +31,7 @@ client_id = os.environ.get("YOUTUBE_CLIENT_ID", "")
 client_secret = os.environ.get("YOUTUBE_CLIENT_SECRET", "")
 ref_nagpuri = os.environ.get("YOUTUBE_REFRESH_TOKEN_NAGPURI", "")
 ref_vibration = os.environ.get("YOUTUBE_REFRESH_TOKEN_VIBRATION", "")
+ref_edm = os.environ.get("YOUTUBE_REFRESH_TOKEN_EDM", "")
 gmail_pass = os.environ.get("ALERT_GMAIL_APP_PASS", "ziqkkzjwffqnzrgn")
 
 cs_file = ROOT / "client_secrets.json"
@@ -62,6 +63,15 @@ if tv_file.exists() and not ref_vibration:
     except Exception:
         pass
 
+te_file = ROOT / "tokens" / "token_edm.json"
+if te_file.exists() and not ref_edm:
+    try:
+        with open(te_file, encoding="utf-8") as f:
+            te = json.load(f)
+        ref_edm = te.get("refresh_token", "")
+    except Exception:
+        pass
+
 # Optional pipeline overrides
 profile = os.environ.get("DJ_PROFILE", "")
 target_tracks = os.environ.get("DJ_TARGET_TRACKS", "")
@@ -78,6 +88,7 @@ os.environ.setdefault("YOUTUBE_CLIENT_ID", "{client_id}")
 os.environ.setdefault("YOUTUBE_CLIENT_SECRET", "{client_secret}")
 os.environ.setdefault("YOUTUBE_REFRESH_TOKEN_NAGPURI", "{ref_nagpuri}")
 os.environ.setdefault("YOUTUBE_REFRESH_TOKEN_VIBRATION", "{ref_vibration}")
+os.environ.setdefault("YOUTUBE_REFRESH_TOKEN_EDM", "{ref_edm}")
 os.environ.setdefault("ALERT_GMAIL_APP_PASS", "{gmail_pass}")
 """
 

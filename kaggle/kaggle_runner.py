@@ -110,10 +110,31 @@ try:
             }, f, indent=2)
         print("✓ Hydrated token_vibration.json", flush=True)
 
+    ref_edm = os.environ.get("YOUTUBE_REFRESH_TOKEN_EDM")
+    if ref_edm:
+        with open(os.path.join(tokens_dir, "token_edm.json"), "w", encoding="utf-8") as f:
+            json.dump({
+                "profile": "edm",
+                "refresh_token": ref_edm,
+                "client_id": client_id,
+                "client_secret": client_secret,
+                "token_uri": "https://oauth2.googleapis.com/token",
+                "scopes": ["https://www.googleapis.com/auth/youtube.upload"]
+            }, f, indent=2)
+        print("✓ Hydrated token_edm.json", flush=True)
+
     # Determine profile: check hour or env
     from datetime import datetime
     utc_hour = datetime.utcnow().hour
-    default_profile = "vibration" if utc_hour >= 10 else "nagpuri"
+    # 06:12 AM IST = 00:42 UTC -> utc_hour < 3 -> "edm"
+    # 09:06 AM IST = 03:36 UTC -> utc_hour 3 to 9 -> "nagpuri"
+    # 07:00 PM IST = 13:30 UTC -> utc_hour 10+ -> "vibration"
+    if utc_hour < 3:
+        default_profile = "edm"
+    elif utc_hour < 10:
+        default_profile = "nagpuri"
+    else:
+        default_profile = "vibration"
     profile = os.environ.get("DJ_PROFILE") or default_profile
     profile = profile.lower()
     target_tracks = int(os.environ.get("DJ_TARGET_TRACKS", "25"))

@@ -27,10 +27,15 @@ class DJVisualEngine:
         self.output_dir = os.path.join(self.base_dir, "output")
         os.makedirs(self.output_dir, exist_ok=True)
 
-        logo_name = f"logo_{self.profile}.png"
-        self.logo_path = os.path.join(self.assets_dir, logo_name)
-        if not os.path.exists(self.logo_path):
-            self.logo_path = os.path.join(self.assets_dir, "logo_nagpuri.png")
+        if self.profile == "edm":
+            self.logo_path = os.path.join(self.assets_dir, "My EDM LOGO.png")
+            if not os.path.exists(self.logo_path):
+                self.logo_path = os.path.join(self.assets_dir, "logo_edm.png")
+        else:
+            logo_name = f"logo_{self.profile}.png"
+            self.logo_path = os.path.join(self.assets_dir, logo_name)
+            if not os.path.exists(self.logo_path):
+                self.logo_path = os.path.join(self.assets_dir, "logo_nagpuri.png")
 
     def create_thumbnail_wall(
         self,
@@ -218,7 +223,12 @@ class DJVisualEngine:
                 logger.warning(f"Could not open logo {self.logo_path}: {e}")
 
         # Theme colors based on profile
-        neon_color = (255, 120, 20, 230) if self.profile == "nagpuri" else (0, 220, 255, 230)
+        if self.profile == "edm":
+            neon_color = (220, 20, 255, 240)  # Electric Neon Purple/Magenta for EDM
+        elif self.profile == "nagpuri":
+            neon_color = (255, 120, 20, 230)  # Orange/Saffron for Nagpuri
+        else:
+            neon_color = (0, 220, 255, 230)   # Cyan/Electric Blue for Vibration
         disc_fill = (12, 14, 20, 235)
 
         # Pre-render 16 discrete bass vibration frames

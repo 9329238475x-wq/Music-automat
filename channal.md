@@ -60,6 +60,55 @@
 | 22 | **DJ UMESH MUNGELI** | `@DJUMESHMUNGELI` | https://www.youtube.com/@DJUMESHMUNGELI |
 | 23 | **Umesh Babu 1** | `@UmeshBabu1-b30` | https://www.youtube.com/@UmeshBabu1-b30 |
 | 24 | **Birendra Bhai 2.0** | `@Birendra_Bhai_2.0` | https://www.youtube.com/@Birendra_Bhai_2.0 |
+## ⚡ चैनल 3: EDM DJ Remix / Mega EDM Collection (41 Channels)
+> **कंटेंट टाइप:** EDM ड्रॉप मिक्स, इलेक्ट्रो डांस, क्लब मैशअप, भोजपुरी ईडीएम, ट्रान्स डांस मिक्स  
+> **अपलोड समय:** रोज़ाना सुबह 06:12 AM IST (00:42 UTC)  
+> **वीडियो सेंटर लोगो:** `assets/My EDM LOGO.png` (नियोन पल्सिंग डिस्क एनीमेशन)  
+
+| क्र. | चैनल का नाम (Channel Name) | यूट्यूब हैंडल (Handle) | यूट्यूब लिंक (YouTube URL) |
+|:---:|:---|:---|:---|
+| 1 | **EDM drop mix official** | `@Edmdropmixofficia11` | https://www.youtube.com/@Edmdropmixofficia11 |
+| 2 | **POWER DJ OFFICIAL** | `@POWERDJOFFICIAL` | https://www.youtube.com/@POWERDJOFFICIAL |
+| 3 | **DJ TANMAY PRODUCTION** | `@DjTANMAYPRODUCTlON` | https://www.youtube.com/@DjTANMAYPRODUCTlON |
+| 4 | **Dj Abishek Jharkhand** | `@DjAbishekJharkhand` | https://www.youtube.com/@DjAbishekJharkhand |
+| 5 | **Mix By AN** | `@mixbyan` | https://www.youtube.com/@mixbyan |
+| 6 | **SRS IN THE MIX** | `@srsinthemix` | https://www.youtube.com/@srsinthemix |
+| 7 | **Dvj Dilkhush Raj** | `@Dvjdilkhush` | https://www.youtube.com/@Dvjdilkhush |
+| 8 | **Dj Sanat Remix** | `@Djsanat-z5d` | https://www.youtube.com/@Djsanat-z5d |
+| 9 | **LUCIFER REMIX** | `@Dj_Lucifer_Remix` | https://www.youtube.com/@Dj_Lucifer_Remix |
+| 10 | **DJ AYAN REMIX** | `@AyanRemixx` | https://www.youtube.com/@AyanRemixx |
+| 11 | **Frex firx x Bhojpuri** | `@FrexfirxxBhojpuri` | https://www.youtube.com/@FrexfirxxBhojpuri |
+| 12 | **Ayushx Remixx** | `@AyushxRemix` | https://www.youtube.com/@AyushxRemix |
+| 13 | **Pankaj Babu Ayodhya** | `@pankajbabuayodhya_N01` | https://www.youtube.com/@pankajbabuayodhya_N01 |
+| 14 | **Dj Rahul Khairaha** | `@djrahulkhairahal` | https://www.youtube.com/@djrahulkhairahal |
+| 15 | **DJ RAHUL 2.0** | `@DjRahu12.o-no.1` | https://www.youtube.com/@DjRahu12.o-no.1 |
+| 16 | **DJ RAHUL 3.0** | `@DjRahu13.o-no.1` | https://www.youtube.com/@DjRahu13.o-no.1 |
+| 17 | **DJ RAHUL BABU** | `@DjRahulBabu-rg` | https://www.youtube.com/@DjRahulBabu-rg |
+| 18 | **R.D.X EDM DROP MIX official** | `@rdxedmdropofficia172` | https://www.youtube.com/@rdxedmdropofficia172 |
+| 19 | **R.D.X EDM DROP MIX official No.1** | `@R.D.XEDMDROPMlXofficial-le5qr` | https://www.youtube.com/@R.D.XEDMDROPMlXofficial-le5qr |
+| 20 | **R.D.X EDM MIX 2.0** | `@R.D.XEDMMlX2.O` | https://www.youtube.com/@R.D.XEDMMlX2.O |
+| 21 | **dj nx edm drop mix no.1** | `@djnxedmdropmixno.l` | https://www.youtube.com/@djnxedmdropmixno.l |
+| 22 | **DJ RAJAN ( EDM MIX )** | `@DJRAJANEDMKING` | https://www.youtube.com/@DJRAJANEDMKING |
+| 23 | **BHOJPURI DJ SARZEN** | `@bhojpuridjsarzen2582` | https://www.youtube.com/@bhojpuridjsarzen2582 |
+| 24 | **DJ GOLU BANARAS** | `@DJGOLUBANARASIII` | https://www.youtube.com/@DJGOLUBANARASIII |
+| 25 | **DjGolu BaBu Kadipur No.1** | `@djgolubabukadipurno.l` | https://www.youtube.com/@djgolubabukadipurno.l |
+| 26 | **AA music** | `@AAmusic-j6v` | https://www.youtube.com/@AAmusic-j6v |
+| 27 | **Dvj Ritesh Official** | `@DvjRiteshTurdagOfficial` | https://www.youtube.com/@DvjRiteshTurdagOfficial |
+| 28 | **Dj Ritesh TurdagTM( Official )** | `@DjRiteshTurdagOfficialTM` | https://www.youtube.com/@DjRiteshTurdagOfficialTM |
+| 29 | **it's sm official TM** | `@itssmofficialTM` | https://www.youtube.com/@itssmofficialTM |
+| 30 | **Dj RkM Bhadohi** | `@DjRkMBhadohi` | https://www.youtube.com/@DjRkMBhadohi |
+| 31 | **DJ Pushpa Jharkhand** | `@djpushpajharkhand` | https://www.youtube.com/@djpushpajharkhand |
+| 32 | **Dj_Haka_Bhai_Rmx** | `@Dj_Haka_Bhai_Rmxx` | https://www.youtube.com/@Dj_Haka_Bhai_Rmxx |
+| 33 | **Dz Addy Rmx TM** | `@Dz_Addy_Rmx` | https://www.youtube.com/@Dz_Addy_Rmx |
+| 34 | **Dj Anish Ghazipur** | `@djanishghazipur01` | https://www.youtube.com/@djanishghazipur01 |
+| 35 | **DJ VIKAS UP** | `@DJVIKASUP` | https://www.youtube.com/@DJVIKASUP |
+| 36 | **Bablu Yadav Gorakhpur** | `@BabluYadavGorakhpur-t5x` | https://www.youtube.com/@BabluYadavGorakhpur-t5x |
+| 37 | **DJ MANISH BABUA PATNA JILA** | `@Manish_Babua-u8m` | https://www.youtube.com/@Manish_Babua-u8m |
+| 38 | **Dj Khesari Music** | `@DjKhesariMusic` | https://www.youtube.com/@DjKhesariMusic |
+| 39 | **DjMalaai Music Official** | `@DjMalaaiMusicOfficial` | https://www.youtube.com/@DjMalaaiMusicOfficial |
+| 40 | **MALAAIMUSIC RDX BEATZ** | `@MALAAIMUSICRDXBEATZ` | https://www.youtube.com/@MALAAIMUSICRDXBEATZ |
+| 41 | **Music In GamePlay** | `@musicingameplay` | https://www.youtube.com/@musicingameplay |
+
 ## 🛠️ सिस्टम आर्किटेक्चर और मुख्य नियम (System Specifications)
 
 1. **ऑडियो पाइपलाइन (Audio Pipeline):**

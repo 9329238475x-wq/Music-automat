@@ -80,7 +80,41 @@ class YouTubeUploader:
         now = datetime.now()
         year = now.year
 
-        if self.profile == "nagpuri":
+        if self.profile == "edm":
+            # Channel: EDM DJ Remix / Mega EDM Collection Profile
+            title = f"NEW TRENDING EDM DJ REMIX {year} 🔥 Electro Dance Nonstop Mix || Hard Drop EDM Mashup ⚡"
+            
+            description = f"""⚡ NEW TRENDING EDM DJ REMIX {year} - HARD DROP ELECTRO JUKEBOX!
+Get ready for the ultimate EDM rush! High-energy festival electro drops, club dance mix, hard bass drops, and non-stop viral EDM remixes mastered in studio-grade 320 kbps HD audio!
+
+⚡ Audio Specs: 320 kbps HD Master | Sub-Bass Boosted +2.5dB | 1080p Avee Bass Visualizer
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🎵 TRACKLIST & CHAPTERS (CLICK TIMESTAMPS):
+{tracklist_text}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🔎 YOUR QUERIES & TOP SEARCHES:
+• new edm dj remix {year}
+• nonstop edm drop mix {year}
+• hard drop edm remix nonstop
+• bhojpuri edm dance mix
+• trending edm mashup {year}
+• electro house dj remix {year}
+• club dance mix edm {year}
+• bass boosted edm dj song
+• sound check edm remix
+• festival edm nonstop jukebox
+• new viral edm songs {year}
+• electro dance drop mix 2026
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🏷️ VIRAL HASHTAGS:
+#edmdj #edmdrop #edmsong{year} #nonstopedm #electrohouse #clubmix #harddropedm #edmmashup #trendingsong #djremix{year} #bhojpuriedm
+
+⚠️ DISCLAIMER & FAIR USE:
+All songs and remixes featured in this nonstop mix belong to their respective original creators, artists, and music labels. This mix is created purely for promotional, cultural, and entertainment purposes. If any artist, label, or copyright holder has any concern regarding any track, please contact us and we will promptly resolve it.
+"""
+        elif self.profile == "nagpuri":
             # Channel: sumit rmx 2.0 (Nagpuri Profile)
             title = f"New Trending Nagpuri DJ Remix {year} 🔥 Nonstop Nagpuri DJ Song || Theth Nagpuri Dance Mix 💃 Sumit Rmx"
             
