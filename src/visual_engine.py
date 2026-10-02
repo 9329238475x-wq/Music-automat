@@ -254,6 +254,7 @@ class DJVisualEngine:
         # Step 3: Launch FFmpeg pipe
         cmd = [
             "ffmpeg", "-y",
+            "-loglevel", "error",
             "-f", "rawvideo",
             "-pix_fmt", "rgba",
             "-s", f"{width}x{height}",
@@ -268,7 +269,9 @@ class DJVisualEngine:
         ]
 
         logger.info(f"Starting FFmpeg encode: {output_mp4} (Full hardware pipeline)...")
-        proc = subprocess.Popen(cmd, stdin=subprocess.PIPE, stderr=subprocess.PIPE)
+        ffmpeg_log_path = os.path.join(self.output_dir, "ffmpeg_render.log")
+        ffmpeg_log = open(ffmpeg_log_path, "w", encoding="utf-8")
+        proc = subprocess.Popen(cmd, stdin=subprocess.PIPE, stderr=ffmpeg_log)
 
         pcx, pcy = box_r, box_r
         bar_colors = [
@@ -276,7 +279,15 @@ class DJVisualEngine:
             (255, 140, 20, 255) if self.profile == "nagpuri" else (0, 220, 255, 255)
         ]
 
-        log_interval = max(1, total_frames // 10)
+        # Pre-cache logo sizes
+        logo_cache = {}
+        if logo is not None:
+            min_dim = int(base_r * 1.80) - 15
+            max_dim = int((base_r + 25) * 1.80) + 15
+            for d in range(min_dim, max_dim + 1):
+                logo_cache[d] = logo.resize((d, d), Image.Resampling.BILINEAR)
+
+        log_interval = max(1, total_frames // 20)
         t_start = time.time()
 
         try:
@@ -310,13 +321,16 @@ class DJVisualEngine:
                     width=4
                 )
 
-                # Center Logo
+                # Center Logo (Fast cached lookup)
                 if logo is not None:
                     logo_dim = int(cur_base_r * 1.80)
-                    logo_res = logo.resize((logo_dim, logo_dim), Image.Resampling.LANCZOS)
+                    cached_logo = logo_cache.get(logo_dim)
+                    if cached_logo is None:
+                        cached_logo = logo.resize((logo_dim, logo_dim), Image.Resampling.BILINEAR)
+                        logo_cache[logo_dim] = cached_logo
                     lx = pcx - logo_dim // 2
                     ly = pcy - logo_dim // 2
-                    patch.paste(logo_res, (lx, ly), logo_res)
+                    patch.paste(cached_logo, (lx, ly), cached_logo)
 
                 # Paste patch back onto full background
                 bg.paste(patch, (x1, y1))
@@ -331,6 +345,10 @@ class DJVisualEngine:
 
             proc.stdin.close()
             proc.wait()
+            try:
+                ffmpeg_log.close()
+            except Exception:
+                pass
             total_sec = time.time() - t_start
             avg_fps = total_frames / max(total_sec, 1.0)
             logger.info(f"🎉 Rendering complete in {total_sec/60:.1f} minutes! Average speed: {avg_fps:.1f} FPS.")
@@ -339,6 +357,10 @@ class DJVisualEngine:
             logger.error(f"Render error: {e}")
             if proc.poll() is None:
                 proc.kill()
+            try:
+                ffmpeg_log.close()
+            except Exception:
+                pass
             raise e
 
         return output_mp4

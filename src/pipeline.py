@@ -79,7 +79,7 @@ class DJProductionPipeline:
             audio_path=master_audio_path,
             background_path=bg_wall_path,
             output_mp4=final_video_path,
-            fps=30
+            fps=24
         )
 
         logger.info(f"Step 3 Complete: Full video rendered ({final_video_path}).")
