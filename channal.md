@@ -71,14 +71,14 @@
 | 1 | **EDM drop mix official** | `@Edmdropmixofficia11` | https://www.youtube.com/@Edmdropmixofficia11 |
 | 2 | **POWER DJ OFFICIAL** | `@POWERDJOFFICIAL` | https://www.youtube.com/@POWERDJOFFICIAL |
 | 3 | **DJ TANMAY PRODUCTION** | `@DjTANMAYPRODUCTlON` | https://www.youtube.com/@DjTANMAYPRODUCTlON |
-| 4 | **Dj Abishek Jharkhand** | `@DjAbishekJharkhand` | https://www.youtube.com/@DjAbishekJharkhand |
-| 5 | **Mix By AN** | `@mixbyan` | https://www.youtube.com/@mixbyan |
-| 6 | **SRS IN THE MIX** | `@srsinthemix` | https://www.youtube.com/@srsinthemix |
+| 4 | ~~**Dj Abishek Jharkhand**~~ *(Removed)* | `@DjAbishekJharkhand` | https://www.youtube.com/@DjAbishekJharkhand |
+| 5 | ~~**Mix By AN**~~ *(Removed)* | `@mixbyan` | https://www.youtube.com/@mixbyan |
+| 6 | ~~**SRS IN THE MIX**~~ *(Removed)* | `@srsinthemix` | https://www.youtube.com/@srsinthemix |
 | 7 | **Dvj Dilkhush Raj** | `@Dvjdilkhush` | https://www.youtube.com/@Dvjdilkhush |
 | 8 | **Dj Sanat Remix** | `@Djsanat-z5d` | https://www.youtube.com/@Djsanat-z5d |
 | 9 | **LUCIFER REMIX** | `@Dj_Lucifer_Remix` | https://www.youtube.com/@Dj_Lucifer_Remix |
 | 10 | **DJ AYAN REMIX** | `@AyanRemixx` | https://www.youtube.com/@AyanRemixx |
-| 11 | **Frex firx x Bhojpuri** | `@FrexfirxxBhojpuri` | https://www.youtube.com/@FrexfirxxBhojpuri |
+| 11 | ~~**Frex firx x Bhojpuri**~~ *(Removed)* | `@FrexfirxxBhojpuri` | https://www.youtube.com/@FrexfirxxBhojpuri |
 | 12 | **Ayushx Remixx** | `@AyushxRemix` | https://www.youtube.com/@AyushxRemix |
 | 13 | **Pankaj Babu Ayodhya** | `@pankajbabuayodhya_N01` | https://www.youtube.com/@pankajbabuayodhya_N01 |
 | 14 | **Dj Rahul Khairaha** | `@djrahulkhairahal` | https://www.youtube.com/@djrahulkhairahal |
@@ -93,10 +93,10 @@
 | 23 | **BHOJPURI DJ SARZEN** | `@bhojpuridjsarzen2582` | https://www.youtube.com/@bhojpuridjsarzen2582 |
 | 24 | **DJ GOLU BANARAS** | `@DJGOLUBANARASIII` | https://www.youtube.com/@DJGOLUBANARASIII |
 | 25 | **DjGolu BaBu Kadipur No.1** | `@djgolubabukadipurno.l` | https://www.youtube.com/@djgolubabukadipurno.l |
-| 26 | **AA music** | `@AAmusic-j6v` | https://www.youtube.com/@AAmusic-j6v |
+| 26 | ~~**AA music**~~ *(Removed)* | `@AAmusic-j6v` | https://www.youtube.com/@AAmusic-j6v |
 | 27 | **Dvj Ritesh Official** | `@DvjRiteshTurdagOfficial` | https://www.youtube.com/@DvjRiteshTurdagOfficial |
 | 28 | **Dj Ritesh TurdagTM( Official ) [Moved to Nagpuri Profile]** | `@DjRiteshTurdagOfficialTM` | https://www.youtube.com/@DjRiteshTurdagOfficialTM |
-| 29 | **it's sm official TM** | `@itssmofficialTM` | https://www.youtube.com/@itssmofficialTM |
+| 29 | ~~**it's sm official TM**~~ *(Removed)* | `@itssmofficialTM` | https://www.youtube.com/@itssmofficialTM |
 | 30 | **Dj RkM Bhadohi** | `@DjRkMBhadohi` | https://www.youtube.com/@DjRkMBhadohi |
 | 31 | **DJ Pushpa Jharkhand** | `@djpushpajharkhand` | https://www.youtube.com/@djpushpajharkhand |
 | 32 | **Dj_Haka_Bhai_Rmx** | `@Dj_Haka_Bhai_Rmxx` | https://www.youtube.com/@Dj_Haka_Bhai_Rmxx |
@@ -105,7 +105,7 @@
 | 35 | **DJ VIKAS UP** | `@DJVIKASUP` | https://www.youtube.com/@DJVIKASUP |
 | 36 | **Bablu Yadav Gorakhpur** | `@BabluYadavGorakhpur-t5x` | https://www.youtube.com/@BabluYadavGorakhpur-t5x |
 | 37 | **DJ MANISH BABUA PATNA JILA** | `@Manish_Babua-u8m` | https://www.youtube.com/@Manish_Babua-u8m |
-| 38 | **Dj Khesari Music** | `@DjKhesariMusic` | https://www.youtube.com/@DjKhesariMusic |
+| 38 | ~~**Dj Khesari Music**~~ *(Removed)* | `@DjKhesariMusic` | https://www.youtube.com/@DjKhesariMusic |
 | 39 | **DjMalaai Music Official** | `@DjMalaaiMusicOfficial` | https://www.youtube.com/@DjMalaaiMusicOfficial |
 | 40 | **MALAAIMUSIC RDX BEATZ** | `@MALAAIMUSICRDXBEATZ` | https://www.youtube.com/@MALAAIMUSICRDXBEATZ |
 | 41 | **Music In GamePlay** | `@musicingameplay` | https://www.youtube.com/@musicingameplay |
