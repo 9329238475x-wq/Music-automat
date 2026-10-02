@@ -334,7 +334,13 @@ class DJVisualEngine:
 
                 # Paste patch back onto full background
                 bg.paste(patch, (x1, y1))
-                proc.stdin.write(bg.tobytes())
+
+                # Handle graceful stream finish when audio ends with -shortest
+                try:
+                    proc.stdin.write(bg.tobytes())
+                except (BrokenPipeError, OSError):
+                    logger.info(f"✓ FFmpeg closed input pipe (video encoded to full audio length at frame {frame_idx}/{total_frames}).")
+                    break
 
                 if frame_idx % log_interval == 0 and frame_idx > 0:
                     pct = int((frame_idx / total_frames) * 100)
@@ -343,15 +349,28 @@ class DJVisualEngine:
                     eta_sec = (total_frames - frame_idx) / max(fps_calc, 1.0)
                     logger.info(f"Render progress: {pct}% | Speed: {fps_calc:.1f} FPS | ETA: {eta_sec/60:.1f} min")
 
-            proc.stdin.close()
+            try:
+                proc.stdin.close()
+            except Exception:
+                pass
             proc.wait()
             try:
                 ffmpeg_log.close()
             except Exception:
                 pass
+
+            if not (os.path.exists(output_mp4) and os.path.getsize(output_mp4) > 1000000):
+                err_text = ""
+                if os.path.exists(ffmpeg_log_path):
+                    with open(ffmpeg_log_path, "r", encoding="utf-8") as fl:
+                        err_text = fl.read()
+                raise RuntimeError(f"Video file not created properly. FFmpeg stderr: {err_text}")
+
             total_sec = time.time() - t_start
             avg_fps = total_frames / max(total_sec, 1.0)
+            file_mb = os.path.getsize(output_mp4) / (1024 * 1024)
             logger.info(f"🎉 Rendering complete in {total_sec/60:.1f} minutes! Average speed: {avg_fps:.1f} FPS.")
+            logger.info(f"✓ Output video verified: {output_mp4} ({file_mb:.1f} MB)")
 
         except Exception as e:
             logger.error(f"Render error: {e}")

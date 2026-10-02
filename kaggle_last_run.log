@@ -1,0 +1,151 @@
+[{"stream_name":"stdout","time":0.741780052,"data":"=================================================================\n"}
+,{"stream_name":"stdout","time":0.741827541,"data":"🚀 [MUSIC-AUTOMAT CLOUD RUNNER] STARTING PRODUCTION PIPELINE\n"}
+,{"stream_name":"stdout","time":0.741832814,"data":"=================================================================\n"}
+,{"stream_name":"stdout","time":0.741835475,"data":"[1/5] Checking FFmpeg availability...\n"}
+,{"stream_name":"stdout","time":1.408891195,"data":"✓ ffmpeg version 4.4.2-0ubuntu0.22.04.1 Copyright (c) 2000-2021 the FFmpeg developers\n"}
+,{"stream_name":"stdout","time":1.408922442,"data":"\n"}
+,{"stream_name":"stdout","time":1.4089266409999999,"data":"[2/5] Initializing workspace \u0026 fetching latest repository...\n"}
+,{"stream_name":"stdout","time":1.40893588,"data":"Cloning https://github.com/9329238475x-wq/Music-automat.git...\n"}
+,{"stream_name":"stderr","time":1.435333096,"data":"Cloning into '/kaggle/working/Music-automat'...\n"}
+,{"stream_name":"stdout","time":1.871919452,"data":"✓ Git clone successful!\n"}
+,{"stream_name":"stdout","time":1.871965498,"data":"\n"}
+,{"stream_name":"stdout","time":1.8719701720000002,"data":"[3/5] Installing cloud dependencies...\n"}
+,{"stream_name":"stdout","time":4.929281801,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 183.7/183.7 kB 6.3 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":6.577985626,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 62.4/62.4 kB 3.3 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":6.884182383,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.2/3.2 MB 81.4 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":7.02927769,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 16.8/16.8 MB 94.5 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":7.136851889,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 6.9/6.9 MB 110.3 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":7.271566811,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 16.7/16.7 MB 100.8 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":7.554862733,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 35.3/35.3 MB 62.5 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":8.771999669,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 61.2/61.2 MB 10.4 MB/s eta 0:00:00\n"}
+,{"stream_name":"stderr","time":41.317294363,"data":"ERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.\n"}
+,{"stream_name":"stderr","time":41.317343586,"data":"bigframes 2.39.0 requires google-cloud-bigquery-storage\u003c3.0.0,\u003e=2.30.0, which is not installed.\n"}
+,{"stream_name":"stderr","time":41.317351768,"data":"google-adk 1.29.0 requires google-cloud-bigquery-storage\u003e=2.0.0, which is not installed.\n"}
+,{"stream_name":"stderr","time":41.317357081,"data":"ydata-profiling 4.18.4 requires numpy\u003c2.4,\u003e=1.22, but you have numpy 2.5.3 which is incompatible.\n"}
+,{"stream_name":"stderr","time":41.317362083,"data":"ydata-profiling 4.18.4 requires scipy\u003c1.17,\u003e=1.8, but you have scipy 1.18.1 which is incompatible.\n"}
+,{"stream_name":"stderr","time":41.317387201,"data":"google-colab 1.0.0 requires jupyter-server==2.14.0, but you have jupyter-server 2.12.5 which is incompatible.\n"}
+,{"stream_name":"stderr","time":41.317390105,"data":"google-colab 1.0.0 requires pandas==2.2.2, but you have pandas 2.3.3 which is incompatible.\n"}
+,{"stream_name":"stderr","time":41.31739241,"data":"dopamine-rl 4.1.2 requires gym\u003c=0.25.2, but you have gym 0.26.2 which is incompatible.\n"}
+,{"stream_name":"stderr","time":41.317394881,"data":"moviepy 1.0.3 requires decorator\u003c5.0,\u003e=4.0.2, but you have decorator 5.3.1 which is incompatible.\n"}
+,{"stream_name":"stderr","time":41.317397229,"data":"numba 0.60.0 requires numpy\u003c2.1,\u003e=1.22, but you have numpy 2.5.3 which is incompatible.\n"}
+,{"stream_name":"stderr","time":41.317399507,"data":"gradio 5.50.0 requires pillow\u003c12.0,\u003e=8.0, but you have pillow 12.3.0 which is incompatible.\n"}
+,{"stream_name":"stdout","time":41.606828752,"data":"✓ Dependencies verified \u0026 ready!\n"}
+,{"stream_name":"stdout","time":41.606863776,"data":"\n"}
+,{"stream_name":"stdout","time":41.606867291,"data":"[4/5] Setting up environment \u0026 credentials...\n"}
+,{"stream_name":"stdout","time":41.607102794,"data":"✓ Hydrated client_secrets.json\n"}
+,{"stream_name":"stdout","time":41.607396348,"data":"✓ Hydrated token_nagpuri.json\n"}
+,{"stream_name":"stdout","time":41.607548241,"data":"✓ Hydrated token_vibration.json\n"}
+,{"stream_name":"stderr","time":41.607847776,"data":"/kaggle/src/script.py:122: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).\n"}
+,{"stream_name":"stderr","time":41.607859776,"data":"  utc_hour = datetime.utcnow().hour\n"}
+,{"stream_name":"stdout","time":41.607889393,"data":"Selected Profile : NAGPURI (UTC Hour: 8)\n"}
+,{"stream_name":"stdout","time":41.607897026,"data":"Target Tracks    : 25\n"}
+,{"stream_name":"stdout","time":41.607900528,"data":"Skip Upload      : False\n"}
+,{"stream_name":"stdout","time":41.607903831,"data":"\n"}
+,{"stream_name":"stdout","time":41.607918051,"data":"[5/5] Launching autonomous DJ production pipeline...\n"}
+,{"stream_name":"stderr","time":42.797020024,"data":"2026-10-02 08:26:21,284 [INFO] ==================================================\n"}
+,{"stream_name":"stderr","time":42.797045751,"data":"2026-10-02 08:26:21,284 [INFO] Starting Autonomous DJ Pipeline | Profile: NAGPURI\n"}
+,{"stream_name":"stderr","time":42.797090308,"data":"2026-10-02 08:26:21,284 [INFO] Target Tracks: 25 | Skip Upload: False\n"}
+,{"stream_name":"stderr","time":42.797098385,"data":"2026-10-02 08:26:21,284 [INFO] ==================================================\n"}
+,{"stream_name":"stderr","time":42.797182147,"data":"2026-10-02 08:26:21,284 [INFO] [STEP 1/4] Discovering and downloading fresh DJ tracks...\n"}
+,{"stream_name":"stderr","time":42.797188754,"data":"2026-10-02 08:26:21,284 [INFO] Scanning 21 channels for nagpuri profile (Parallel Scanner)...\n"}
+,{"stream_name":"stderr","time":50.446228017,"data":"2026-10-02 08:26:28,933 [INFO] ✅ Found 21 unique fresh tracks from 21 different channels!\n"}
+,{"stream_name":"stderr","time":50.446333,"data":"2026-10-02 08:26:28,933 [INFO] 🚀 Starting PARALLEL download of 21 unique tracks from 21 different channels...\n"}
+,{"stream_name":"stderr","time":50.447098672,"data":"2026-10-02 08:26:28,934 [INFO] [2/21] Downloading (Dj Vishal Ranchi): Hay Sona Dila Accident Holak Re ( F...\n"}
+,{"stream_name":"stderr","time":50.447488304,"data":"2026-10-02 08:26:28,935 [INFO] [1/21] Downloading (Dj Sandip Nagra 907): Kabhi Bel Bottom‼️ New Nagpuri Song...\n"}
+,{"stream_name":"stderr","time":50.44870641,"data":"2026-10-02 08:26:28,935 [INFO] [3/21] Downloading (RL REMIX RAJPUR 807): Kit Kiti Kiti Chal Ni Guya Khelab R...\n"}
+,{"stream_name":"stderr","time":50.44907155,"data":"2026-10-02 08:26:28,935 [INFO] [5/21] Downloading (DJ PIYUSH BABU 04): Zinda Jalale gori Nagpuri Dj Song |...\n"}
+,{"stream_name":"stderr","time":50.451336433,"data":"2026-10-02 08:26:28,936 [INFO] [4/21] Downloading (Dj Ashish Pahartoli): Lakho Tor Followers 🌿New Nagpuri In...\n"}
+,{"stream_name":"stderr","time":66.181548177,"data":"2026-10-02 08:26:44,669 [INFO] [6/21] Downloading (LX NAGPURI KING_👑): माेय जोड़ी करम खेले जावु करमा कुडूख...\n"}
+,{"stream_name":"stderr","time":68.81995699,"data":"2026-10-02 08:26:47,307 [INFO] [7/21] Downloading (DB Music Jharkhand): Fashion Jamana Nagpuri Dj !! Trendi...\n"}
+,{"stream_name":"stderr","time":68.976891822,"data":"2026-10-02 08:26:47,464 [INFO] [8/21] Downloading (Dj Zorden (ramgarh)): A RE MOR RUNA RANI 🔥 NAGPURI SONG |...\n"}
+,{"stream_name":"stderr","time":69.838228981,"data":"2026-10-02 08:26:48,325 [INFO] [9/21] Downloading (Mukesh Music Official): धोखेबाज तोके🌴New Theth Nagpuri Dj R...\n"}
+,{"stream_name":"stderr","time":70.64766239,"data":"2026-10-02 08:26:49,135 [INFO] [10/21] Downloading (RP REWAPUR): Hawa Kiss Diya Nagpuri Song 2026 Ol...\n"}
+,{"stream_name":"stderr","time":87.64644951,"data":"2026-10-02 08:27:06,133 [INFO] [11/21] Downloading (lx Ariyan babu 143): 🌿🌿🌿मोर माटी  कर  कया  🌿🌿🌿NEW  NAGPU...\n"}
+,{"stream_name":"stderr","time":89.185323126,"data":"2026-10-02 08:27:07,672 [INFO] [12/21] Downloading (Wi-Fi _Nagpuri_ haldidohar): Jhumka_Mor_Jhalakdar_Re_New_Nagpuri...\n"}
+,{"stream_name":"stderr","time":89.8607292,"data":"2026-10-02 08:27:08,348 [INFO] [13/21] Downloading (ANIL DJ JONE): Piya Piya Bhar le Mor Mangiya पीया ...\n"}
+,{"stream_name":"stderr","time":90.916581852,"data":"2026-10-02 08:27:09,404 [INFO] [14/21] Downloading (Birendra Bhai 2.0): Pinki Darling Pickup Gadi Me || New...\n"}
+,{"stream_name":"stderr","time":92.898209241,"data":"2026-10-02 08:27:11,385 [INFO] [15/21] Downloading (Birendra Music official 807): Lali Tamater Noni Tor || New Cg Son...\n"}
+,{"stream_name":"stderr","time":104.011347425,"data":"2026-10-02 08:27:22,498 [INFO] [16/21] Downloading (Dj Nagpuri Topic): Trending Nagpuri Dj Remix 2026 - Jh...\n"}
+,{"stream_name":"stderr","time":104.689351097,"data":"2026-10-02 08:27:23,176 [INFO] [17/21] Downloading (Dj Motu Rathia): Old Nagpuri Songs || Nonstop Nagpur...\n"}
+,{"stream_name":"stderr","time":106.053355465,"data":"2026-10-02 08:27:24,540 [INFO] [18/21] Downloading (DJ BINOD PATHALGAON 807): 🌿SARIYA KARIYA NEW NAGPURI DJ REMIX...\n"}
+,{"stream_name":"stderr","time":106.889893437,"data":"2026-10-02 08:27:25,377 [INFO] [19/21] Downloading (Dj Hembram Official 2.0): Dilwa Me Machis // New Nagpuri Dj S...\n"}
+,{"stream_name":"stderr","time":110.060061828,"data":"2026-10-02 08:27:28,547 [INFO] [20/21] Downloading (NAGPURI REMIX HUB): A HAMAR PUNAM RE | New Nagpuri Dj S...\n"}
+,{"stream_name":"stderr","time":121.365042015,"data":"2026-10-02 08:27:39,852 [INFO] [21/21] Downloading (Danger Remix Zone): Vairal Sound Check 😍 To Pain Nebi M...\n"}
+,{"stream_name":"stderr","time":137.624402884,"data":"2026-10-02 08:27:56,111 [INFO] ✅ Successfully downloaded 21 unique tracks from 21 channels.\n"}
+,{"stream_name":"stderr","time":137.624540204,"data":"2026-10-02 08:27:56,112 [INFO] Step 1 Complete: 21 tracks ready.\n"}
+,{"stream_name":"stderr","time":137.624659345,"data":"2026-10-02 08:27:56,112 [INFO] [STEP 2/4] Assembling Nonstop mix with smooth 'Wooosh' transitions...\n"}
+,{"stream_name":"stderr","time":137.624690664,"data":"2026-10-02 08:27:56,112 [INFO] Preparing 21 tracks for seamless Nonstop DJ assembly...\n"}
+,{"stream_name":"stderr","time":137.624750737,"data":"2026-10-02 08:27:56,112 [INFO] 🚀 Processing \u0026 normalizing 21 tracks concurrently (cutting intro 10s, outro 10s, adding 1.5s fades)...\n"}
+,{"stream_name":"stderr","time":137.625929843,"data":"2026-10-02 08:27:56,113 [INFO] [2/21] Processing DJ track: Kit Kiti Kiti Chal Ni Guya Khelab R...\n"}
+,{"stream_name":"stderr","time":137.626872887,"data":"2026-10-02 08:27:56,113 [INFO] [1/21] Processing DJ track: Kabhi Bel Bottom‼️ New Nagpuri Song...\n"}
+,{"stream_name":"stderr","time":137.627314189,"data":"2026-10-02 08:27:56,114 [INFO] [3/21] Processing DJ track: Lakho Tor Followers 🌿New Nagpuri In...\n"}
+,{"stream_name":"stderr","time":137.627744263,"data":"2026-10-02 08:27:56,114 [INFO] [5/21] Processing DJ track: Zinda Jalale gori Nagpuri Dj Song |...\n"}
+,{"stream_name":"stderr","time":137.630313105,"data":"2026-10-02 08:27:56,114 [INFO] [4/21] Processing DJ track: Hay Sona Dila Accident Holak Re ( F...\n"}
+,{"stream_name":"stderr","time":137.630587567,"data":"2026-10-02 08:27:56,115 [INFO] [6/21] Processing DJ track: Fashion Jamana Nagpuri Dj !! Trendi...\n"}
+,{"stream_name":"stderr","time":175.533163988,"data":"2026-10-02 08:28:34,020 [INFO] [7/21] Processing DJ track: Hawa Kiss Diya Nagpuri Song 2026 Ol...\n"}
+,{"stream_name":"stderr","time":176.146127182,"data":"2026-10-02 08:28:34,633 [INFO] [8/21] Processing DJ track: A RE MOR RUNA RANI 🔥 NAGPURI SONG |...\n"}
+,{"stream_name":"stderr","time":178.875662865,"data":"2026-10-02 08:28:37,363 [INFO] [9/21] Processing DJ track: धोखेबाज तोके🌴New Theth Nagpuri Dj R...\n"}
+,{"stream_name":"stderr","time":178.995932336,"data":"2026-10-02 08:28:37,483 [INFO] [10/21] Processing DJ track: माेय जोड़ी करम खेले जावु करमा कुडूख...\n"}
+,{"stream_name":"stderr","time":181.428302978,"data":"2026-10-02 08:28:39,915 [INFO] [11/21] Processing DJ track: Jhumka_Mor_Jhalakdar_Re_New_Nagpuri...\n"}
+,{"stream_name":"stderr","time":181.985580255,"data":"2026-10-02 08:28:40,473 [INFO] [12/21] Processing DJ track: 🌿🌿🌿मोर माटी  कर  कया  🌿🌿🌿NEW  NAGPU...\n"}
+,{"stream_name":"stderr","time":204.868156784,"data":"2026-10-02 08:29:03,355 [INFO] [13/21] Processing DJ track: Pinki Darling Pickup Gadi Me || New...\n"}
+,{"stream_name":"stderr","time":220.136323345,"data":"2026-10-02 08:29:18,623 [INFO] [14/21] Processing DJ track: Piya Piya Bhar le Mor Mangiya पीया ...\n"}
+,{"stream_name":"stderr","time":222.414027526,"data":"2026-10-02 08:29:20,901 [INFO] [15/21] Processing DJ track: Lali Tamater Noni Tor || New Cg Son...\n"}
+,{"stream_name":"stderr","time":224.582544134,"data":"2026-10-02 08:29:23,070 [INFO] [16/21] Processing DJ track: Trending Nagpuri Dj Remix 2026 - Jh...\n"}
+,{"stream_name":"stderr","time":231.582468261,"data":"2026-10-02 08:29:30,069 [INFO] [17/21] Processing DJ track: 🌿SARIYA KARIYA NEW NAGPURI DJ REMIX...\n"}
+,{"stream_name":"stderr","time":240.536499035,"data":"2026-10-02 08:29:39,023 [INFO] [18/21] Processing DJ track: Dilwa Me Machis // New Nagpuri Dj S...\n"}
+,{"stream_name":"stderr","time":240.846165804,"data":"2026-10-02 08:29:39,333 [INFO] [19/21] Processing DJ track: A HAMAR PUNAM RE | New Nagpuri Dj S...\n"}
+,{"stream_name":"stderr","time":248.865188462,"data":"2026-10-02 08:29:47,352 [INFO] [20/21] Processing DJ track: Old Nagpuri Songs || Nonstop Nagpur...\n"}
+,{"stream_name":"stderr","time":262.82454155,"data":"2026-10-02 08:30:01,309 [INFO] [21/21] Processing DJ track: Vairal Sound Check 😍 To Pain Nebi M...\n"}
+,{"stream_name":"stderr","time":307.258365796,"data":"2026-10-02 08:30:45,745 [INFO] ✅ 21 tracks processed with Anti-Fingerprint and DJ fades.\n"}
+,{"stream_name":"stderr","time":307.258733857,"data":"2026-10-02 08:30:45,746 [INFO] Saved tracklist (21 songs) to /kaggle/working/Music-automat/output/tracklist.txt\n"}
+,{"stream_name":"stderr","time":307.258879325,"data":"2026-10-02 08:30:45,746 [INFO] Rendering seamless nonstop DJ mix (smooth transitions, zero gaps)...\n"}
+,{"stream_name":"stderr","time":473.183676563,"data":"2026-10-02 08:33:31,671 [INFO] 🎉 Master Nonstop DJ Mix Ready! Total Duration: 01:31:24 (/kaggle/working/Music-automat/output/nagpuri_master_mix.mp3)\n"}
+,{"stream_name":"stderr","time":473.186313725,"data":"2026-10-02 08:33:31,671 [INFO] Step 2 Complete: Master audio assembled (/kaggle/working/Music-automat/output/nagpuri_master_mix.mp3).\n"}
+,{"stream_name":"stderr","time":473.186337459,"data":"2026-10-02 08:33:31,671 [INFO] [STEP 3/4] Generating Thumbnail Wall and Avee Player Visualizer...\n"}
+,{"stream_name":"stderr","time":473.186341715,"data":"2026-10-02 08:33:31,671 [INFO] Generating 1920x1080 Thumbnail Wall Collage from 21 thumbnails...\n"}
+,{"stream_name":"stderr","time":473.701791409,"data":"2026-10-02 08:33:32,189 [INFO] Thumbnail wall saved at /kaggle/working/Music-automat/output/nagpuri_thumbnail_wall.jpg\n"}
+,{"stream_name":"stderr","time":473.70417061,"data":"2026-10-02 08:33:32,191 [INFO] Extracting bass dynamics and frequency spectrum via FFT...\n"}
+,{"stream_name":"stderr","time":497.129236429,"data":"2026-10-02 08:33:55,616 [INFO] Total video duration: 5484.8s (131741 frames @ 24 fps)\n"}
+,{"stream_name":"stderr","time":497.260028192,"data":"2026-10-02 08:33:55,747 [INFO] 🚀 NVIDIA GPU DETECTED: Using h264_nvenc hardware video encoder!\n"}
+,{"stream_name":"stderr","time":497.260087179,"data":"2026-10-02 08:33:55,747 [INFO] Starting FFmpeg encode: /kaggle/working/Music-automat/output/nagpuri_nonstop_mix.mp4 (Full hardware pipeline)...\n"}
+,{"stream_name":"stderr","time":575.409118096,"data":"2026-10-02 08:35:13,896 [INFO] Render progress: 4% | Speed: 84.9 FPS | ETA: 24.6 min\n"}
+,{"stream_name":"stderr","time":650.820522586,"data":"2026-10-02 08:36:29,307 [INFO] Render progress: 9% | Speed: 86.1 FPS | ETA: 23.0 min\n"}
+,{"stream_name":"stderr","time":730.078519106,"data":"2026-10-02 08:37:48,565 [INFO] Render progress: 14% | Speed: 85.1 FPS | ETA: 21.9 min\n"}
+,{"stream_name":"stderr","time":809.116847653,"data":"2026-10-02 08:39:07,604 [INFO] Render progress: 19% | Speed: 84.6 FPS | ETA: 20.8 min\n"}
+,{"stream_name":"stderr","time":888.926253615,"data":"2026-10-02 08:40:27,413 [INFO] Render progress: 24% | Speed: 84.2 FPS | ETA: 19.6 min\n"}
+,{"stream_name":"stderr","time":968.472729125,"data":"2026-10-02 08:41:46,960 [INFO] Render progress: 29% | Speed: 84.0 FPS | ETA: 18.3 min\n"}
+,{"stream_name":"stderr","time":1045.170254482,"data":"2026-10-02 08:43:03,657 [INFO] Render progress: 34% | Speed: 84.2 FPS | ETA: 16.9 min\n"}
+,{"stream_name":"stderr","time":1125.260791267,"data":"2026-10-02 08:44:23,748 [INFO] Render progress: 39% | Speed: 84.0 FPS | ETA: 15.7 min\n"}
+,{"stream_name":"stderr","time":1202.637104649,"data":"2026-10-02 08:45:41,124 [INFO] Render progress: 44% | Speed: 84.1 FPS | ETA: 14.4 min\n"}
+,{"stream_name":"stderr","time":1284.106784967,"data":"2026-10-02 08:47:02,594 [INFO] Render progress: 49% | Speed: 83.8 FPS | ETA: 13.1 min\n"}
+,{"stream_name":"stderr","time":1365.471123755,"data":"2026-10-02 08:48:23,958 [INFO] Render progress: 54% | Speed: 83.5 FPS | ETA: 11.8 min\n"}
+,{"stream_name":"stderr","time":1441.590113585,"data":"2026-10-02 08:49:40,077 [INFO] Render progress: 59% | Speed: 83.8 FPS | ETA: 10.5 min\n"}
+,{"stream_name":"stderr","time":1521.341893337,"data":"2026-10-02 08:50:59,829 [INFO] Render progress: 64% | Speed: 83.7 FPS | ETA: 9.2 min\n"}
+,{"stream_name":"stderr","time":1600.547984038,"data":"2026-10-02 08:52:19,035 [INFO] Render progress: 69% | Speed: 83.6 FPS | ETA: 7.9 min\n"}
+,{"stream_name":"stderr","time":1681.327621691,"data":"2026-10-02 08:53:39,815 [INFO] Render progress: 74% | Speed: 83.5 FPS | ETA: 6.6 min\n"}
+,{"stream_name":"stderr","time":1758.25250269,"data":"2026-10-02 08:54:56,739 [INFO] Render progress: 79% | Speed: 83.6 FPS | ETA: 5.3 min\n"}
+,{"stream_name":"stderr","time":1836.045245358,"data":"2026-10-02 08:56:14,532 [INFO] Render progress: 84% | Speed: 83.7 FPS | ETA: 3.9 min\n"}
+,{"stream_name":"stderr","time":1914.144690254,"data":"2026-10-02 08:57:32,631 [INFO] Render progress: 89% | Speed: 83.7 FPS | ETA: 2.6 min\n"}
+,{"stream_name":"stderr","time":1994.652768455,"data":"2026-10-02 08:58:53,140 [INFO] Render progress: 94% | Speed: 83.6 FPS | ETA: 1.3 min\n"}
+,{"stream_name":"stderr","time":2073.196980427,"data":"2026-10-02 09:00:11,684 [ERROR] Render error: [Errno 32] Broken pipe\n"}
+,{"stream_name":"stdout","time":2073.197233718,"data":"\n"}
+,{"stream_name":"stdout","time":2073.197247009,"data":"❌ FATAL EXCEPTION: [Errno 32] Broken pipe\n"}
+,{"stream_name":"stderr","time":2073.19993584,"data":"Traceback (most recent call last):\n"}
+,{"stream_name":"stderr","time":2073.200547294,"data":"  File \"/kaggle/src/script.py\", line 138, in \u003cmodule\u003e\n"}
+,{"stream_name":"stderr","time":2073.200563783,"data":"    success = pipeline.run(target_tracks=target_tracks, skip_upload=skip_upload)\n"}
+,{"stream_name":"stderr","time":2073.200569423,"data":"              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n"}
+,{"stream_name":"stderr","time":2073.200576289,"data":"  File \"/kaggle/working/Music-automat/src/pipeline.py\", line 78, in run\n"}
+,{"stream_name":"stderr","time":2073.200608579,"data":"    self.visual_engine.render_visualizer_video(\n"}
+,{"stream_name":"stderr","time":2073.200620043,"data":"  File \"/kaggle/working/Music-automat/src/visual_engine.py\", line 364, in render_visualizer_video\n"}
+,{"stream_name":"stderr","time":2073.200626338,"data":"    raise e\n"}
+,{"stream_name":"stderr","time":2073.200631486,"data":"  File \"/kaggle/working/Music-automat/src/visual_engine.py\", line 337, in render_visualizer_video\n"}
+,{"stream_name":"stderr","time":2073.200636147,"data":"    proc.stdin.write(bg.tobytes())\n"}
+,{"stream_name":"stderr","time":2073.200640837,"data":"BrokenPipeError: [Errno 32] Broken pipe\n"}
+,{"stream_name":"stderr","time":2075.354839505,"data":"/usr/local/lib/python3.12/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":2075.35486936,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":2075.578952004,"data":"/usr/local/lib/python3.12/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":2075.578987861,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":2076.323946626,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
+,{"stream_name":"stderr","time":2077.532606607,"data":"[NbConvertApp] Writing 301166 bytes to __results__.html\n"}
+]
