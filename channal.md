@@ -60,7 +60,8 @@
 | 22 | **DJ UMESH MUNGELI** | `@DJUMESHMUNGELI` | https://www.youtube.com/@DJUMESHMUNGELI |
 | 23 | **Umesh Babu 1** | `@UmeshBabu1-b30` | https://www.youtube.com/@UmeshBabu1-b30 |
 | 24 | **Birendra Bhai 2.0** | `@Birendra_Bhai_2.0` | https://www.youtube.com/@Birendra_Bhai_2.0 |
-## ⚡ चैनल 3: EDM DJ Remix / Mega EDM Collection (41 Channels)
+## ⚡ चैनल 3: Sumit RMX 6.0 - EDM DJ Remix / Mega EDM Collection (41 Channels)
+> **यूट्यूब चैनल:** Sumit RMX 6.0 (@sumitrmx6.0) &bull; https://www.youtube.com/@sumitrmx6.0  
 > **कंटेंट टाइप:** EDM ड्रॉप मिक्स, इलेक्ट्रो डांस, क्लब मैशअप, भोजपुरी ईडीएम, ट्रान्स डांस मिक्स  
 > **अपलोड समय:** रोज़ाना सुबह 06:12 AM IST (00:42 UTC)  
 > **वीडियो सेंटर लोगो:** `assets/My EDM LOGO.png` (नियोन पल्सिंग डिस्क एनीमेशन)  
