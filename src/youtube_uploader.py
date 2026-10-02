@@ -73,42 +73,87 @@ class YouTubeUploader:
         return build("youtube", "v3", credentials=creds)
 
     def generate_metadata(self, tracklist_text: str, total_duration_str: str = "2:30:00") -> Dict[str, Any]:
-        """Generates dynamic, SEO-optimized title, description, and tags."""
+        """
+        Generates dynamic, high-CTR viral title, SEO description with Your Queries,
+        clickable chapters, and trending hashtags customized for each channel.
+        """
         now = datetime.now()
-        month_name = now.strftime("%B")
         year = now.year
+
+        if self.profile == "nagpuri":
+            # Channel: sumit rmx 2.0 (Nagpuri Profile)
+            title = f"New Trending Nagpuri DJ Remix {year} 🔥 Nonstop Nagpuri DJ Song || Theth Nagpuri Dance Mix 💃 Sumit Rmx"
+            
+            description = f"""🎧 NEW TRENDING NAGPURI DJ REMIX {year} - NONSTOP DHAMAKA JUKEBOX!
+Welcome to Sumit Rmx 2.0! Enjoy the most popular and viral Nagpuri DJ Remix songs, non-stop high-energy dance mix with pure 320 kbps HD sound & deep sub-bass boost!
+
+⚡ Audio Specs: 320 kbps HD Master | Sub-Bass Boosted +2.5dB | 1080p Avee Bass Visualizer
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🎵 TRACKLIST & CHAPTERS (CLICK TIMESTAMPS):
+{tracklist_text}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🔎 YOUR QUERIES & TOP SEARCHES:
+• new nagpuri dj remix {year}
+• nonstop nagpuri dj song {year}
+• theth nagpuri dj remix nonstop
+• sumit rmx nagpuri song
+• nagpuri dance mix dj song
+• trending nagpuri dj mashup {year}
+• jharkhandi nagpuri dj competition mix
+• new nagpuri hit song {year}
+• superhit nagpuri nonstop dj
+• nagpuri arkestra dj song
+• purulia nagpuri dj remix
+• nagpuri roadshow dj mix {year}
+• top trending nagpuri dj songs
+• nagpuri nonstop remix jukebox
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🏷️ VIRAL HASHTAGS:
+#nagpuridj #newnagpurisong{year} #nonstopnagpuridj #thethnagpuri #sumitrmx #nagpurisong #nagpuridancemix #jharkhandidj #nagpuridjremix #viralnagpurisong #djremix{year} #nagpurisong{year}
+
+⚠️ DISCLAIMER & FAIR USE:
+All songs and remixes featured in this nonstop mix belong to their respective original creators, artists, and music labels. This mix is created purely for promotional, cultural, and entertainment purposes. If any artist, label, or copyright holder has any concern regarding any track, please contact us and we will promptly resolve it.
+"""
+        else:
+            # Channel: nagpuri non-stop remix 2.0 (Hard Vibration Profile)
+            title = f"HARD VIBRATION DJ REMIX {year} 🔊 Monster Bass Boosted Competition Mix || Nonstop CG & Nagpuri DJ"
+            
+            description = f"""🔊 HARD VIBRATION DJ REMIX {year} - MONSTER SUB-BASS COMPETITION MIX!
+Feel the extreme sub-bass vibration, hard kick drops, and non-stop roadshow power! Tuned for heavy woofers, competition DJ setups, and bass lovers!
+
+⚡ Audio Specs: 320 kbps HD Master | Sub-Bass Boosted +2.5dB | 1080p Avee Bass Visualizer
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🎵 TRACKLIST & CHAPTERS (CLICK TIMESTAMPS):
+{tracklist_text}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🔎 YOUR QUERIES & TOP SEARCHES:
+• hard vibration dj remix {year}
+• nonstop hard bass dj competition mix
+• full bass boosted nagpuri dj song
+• cg hard vibration dj mix
+• monster bass sound check {year}
+• extreme sub bass dj competition
+• speaker phod vibration dj song
+• roadshow dj remix nonstop {year}
+• fl studio hard vibration mix
+• heavy bass nagpuri dj song
+• dj vibration sound test
+• high voltage bass dj remix
+• competition vibration dj song
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🏷️ VIRAL HASHTAGS:
+#hardvibration #hardbassdj #competitiondj #bassboosted #vibrationdj #nonstopdj #soundcheck #speakerblast #dangerbass #cgdjremix #nagpurivibration #djremix{year}
+
+⚠️ DISCLAIMER & FAIR USE:
+All songs and remixes featured in this nonstop mix belong to their respective original creators, artists, and music labels. This mix is created purely for promotional, cultural, and entertainment purposes. If any artist, label, or copyright holder has any concern regarding any track, please contact us and we will promptly resolve it.
+"""
 
         p_settings = self.settings.get("profiles", {}).get(self.profile, {})
         base_tags = p_settings.get("tags", ["dj remix", "nonstop dj"])
-
-        if self.profile == "nagpuri":
-            title = f"NONSTOP NAGPURI DJ REMIX {year} 🔥 {month_name} Dhamaka Dance Mix 💃 New Theth Nagpuri DJ Mashup"
-            desc_intro = f"""🎧 NONSTOP NAGPURI DJ REMIX {year} - THE ULTIMATE DANCE COLLECTION!
-Welcome to the best non-stop Nagpuri DJ Remix playlist featuring the hottest regional tracks of Jharkhand, Bihar & CG!
-
-⚡ High Quality 320 kbps Sound | Full Bass Boosted | Smooth Transitions
-"""
-        else:
-            title = f"HARD VIBRATION DJ REMIX {year} 🔊 Full Bass Boosted Competition Mix 🔥 Nonstop CG & Nagpuri DJ"
-            desc_intro = f"""🔊 HARD VIBRATION DJ REMIX {year} - COMPETITION BASS BLAST!
-Feel the earth-shaking sub-bass and extreme kick vibration in this non-stop competition DJ remix mix!
-
-⚡ Ultra Hard Bass | 320 kbps Audio | Avee Player Bass Reactive Visualizer
-"""
-
-        description = f"""{desc_intro}
-━━━━━━━━━━━━━━━━━━━━━━━━━━
-🎵 TRACKLIST & CHAPTERS:
-{tracklist_text}
-━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-⚠️ DISCLAIMER & CREDITS:
-All songs and remixes featured in this mix are the property of their respective remix artists and creators listed in the tracklist above. 
-This mix is compiled for promotional and entertainment purposes only. 
-If any producer, artist or label has an issue with this upload, please contact us and we will resolve it immediately.
-
-#DJRemix #{self.profile.capitalize()}DJ #NonstopDJ #DJMix{year} #BassBoosted
-"""
 
         return {
             "title": title[:100],

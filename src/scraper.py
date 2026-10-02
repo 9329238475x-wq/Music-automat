@@ -112,10 +112,12 @@ class DJScraper:
                     continue
 
                 # Found the 1 best latest song for this channel! Return immediately (STRICT 1 PER CHANNEL)
+                view_cnt = int(entry.get("view_count") or 0)
                 return {
                     "id": vid_id,
                     "title": title,
                     "duration": duration,
+                    "view_count": view_cnt,
                     "remixer": name,
                     "channel_url": url,
                     "url": f"https://www.youtube.com/watch?v={vid_id}"
@@ -148,8 +150,13 @@ class DJScraper:
                 seen_remixers.add(c["remixer"])
                 unique_candidates.append(c)
 
+        # SORT BY VIEWS DESCENDING: Highest views at the very top (Track 1, 2, 3...)
+        unique_candidates.sort(key=lambda x: x.get("view_count", 0), reverse=True)
+        for rank, c in enumerate(unique_candidates, 1):
+            logger.info(f"Rank #{rank:02d} | Views: {c.get('view_count', 0):,} | ({c['remixer']}): {c['title'][:40]}")
+
         logger.info(
-            f"✅ Found {len(unique_candidates)} unique fresh tracks from {len(unique_candidates)} different channels!"
+            f"✅ Found {len(unique_candidates)} unique fresh tracks sorted by highest views from {len(unique_candidates)} channels!"
         )
         return unique_candidates
 
@@ -228,8 +235,10 @@ class DJScraper:
                     downloaded_tracks.append(res)
                     self.history.append(res["id"])
 
+        # Preserve strict descending order by views so top viral hits play first!
+        downloaded_tracks.sort(key=lambda x: x.get("view_count", 0), reverse=True)
         self._save_history()
-        logger.info(f"✅ Successfully downloaded {len(downloaded_tracks)} unique tracks from {len(downloaded_tracks)} channels.")
+        logger.info(f"✅ Successfully downloaded {len(downloaded_tracks)} unique tracks (ordered by views: highest to lowest).")
         return downloaded_tracks
 
 
