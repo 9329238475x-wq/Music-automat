@@ -1,35 +1,23 @@
-name: Run Autonomous DJ Remix Pipeline
+name: "🔊 Channel 2 - Hard Vibration 2.0 (Daily 07:00 PM)"
 
 on:
   schedule:
-    # 09:06 AM IST (03:36 UTC) - Daily Morning Nagpuri DJ Mix (sumit rmx 2.0)
-    - cron: '36 3 * * *'
-    # 07:00 PM IST (13:30 UTC) - Daily Evening Hard Vibration DJ Mix (nagpuri non-stop remix 2.0)
+    # 07:00 PM IST = 13:30 UTC
     - cron: '30 13 * * *'
-
   workflow_dispatch:
     inputs:
-      profile:
-        description: 'Choose DJ Channel Profile'
-        required: true
-        default: 'nagpuri'
-        type: choice
-        options:
-          - nagpuri
-          - vibration
       target_tracks:
-        description: 'Number of Tracks to Include'
-        required: true
+        description: 'Number of Tracks'
+        required: false
         default: '25'
-        type: string
       skip_upload:
-        description: 'Skip YouTube Upload (Test Render Only)'
+        description: 'Skip YouTube Upload (Test Only)'
         required: false
         default: false
         type: boolean
 
 jobs:
-  launch-kaggle-production:
+  launch-vibration:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -50,17 +38,16 @@ jobs:
           echo '{"username":"${{ secrets.KAGGLE_USERNAME }}","key":"${{ secrets.KAGGLE_KEY }}"}' > ~/.kaggle/kaggle.json
           chmod 600 ~/.kaggle/kaggle.json
 
-      - name: Deploy & Trigger Kaggle Autonomous Runner
+      - name: Deploy & Trigger Vibration Production
         env:
           KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
           KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
-          YOUTUBE_REFRESH_TOKEN_NAGPURI: ${{ secrets.YOUTUBE_REFRESH_TOKEN_NAGPURI }}
           YOUTUBE_REFRESH_TOKEN_VIBRATION: ${{ secrets.YOUTUBE_REFRESH_TOKEN_VIBRATION }}
           ALERT_GMAIL_APP_PASS: ${{ secrets.ALERT_GMAIL_APP_PASS }}
-          DJ_PROFILE: ${{ github.event.inputs.profile }}
-          DJ_TARGET_TRACKS: ${{ github.event.inputs.target_tracks }}
-          DJ_SKIP_UPLOAD: ${{ github.event.inputs.skip_upload }}
+          DJ_PROFILE: vibration
+          DJ_TARGET_TRACKS: ${{ inputs.target_tracks }}
+          DJ_SKIP_UPLOAD: ${{ inputs.skip_upload }}
         run: |
           python push_to_kaggle.py
