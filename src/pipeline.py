@@ -71,7 +71,7 @@ class DJProductionPipeline:
         logger.info("[STEP 3/4] Generating Thumbnail Wall and Avee Player Visualizer...")
         thumb_paths = [t.get("thumb_path") for t in tracks if t.get("thumb_path")]
         bg_wall_path = os.path.join(self.output_dir, f"{self.profile}_thumbnail_wall.jpg")
-        self.visual_engine.create_thumbnail_wall(thumb_paths, out_path=bg_wall_path, darkness=0.08)
+        self.visual_engine.create_thumbnail_wall(thumb_paths, out_path=bg_wall_path, darkness=0.25)
 
         video_out_name = f"{self.profile}_nonstop_mix.mp4"
         final_video_path = os.path.join(self.output_dir, video_out_name)
