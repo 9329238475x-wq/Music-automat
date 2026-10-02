@@ -95,7 +95,7 @@
 | 25 | **DjGolu BaBu Kadipur No.1** | `@djgolubabukadipurno.l` | https://www.youtube.com/@djgolubabukadipurno.l |
 | 26 | **AA music** | `@AAmusic-j6v` | https://www.youtube.com/@AAmusic-j6v |
 | 27 | **Dvj Ritesh Official** | `@DvjRiteshTurdagOfficial` | https://www.youtube.com/@DvjRiteshTurdagOfficial |
-| 28 | **Dj Ritesh TurdagTM( Official )** | `@DjRiteshTurdagOfficialTM` | https://www.youtube.com/@DjRiteshTurdagOfficialTM |
+| 28 | **Dj Ritesh TurdagTM( Official ) [Moved to Nagpuri Profile]** | `@DjRiteshTurdagOfficialTM` | https://www.youtube.com/@DjRiteshTurdagOfficialTM |
 | 29 | **it's sm official TM** | `@itssmofficialTM` | https://www.youtube.com/@itssmofficialTM |
 | 30 | **Dj RkM Bhadohi** | `@DjRkMBhadohi` | https://www.youtube.com/@DjRkMBhadohi |
 | 31 | **DJ Pushpa Jharkhand** | `@djpushpajharkhand` | https://www.youtube.com/@djpushpajharkhand |

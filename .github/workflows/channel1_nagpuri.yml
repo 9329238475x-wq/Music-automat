@@ -9,7 +9,7 @@ on:
       target_tracks:
         description: 'Number of Tracks'
         required: false
-        default: '20'
+        default: '21'
       skip_upload:
         description: 'Skip YouTube Upload (Test Only)'
         required: false
@@ -47,7 +47,7 @@ jobs:
           YOUTUBE_REFRESH_TOKEN_NAGPURI: ${{ secrets.YOUTUBE_REFRESH_TOKEN_NAGPURI }}
           ALERT_GMAIL_APP_PASS: ${{ secrets.ALERT_GMAIL_APP_PASS }}
           DJ_PROFILE: nagpuri
-          DJ_TARGET_TRACKS: ${{ inputs.target_tracks || '20' }}
+          DJ_TARGET_TRACKS: ${{ inputs.target_tracks || '21' }}
           DJ_SKIP_UPLOAD: ${{ inputs.skip_upload }}
         run: |
           python push_to_kaggle.py
