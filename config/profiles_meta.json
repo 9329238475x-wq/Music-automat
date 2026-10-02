@@ -1,0 +1,35 @@
+[
+  {
+    "id": "nagpuri",
+    "name": "Sumit Rmx 2.0 (Nagpuri)",
+    "tag": "नागपुरी DJ Remix",
+    "schedule": "09:06 AM IST",
+    "color": "cyan",
+    "accent_hex": "#00e5ff",
+    "instructions": "रीजनल नागपुरी, ठेठ DJ, शादी-पार्टी डांस रिमिक्स (नॉर्मल बास) - 20 सोर्स चैनल्स से ताज़ा ट्रैक लेकर 320 kbps HD मिक्स बनाना।",
+    "logo_file": "assets/logo_nagpuri.png",
+    "is_default": true
+  },
+  {
+    "id": "vibration",
+    "name": "Nagpuri Non-Stop Remix 2.0 (Vibration)",
+    "tag": "हार्ड वाइब्रेशन DJ",
+    "schedule": "07:00 PM IST",
+    "color": "pink",
+    "accent_hex": "#ff2a85",
+    "instructions": "कंपटीशन हार्ड वाइब्रेशन, बास बूस्टेड, छत्तीसगढ़ी / नागपुरी / भोजपुरी डीजे मिक्स (24 सोर्स चैनल्स) - हेवी वूफर और डीजे कंपटीशन लवर्स के लिए।",
+    "logo_file": "assets/logo_vibration.png",
+    "is_default": true
+  },
+  {
+    "id": "edm",
+    "name": "EDM DJ Remix (Mega EDM Collection)",
+    "tag": "EDM Drop Mix",
+    "schedule": "06:12 AM IST",
+    "color": "purple",
+    "accent_hex": "#d200ff",
+    "instructions": "EDM ड्रॉप मिक्स, इलेक्ट्रो डांस, क्लब मैशअप, भोजपुरी ईडीएम, ट्रान्स डांस मिक्स (41 सोर्स चैनल्स) - सेंटर में 'My EDM LOGO.png' एनीमेशन।",
+    "logo_file": "assets/My EDM LOGO.png",
+    "is_default": true
+  }
+]

@@ -3,21 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Music-Automat | YouTube Channel Accounts</title>
+    <title>Music-Automat | Multi-Channel YouTube Studio Hub</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-dark: #0a0c14;
-            --card-bg: rgba(18, 22, 36, 0.75);
+            --bg-dark: #06080e;
+            --bg-elevated: #0d121c;
+            --card-bg: rgba(16, 22, 36, 0.78);
             --card-border: rgba(255, 255, 255, 0.08);
+            --card-hover-border: rgba(255, 255, 255, 0.18);
             --neon-cyan: #00e5ff;
             --neon-pink: #ff2a85;
+            --neon-purple: #d200ff;
             --neon-gold: #ffb800;
             --neon-green: #00ff88;
-            --text-main: #f0f4fc;
+            --neon-orange: #ff6b00;
+            --text-main: #f3f6fc;
             --text-muted: #8b98b5;
+            --text-dim: #5c6882;
+            --radius-lg: 24px;
+            --radius-md: 16px;
+            --radius-sm: 10px;
         }
 
         * {
@@ -30,18 +38,20 @@
         body {
             background-color: var(--bg-dark);
             background-image: 
-                radial-gradient(circle at 15% 15%, rgba(0, 229, 255, 0.08) 0%, transparent 40%),
-                radial-gradient(circle at 85% 85%, rgba(255, 42, 133, 0.08) 0%, transparent 40%);
+                radial-gradient(circle at 10% 10%, rgba(0, 229, 255, 0.07) 0%, transparent 40%),
+                radial-gradient(circle at 90% 20%, rgba(210, 0, 255, 0.08) 0%, transparent 45%),
+                radial-gradient(circle at 50% 90%, rgba(255, 42, 133, 0.06) 0%, transparent 50%);
+            background-attachment: fixed;
             color: var(--text-main);
             min-height: 100vh;
-            padding: 40px 20px;
+            padding: 40px 24px 80px 24px;
             display: flex;
             justify-content: center;
         }
 
         .container {
             width: 100%;
-            max-width: 1100px;
+            max-width: 1200px;
         }
 
         /* Top Header */
@@ -49,35 +59,43 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 35px;
-            padding-bottom: 25px;
+            margin-bottom: 32px;
+            padding-bottom: 24px;
             border-bottom: 1px solid var(--card-border);
+            flex-wrap: wrap;
+            gap: 20px;
         }
 
         .logo-area {
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 18px;
         }
 
         .logo-badge {
-            width: 54px;
-            height: 54px;
-            border-radius: 16px;
-            background: linear-gradient(135deg, var(--neon-cyan), var(--neon-pink));
+            width: 58px;
+            height: 58px;
+            border-radius: 18px;
+            background: linear-gradient(135deg, #00e5ff 0%, #d200ff 50%, #ff2a85 100%);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 26px;
-            box-shadow: 0 0 25px rgba(0, 229, 255, 0.35);
+            font-size: 28px;
+            box-shadow: 0 0 30px rgba(0, 229, 255, 0.35);
+            animation: pulse-glow 4s ease-in-out infinite alternate;
+        }
+
+        @keyframes pulse-glow {
+            0% { box-shadow: 0 0 20px rgba(0, 229, 255, 0.3); }
+            100% { box-shadow: 0 0 35px rgba(210, 0, 255, 0.45); }
         }
 
         .logo-text h1 {
             font-family: 'Outfit', sans-serif;
-            font-size: 26px;
-            font-weight: 700;
+            font-size: 28px;
+            font-weight: 800;
             letter-spacing: -0.5px;
-            background: linear-gradient(to right, #fff, #b9c7e2);
+            background: linear-gradient(to right, #ffffff, #c2d1ed);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
@@ -85,20 +103,30 @@
         .logo-text p {
             font-size: 13px;
             color: var(--text-muted);
-            margin-top: 2px;
+            margin-top: 3px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 14px;
         }
 
         .badge-live {
-            background: rgba(0, 255, 136, 0.12);
-            border: 1px solid rgba(0, 255, 136, 0.3);
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid rgba(0, 255, 136, 0.25);
             color: var(--neon-green);
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 12px;
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-size: 13px;
             font-weight: 600;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 9px;
+            backdrop-filter: blur(10px);
         }
 
         .dot-pulse {
@@ -106,197 +134,345 @@
             height: 8px;
             background: var(--neon-green);
             border-radius: 50%;
+            box-shadow: 0 0 10px var(--neon-green);
             animation: pulse 1.5s infinite;
         }
 
         @keyframes pulse {
             0% { transform: scale(0.9); opacity: 0.7; }
-            50% { transform: scale(1.3); opacity: 1; box-shadow: 0 0 10px var(--neon-green); }
+            50% { transform: scale(1.3); opacity: 1; }
             100% { transform: scale(0.9); opacity: 0.7; }
         }
 
-        /* Timing Banner */
-        .schedule-bar {
-            background: rgba(22, 28, 48, 0.6);
-            backdrop-filter: blur(16px);
-            border: 1px solid var(--card-border);
-            border-radius: 20px;
-            padding: 22px 28px;
+        /* Prominent + Add Channel Button */
+        .btn-add-channel {
+            background: linear-gradient(135deg, #00e5ff 0%, #a855f7 50%, #ff2a85 100%);
+            color: #ffffff;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 14px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 8px 25px rgba(168, 85, 247, 0.35);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            letter-spacing: 0.2px;
+        }
+
+        .btn-add-channel:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 12px 30px rgba(0, 229, 255, 0.45);
+        }
+
+        .btn-add-channel svg {
+            transition: transform 0.3s ease;
+        }
+
+        .btn-add-channel:hover svg {
+            transform: rotate(90deg);
+        }
+
+        /* KPI / Stats Overview Row */
+        .kpi-row {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 18px;
             margin-bottom: 35px;
         }
 
-        .schedule-item {
+        .kpi-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-md);
+            padding: 20px 22px;
             display: flex;
             align-items: center;
             gap: 16px;
+            transition: border-color 0.25s ease;
         }
 
-        .schedule-icon {
+        .kpi-card:hover {
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .kpi-icon {
             width: 48px;
             height: 48px;
-            border-radius: 12px;
+            border-radius: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 22px;
+            flex-shrink: 0;
         }
 
-        .icon-morning {
-            background: rgba(255, 184, 0, 0.12);
-            border: 1px solid rgba(255, 184, 0, 0.3);
-            color: var(--neon-gold);
-        }
-
-        .icon-evening {
-            background: rgba(255, 42, 133, 0.12);
-            border: 1px solid rgba(255, 42, 133, 0.3);
-            color: var(--neon-pink);
-        }
-
-        .schedule-details h4 {
-            font-size: 13px;
+        .kpi-details h4 {
+            font-size: 12px;
+            font-weight: 600;
             color: var(--text-muted);
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
 
-        .schedule-details .time-text {
-            font-size: 19px;
+        .kpi-details .kpi-val {
+            font-family: 'Outfit', sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-top: 3px;
+        }
+
+        /* Section Heading */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 20px;
             font-weight: 700;
             color: #fff;
-            margin-top: 3px;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
         }
 
-        .badge-ist {
-            font-size: 11px;
-            background: rgba(255, 255, 255, 0.1);
-            padding: 2px 7px;
-            border-radius: 6px;
-            color: #ccc;
+        .section-subtitle {
+            font-size: 13px;
+            color: var(--text-muted);
         }
 
-        /* Channel Cards Grid */
+        /* Dynamic Channels Grid */
         .channels-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
             gap: 24px;
-            margin-bottom: 35px;
+            margin-bottom: 40px;
         }
 
         .channel-card {
             background: var(--card-bg);
             backdrop-filter: blur(20px);
             border: 1px solid var(--card-border);
-            border-radius: 24px;
-            padding: 30px;
-            position: relative;
-            transition: all 0.3s ease;
+            border-radius: var(--radius-lg);
+            padding: 26px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .channel-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--accent-gradient, linear-gradient(90deg, #00e5ff, #d200ff));
+            opacity: 0.8;
         }
 
         .channel-card:hover {
-            border-color: rgba(255, 255, 255, 0.18);
-            transform: translateY(-3px);
-            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4);
+            border-color: var(--card-hover-border);
+            transform: translateY(-4px);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
         }
 
         .card-top {
             display: flex;
             justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 24px;
+            align-items: center;
+            margin-bottom: 20px;
         }
 
         .profile-tag {
             font-size: 11px;
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 0.8px;
             padding: 5px 12px;
             border-radius: 20px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.12);
         }
 
-        .tag-nagpuri {
-            background: rgba(0, 229, 255, 0.12);
-            color: var(--neon-cyan);
-            border: 1px solid rgba(0, 229, 255, 0.3);
-        }
-
-        .tag-vibration {
-            background: rgba(255, 42, 133, 0.12);
-            color: var(--neon-pink);
-            border: 1px solid rgba(255, 42, 133, 0.3);
+        .status-pill {
+            font-size: 12px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
         .channel-info {
             display: flex;
             align-items: center;
-            gap: 18px;
-            margin-bottom: 24px;
+            gap: 16px;
+            margin-bottom: 20px;
         }
 
         .channel-avatar {
-            width: 72px;
-            height: 72px;
+            width: 66px;
+            height: 66px;
             border-radius: 50%;
-            background: #1b2138;
+            background: #151b2c;
             border: 2px solid var(--card-border);
             object-fit: cover;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 30px;
+            font-size: 28px;
+            flex-shrink: 0;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .channel-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
         }
 
         .channel-meta h3 {
-            font-size: 20px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 19px;
             font-weight: 700;
-            color: #fff;
+            color: #ffffff;
+            line-height: 1.3;
         }
 
         .channel-meta p {
             font-size: 13px;
             color: var(--text-muted);
-            margin-top: 4px;
+            margin-top: 3px;
+            font-family: monospace;
+        }
+
+        .channel-schedule-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            color: #d1d9e6;
+            margin-top: 6px;
         }
 
         .channel-stats {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            background: rgba(10, 12, 20, 0.5);
-            padding: 16px;
-            border-radius: 14px;
-            margin-bottom: 24px;
+            gap: 10px;
+            background: rgba(8, 11, 18, 0.6);
+            padding: 12px 14px;
+            border-radius: var(--radius-sm);
+            margin-bottom: 18px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
         }
 
         .stat-box .stat-val {
-            font-size: 17px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 16px;
             font-weight: 700;
-            color: #fff;
+            color: #ffffff;
         }
 
         .stat-box .stat-lbl {
             font-size: 11px;
-            color: var(--text-muted);
+            color: var(--text-dim);
             margin-top: 2px;
         }
 
-        /* Buttons */
+        /* Channel Instructions Box */
+        .instruction-box {
+            background: rgba(10, 14, 24, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: var(--radius-sm);
+            padding: 14px;
+            margin-bottom: 20px;
+        }
+
+        .instruction-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .instruction-label {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .instruction-textarea {
+            width: 100%;
+            background: rgba(5, 7, 12, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            color: #e2e8f0;
+            font-size: 12px;
+            line-height: 1.5;
+            padding: 10px;
+            resize: vertical;
+            min-height: 58px;
+            transition: border-color 0.2s;
+        }
+
+        .instruction-textarea:focus {
+            outline: none;
+            border-color: var(--neon-cyan);
+        }
+
+        .btn-save-instruction {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #e2e8f0;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-save-instruction:hover {
+            background: rgba(0, 229, 255, 0.15);
+            border-color: rgba(0, 229, 255, 0.4);
+            color: var(--neon-cyan);
+        }
+
+        /* Action Buttons */
+        .card-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
         .btn-connect {
             width: 100%;
-            padding: 14px 20px;
-            border-radius: 14px;
-            font-size: 14px;
-            font-weight: 600;
+            padding: 13px 18px;
+            border-radius: var(--radius-sm);
+            font-size: 13px;
+            font-weight: 700;
             cursor: pointer;
             border: none;
             display: flex;
@@ -308,309 +484,799 @@
         }
 
         .btn-google {
-            background: #fff;
-            color: #111;
+            background: #ffffff;
+            color: #111827;
         }
 
         .btn-google:hover {
-            background: #f0f0f0;
-            box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2);
+            background: #f1f5f9;
+            box-shadow: 0 4px 20px rgba(255, 255, 255, 0.25);
+            transform: translateY(-1px);
         }
 
         .btn-disconnect {
-            background: rgba(255, 75, 75, 0.12);
+            background: rgba(255, 75, 75, 0.1);
             color: #ff5e5e;
             border: 1px solid rgba(255, 75, 75, 0.25);
         }
 
         .btn-disconnect:hover {
             background: rgba(255, 75, 75, 0.2);
+            color: #ff7878;
+        }
+
+        .btn-row {
+            display: flex;
+            gap: 8px;
         }
 
         .btn-test {
-            margin-top: 10px;
-            width: 100%;
-            padding: 12px;
-            border-radius: 12px;
-            font-size: 13px;
+            flex: 1;
+            padding: 11px;
+            border-radius: var(--radius-sm);
+            font-size: 12px;
             font-weight: 600;
             cursor: pointer;
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid var(--card-border);
             color: #cbd5e1;
             transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
         }
 
         .btn-test:hover {
             background: rgba(255, 255, 255, 0.1);
-            color: #fff;
+            color: #ffffff;
+        }
+
+        .btn-delete-card {
+            padding: 11px 14px;
+            border-radius: var(--radius-sm);
+            font-size: 12px;
+            background: rgba(255, 75, 75, 0.08);
+            border: 1px solid rgba(255, 75, 75, 0.2);
+            color: #ff6b6b;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-delete-card:hover {
+            background: rgba(255, 75, 75, 0.25);
+            color: #ff8585;
         }
 
         /* Secrets Helper Box */
         .secrets-box {
             background: var(--card-bg);
+            backdrop-filter: blur(16px);
             border: 1px solid var(--card-border);
-            border-radius: 20px;
-            padding: 24px;
+            border-radius: var(--radius-lg);
+            padding: 28px;
+            margin-top: 10px;
         }
 
         .secrets-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 16px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
         .secrets-header h3 {
-            font-size: 16px;
-            font-weight: 600;
+            font-family: 'Outfit', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         .token-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: rgba(0, 0, 0, 0.35);
-            padding: 12px 16px;
-            border-radius: 10px;
-            margin-bottom: 10px;
+            background: rgba(6, 9, 15, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 14px 18px;
+            border-radius: var(--radius-sm);
+            margin-bottom: 12px;
             font-size: 13px;
             font-family: monospace;
+            gap: 16px;
         }
 
         .token-label {
             color: var(--neon-cyan);
-            font-weight: 600;
+            font-weight: 700;
+            white-space: nowrap;
         }
 
         .token-val {
-            color: #a0aec0;
-            max-width: 450px;
+            color: #94a3b8;
+            max-width: 550px;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
+            flex: 1;
         }
 
         .btn-copy {
             background: rgba(255, 255, 255, 0.08);
             border: 1px solid rgba(255, 255, 255, 0.15);
             color: #fff;
-            padding: 5px 12px;
-            border-radius: 6px;
-            cursor: pointer;
+            padding: 6px 16px;
+            border-radius: 8px;
             font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
         }
 
         .btn-copy:hover {
-            background: rgba(255, 255, 255, 0.2);
+            background: var(--neon-cyan);
+            color: #000;
+            border-color: var(--neon-cyan);
+            box-shadow: 0 0 12px rgba(0, 229, 255, 0.4);
+        }
+
+        /* ─── MODAL STYLES ─── */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(4, 6, 10, 0.85);
+            backdrop-filter: blur(12px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            animation: fadeIn 0.25s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: var(--bg-elevated);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            border-radius: var(--radius-lg);
+            width: 100%;
+            max-width: 560px;
+            padding: 32px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7);
+            position: relative;
+            transform: scale(0.95);
+            animation: modalScale 0.25s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+        }
+
+        @keyframes modalScale {
+            to { transform: scale(1); }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .modal-header h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 22px;
+            font-weight: 700;
+            background: linear-gradient(to right, #ffffff, #a5b4fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .btn-close-modal {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 22px;
+            cursor: pointer;
+            padding: 4px;
+            line-height: 1;
+            transition: color 0.2s;
+        }
+
+        .btn-close-modal:hover {
+            color: #ffffff;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #d1d5db;
+            margin-bottom: 7px;
+        }
+
+        .form-control {
+            width: 100%;
+            background: rgba(10, 14, 22, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius-sm);
+            padding: 12px 14px;
+            color: #ffffff;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--neon-cyan);
+            box-shadow: 0 0 10px rgba(0, 229, 255, 0.2);
+        }
+
+        .color-palette {
+            display: flex;
+            gap: 12px;
+            margin-top: 6px;
+        }
+
+        .color-swatch {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+
+        .color-swatch:hover {
+            transform: scale(1.15);
+        }
+
+        .color-swatch.active {
+            border-color: #ffffff;
+            transform: scale(1.2);
+            box-shadow: 0 0 14px currentColor;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 28px;
+        }
+
+        .btn-modal-primary {
+            flex: 1;
+            padding: 14px;
+            background: linear-gradient(135deg, #00e5ff 0%, #a855f7 50%, #ff2a85 100%);
+            border: none;
+            border-radius: var(--radius-sm);
+            color: #fff;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.25s;
+        }
+
+        .btn-modal-primary:hover {
+            box-shadow: 0 6px 20px rgba(168, 85, 247, 0.4);
+            transform: translateY(-1px);
+        }
+
+        .btn-modal-secondary {
+            padding: 14px 20px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: var(--radius-sm);
+            color: #e2e8f0;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-modal-secondary:hover {
+            background: rgba(255, 255, 255, 0.14);
+        }
+
+        /* Toast Container */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: rgba(13, 18, 30, 0.95);
+            border: 1px solid rgba(0, 255, 136, 0.4);
+            color: #ffffff;
+            padding: 14px 22px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 10000;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+            pointer-events: none;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Header -->
+        <!-- Top Header -->
         <header class="header">
             <div class="logo-area">
-                <div class="logo-badge">🎧</div>
+                <div class="logo-badge">🎛️</div>
                 <div class="logo-text">
-                    <h1>Music-Automat Hub</h1>
-                    <p>24/7 Autonomous YouTube DJ Channel Manager</p>
+                    <h1>Music-Automat Studio</h1>
+                    <p>⚡ Multi-Channel Cloud DJ Remix Pipeline & Account Hub</p>
                 </div>
             </div>
-            <div class="badge-live">
-                <div class="dot-pulse"></div>
-                Cloud Auto-Schedule Active
+
+            <div class="header-actions">
+                <div class="badge-live">
+                    <span class="dot-pulse"></span>
+                    <span>Cloud Pipeline Ready</span>
+                </div>
+                <!-- Prominent + Add Channel Button -->
+                <button class="btn-add-channel" id="openAddModalBtn" onclick="openModal()">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                    <span>+ नया चैनल जोड़ें (Add Channel)</span>
+                </button>
             </div>
         </header>
 
-        <!-- Scheduled Times Bar -->
-        <div class="schedule-bar">
-            <div class="schedule-item">
-                <div class="schedule-icon icon-morning">☀️</div>
-                <div class="schedule-details">
-                    <h4>सुबह का स्लॉट (Morning Mix)</h4>
-                    <div class="time-text">09:06 AM <span class="badge-ist">IST</span> &bull; नागपुरी रीमिक्स</div>
+        <!-- KPI / Stats Row -->
+        <div class="kpi-row">
+            <div class="kpi-card">
+                <div class="kpi-icon" style="background: rgba(0, 229, 255, 0.12); color: var(--neon-cyan);">📻</div>
+                <div class="kpi-details">
+                    <h4>कुल कॉन्फ़िगर चैनल</h4>
+                    <div class="kpi-val" id="kpi-total-channels">3 Channels</div>
                 </div>
             </div>
-            <div class="schedule-item">
-                <div class="schedule-icon icon-evening">🌙</div>
-                <div class="schedule-details">
-                    <h4>शाम का स्लॉट (Evening Mix)</h4>
-                    <div class="time-text">07:00 PM <span class="badge-ist">IST</span> &bull; हार्ड वाइब्रेशन रीमिक्स</div>
+
+            <div class="kpi-card">
+                <div class="kpi-icon" style="background: rgba(0, 255, 136, 0.12); color: var(--neon-green);">🟢</div>
+                <div class="kpi-details">
+                    <h4>कनेक्टेड यूट्यूब खाते</h4>
+                    <div class="kpi-val" id="kpi-connected-accounts">Checking...</div>
+                </div>
+            </div>
+
+            <div class="kpi-card">
+                <div class="kpi-icon" style="background: rgba(255, 184, 0, 0.12); color: var(--neon-gold);">⏰</div>
+                <div class="kpi-details">
+                    <h4>ऑटो-अपलोड शेड्यूल</h4>
+                    <div class="kpi-val" style="font-size: 15px; font-weight: 600;">06:12 AM | 09:06 AM | 07:00 PM</div>
+                </div>
+            </div>
+
+            <div class="kpi-card">
+                <div class="kpi-icon" style="background: rgba(210, 0, 255, 0.12); color: var(--neon-purple);">⚡</div>
+                <div class="kpi-details">
+                    <h4>रेंडर इंजन</h4>
+                    <div class="kpi-val" style="font-size: 15px; color: var(--neon-cyan);">Dual T4 GPU (Kaggle Cloud)</div>
                 </div>
             </div>
         </div>
 
-        <!-- Channel Cards Grid -->
-        <div class="channels-grid">
-            <!-- Channel 1: Nagpuri -->
-            <div class="channel-card">
-                <div>
-                    <div class="card-top">
-                        <span class="profile-tag tag-nagpuri">चैनल 1 &bull; नागपुरी नॉर्मल DJ</span>
-                        <span id="nagpuri-status-badge" style="font-size: 12px; color: var(--text-muted);">चेक हो रहा है...</span>
-                    </div>
-
-                    <div class="channel-info">
-                        <div class="channel-avatar" id="nagpuri-avatar">📻</div>
-                        <div class="channel-meta">
-                            <h3 id="nagpuri-title">Not Connected</h3>
-                            <p id="nagpuri-handle">@nagpuri_channel</p>
-                        </div>
-                    </div>
-
-                    <div class="channel-stats">
-                        <div class="stat-box">
-                            <div class="stat-val" id="nagpuri-subs">-</div>
-                            <div class="stat-lbl">Subscribers</div>
-                        </div>
-                        <div class="stat-box">
-                            <div class="stat-val" id="nagpuri-videos">-</div>
-                            <div class="stat-lbl">Videos</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="nagpuri-actions">
-                    <a href="/api/auth/login?profile=nagpuri" class="btn-connect btn-google" id="nagpuri-btn">
-                        <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.8-2.4 3.67v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.16z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.26v3.15C3.25 21.36 7.31 24 12 24z"/><path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.26C.46 8.16 0 9.99 0 12s.46 3.84 1.26 5.42l4.02-3.15z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.25 2.64 1.26 6.58l4.02 3.15c.95-2.83 3.6-4.93 6.72-4.93z"/></svg>
-                        Connect Nagpuri Channel
-                    </a>
-                    <button class="btn-test" onclick="triggerTest('nagpuri')">▶️ Test Production Run (Nagpuri)</button>
-                </div>
+        <!-- Section Title -->
+        <div class="section-header">
+            <div>
+                <h2 class="section-title">📺 आपके सभी यूट्यूब चैनल (Active Channels)</h2>
+                <p class="section-subtitle">किसी भी चैनल पर लॉगिन करें, नए चैनल जोड़ें और हर चैनल के लिए खास निर्देश (Instructions) सेट करें</p>
             </div>
+        </div>
 
-            <!-- Channel 2: Vibration -->
-            <div class="channel-card">
-                <div>
-                    <div class="card-top">
-                        <span class="profile-tag tag-vibration">चैनल 2 &bull; हार्ड वाइब्रेशन DJ</span>
-                        <span id="vibration-status-badge" style="font-size: 12px; color: var(--text-muted);">चेक हो रहा है...</span>
-                    </div>
-
-                    <div class="channel-info">
-                        <div class="channel-avatar" id="vibration-avatar">🔊</div>
-                        <div class="channel-meta">
-                            <h3 id="vibration-title">Not Connected</h3>
-                            <p id="vibration-handle">@vibration_channel</p>
-                        </div>
-                    </div>
-
-                    <div class="channel-stats">
-                        <div class="stat-box">
-                            <div class="stat-val" id="vibration-subs">-</div>
-                            <div class="stat-lbl">Subscribers</div>
-                        </div>
-                        <div class="stat-box">
-                            <div class="stat-val" id="vibration-videos">-</div>
-                            <div class="stat-lbl">Videos</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="vibration-actions">
-                    <a href="/api/auth/login?profile=vibration" class="btn-connect btn-google" id="vibration-btn">
-                        <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.8-2.4 3.67v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.16z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.26v3.15C3.25 21.36 7.31 24 12 24z"/><path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.26C.46 8.16 0 9.99 0 12s.46 3.84 1.26 5.42l4.02-3.15z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.25 2.64 1.26 6.58l4.02 3.15c.95-2.83 3.6-4.93 6.72-4.93z"/></svg>
-                        Connect Vibration Channel
-                    </a>
-                    <button class="btn-test" onclick="triggerTest('vibration')">▶️ Test Production Run (Vibration)</button>
-                </div>
-            </div>
+        <!-- Dynamic Channels Grid -->
+        <div class="channels-grid" id="channelsGrid">
+            <!-- Dynamically populated via JS -->
+            <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-muted);">चैनल लोड हो रहे हैं...</div>
         </div>
 
         <!-- GitHub Secrets Quick Copy Area -->
         <div class="secrets-box">
             <div class="secrets-header">
-                <h3>🔑 GitHub Cloud Secrets Helper (Kaggle Automation)</h3>
-                <span style="font-size: 12px; color: var(--text-muted);">लॉगिन के बाद ये टोकन GitHub Secrets में पेस्ट करें</span>
+                <h3>🔑 GitHub Cloud Secrets Helper (Kaggle Auto-Upload)</h3>
+                <span style="font-size: 12px; color: var(--text-muted);">लॉगिन के बाद संबंधित टोकन कॉपी करके GitHub Secrets में पेस्ट करें</span>
             </div>
 
-            <div class="token-row">
-                <span class="token-label">YOUTUBE_REFRESH_TOKEN_NAGPURI</span>
-                <span class="token-val" id="secret-nagpuri-token">Not generated yet</span>
-                <button class="btn-copy" onclick="copyToken('secret-nagpuri-token')">Copy</button>
-            </div>
-
-            <div class="token-row">
-                <span class="token-label">YOUTUBE_REFRESH_TOKEN_VIBRATION</span>
-                <span class="token-val" id="secret-vibration-token">Not generated yet</span>
-                <button class="btn-copy" onclick="copyToken('secret-vibration-token')">Copy</button>
+            <div id="secretsTokensList">
+                <!-- Dynamically populated with all profile tokens -->
             </div>
         </div>
     </div>
 
+    <!-- ─── ADD NEW CHANNEL MODAL ─── -->
+    <div class="modal-overlay" id="addChannelModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>➕ नया यूट्यूब चैनल जोड़ें (Add Channel)</h2>
+                <button class="btn-close-modal" onclick="closeModal()">&times;</button>
+            </div>
+
+            <form id="addChannelForm" onsubmit="handleAddChannel(event)">
+                <div class="form-group">
+                    <label for="newChannelId">चैनल ID / स्लग (Identifier - अंग्रेज़ी में)</label>
+                    <input type="text" id="newChannelId" class="form-control" placeholder="उदा: bhojpuri_dj, lofi_beats, punjabi_remix" required>
+                    <span style="font-size: 11px; color: var(--text-dim);">यह ID सिस्टम में प्रोफ़ाइल नाम बनेगी (उदा: token_bhojpuri_dj.json)</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="newChannelName">चैनल का डिस्प्ले नाम (Display Title)</label>
+                    <input type="text" id="newChannelName" class="form-control" placeholder="उदा: Bhojpuri Superhit DJ 2.0" required>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+                    <div class="form-group">
+                        <label for="newChannelSchedule">अपलोड टाइम (Daily Time)</label>
+                        <input type="text" id="newChannelSchedule" class="form-control" placeholder="उदा: 04:30 PM IST" value="12:00 PM IST" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="newChannelTag">कैटेगरी / जॉनर टैग</label>
+                        <input type="text" id="newChannelTag" class="form-control" placeholder="उदा: भोजपुरी Hard Bass" value="DJ Remix" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>थीम नियोन कलर (Card Accent Color)</label>
+                    <div class="color-palette" id="colorPalette">
+                        <div class="color-swatch active" style="background: #00e5ff;" data-color="cyan" data-hex="#00e5ff" onclick="selectColor(this)"></div>
+                        <div class="color-swatch" style="background: #ff2a85;" data-color="pink" data-hex="#ff2a85" onclick="selectColor(this)"></div>
+                        <div class="color-swatch" style="background: #d200ff;" data-color="purple" data-hex="#d200ff" onclick="selectColor(this)"></div>
+                        <div class="color-swatch" style="background: #ffb800;" data-color="gold" data-hex="#ffb800" onclick="selectColor(this)"></div>
+                        <div class="color-swatch" style="background: #00ff88;" data-color="green" data-hex="#00ff88" onclick="selectColor(this)"></div>
+                        <div class="color-swatch" style="background: #ff6b00;" data-color="orange" data-hex="#ff6b00" onclick="selectColor(this)"></div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="newChannelInstructions">📝 इस चैनल के लिए खास निर्देश (Instructions for AI)</label>
+                    <textarea id="newChannelInstructions" class="form-control" rows="3" placeholder="उदा: इस चैनल में सिर्फ भोजपुरी डांस रिमिक्स गाने लेना, बास बूस्ट +2.5dB रखना, सेंटर में ये लोगो लगाना..."></textarea>
+                    <span style="font-size: 11px; color: var(--text-dim);">आप जो भी नियम यहाँ लिखेंगे, वह इस चैनल के लिए सुरक्षित रहेगा।</span>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="submit" class="btn-modal-primary" id="btnSaveAndLogin">
+                        💾 सेव करें और गूगल लॉगिन करें
+                    </button>
+                    <button type="button" class="btn-modal-secondary" onclick="closeModal()">
+                        रद्द करें
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <span id="toastIcon">✅</span>
+        <span id="toastMsg">ऑपरेशन सफल!</span>
+    </div>
+
     <script>
+        let selectedColor = { name: "cyan", hex: "#00e5ff" };
+
+        function selectColor(el) {
+            document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
+            el.classList.add('active');
+            selectedColor = {
+                name: el.getAttribute('data-color'),
+                hex: el.getAttribute('data-hex')
+            };
+        }
+
+        function showToast(msg, icon = "✅") {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMsg').innerText = msg;
+            document.getElementById('toastIcon').innerText = icon;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        function openModal() {
+            document.getElementById('addChannelModal').classList.add('active');
+            document.getElementById('newChannelId').focus();
+        }
+
+        function closeModal() {
+            document.getElementById('addChannelModal').classList.remove('active');
+        }
+
+        // Close modal on Esc key or clicking outside
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeModal();
+        });
+        document.getElementById('addChannelModal').addEventListener('click', (e) => {
+            if (e.target.id === 'addChannelModal') closeModal();
+        });
+
+        // Auto-slugify channel ID from Display Name
+        document.getElementById('newChannelName').addEventListener('input', (e) => {
+            const idInput = document.getElementById('newChannelId');
+            if (!idInput.dataset.manual) {
+                const slug = e.target.value
+                    .toLowerCase()
+                    .replace(/[^a-z0-9]+/g, '_')
+                    .replace(/^_+|_+$/g, '');
+                idInput.value = slug;
+            }
+        });
+        document.getElementById('newChannelId').addEventListener('input', () => {
+            document.getElementById('newChannelId').dataset.manual = "true";
+        });
+
+        // Fetch status and render dynamic cards
         async function fetchStatus() {
             try {
                 const res = await fetch('/api/status');
                 const data = await res.json();
+                renderCards(data.profiles || []);
+                renderSecrets(data.profiles || []);
 
-                updateCard('nagpuri', data.nagpuri);
-                updateCard('vibration', data.vibration);
+                // Update KPIs
+                document.getElementById('kpi-total-channels').innerText = `${data.total_channels} Channels`;
+                document.getElementById('kpi-connected-accounts').innerText = `${data.connected_count} / ${data.total_channels} Connected`;
             } catch (err) {
                 console.error("Status fetch failed:", err);
             }
         }
 
-        function updateCard(profile, info) {
-            const badge = document.getElementById(`${profile}-status-badge`);
-            const title = document.getElementById(`${profile}-title`);
-            const handle = document.getElementById(`${profile}-handle`);
-            const avatar = document.getElementById(`${profile}-avatar`);
-            const subs = document.getElementById(`${profile}-subs`);
-            const vids = document.getElementById(`${profile}-videos`);
-            const btnArea = document.getElementById(`${profile}-actions`);
-            const secretBox = document.getElementById(`secret-${profile}-token`);
+        function renderCards(profiles) {
+            const grid = document.getElementById('channelsGrid');
+            if (!profiles.length) {
+                grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-muted);">कोई चैनल नहीं मिला। नया चैनल जोड़ने के लिए ऊपर बटन दबाएं।</div>';
+                return;
+            }
 
-            if (info && info.connected) {
-                badge.innerHTML = '<span style="color: #00ff88; font-weight: 600;">● Connected</span>';
-                title.innerText = info.channel_title || "Connected Channel";
-                handle.innerText = info.custom_url || info.channel_id;
-                subs.innerText = info.subscriber_count ? Number(info.subscriber_count).toLocaleString() : "-";
-                vids.innerText = info.video_count ? Number(info.video_count).toLocaleString() : "-";
-                
-                if (info.thumbnail) {
-                    avatar.innerHTML = `<img src="${info.thumbnail}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
-                }
+            grid.innerHTML = profiles.map(p => {
+                const isConnected = !!p.connected;
+                const accentHex = p.accent_hex || "#00e5ff";
+                const isDefault = !!p.is_default;
 
-                if (info.refresh_token) {
-                    secretBox.innerText = info.refresh_token;
-                }
+                return `
+                <div class="channel-card" style="--accent-gradient: linear-gradient(90deg, ${accentHex}, #ffffff22);">
+                    <div>
+                        <div class="card-top">
+                            <span class="profile-tag" style="border-color: ${accentHex}44; color: ${accentHex};">
+                                ${p.tag || 'DJ Profile'}
+                            </span>
+                            <span class="status-pill" style="color: ${isConnected ? '#00ff88' : '#8b98b5'};">
+                                ${isConnected ? '● Connected' : '○ Not Connected'}
+                            </span>
+                        </div>
 
-                btnArea.innerHTML = `
-                    <button class="btn-connect btn-disconnect" onclick="disconnect('${profile}')">Disconnect Channel</button>
-                    <button class="btn-test" onclick="triggerTest('${profile}')">▶️ Test Production Run (${profile})</button>
+                        <div class="channel-info">
+                            <div class="channel-avatar" style="border-color: ${accentHex}66;">
+                                ${p.thumbnail ? `<img src="${p.thumbnail}" alt="${p.channel_title}">` : getEmojiForProfile(p.id)}
+                            </div>
+                            <div class="channel-meta">
+                                <h3>${p.channel_title || p.name}</h3>
+                                <p>${p.custom_url || ('@' + p.id + '_channel')}</p>
+                                <div class="channel-schedule-badge">
+                                    <span>⏰ ${p.schedule || 'Daily'}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="channel-stats">
+                            <div class="stat-box">
+                                <div class="stat-val">${p.subscriber_count && p.subscriber_count !== '-' ? Number(p.subscriber_count).toLocaleString() : '-'}</div>
+                                <div class="stat-lbl">Subscribers</div>
+                            </div>
+                            <div class="stat-box">
+                                <div class="stat-val">${p.video_count && p.video_count !== '-' ? Number(p.video_count).toLocaleString() : '-'}</div>
+                                <div class="stat-lbl">Videos</div>
+                            </div>
+                        </div>
+
+                        <div class="instruction-box">
+                            <div class="instruction-header">
+                                <span class="instruction-label">
+                                    <span>📝</span> चैनल निर्देश (AI Rules)
+                                </span>
+                                <button class="btn-save-instruction" onclick="saveInstructions('${p.id}')">सेव करें</button>
+                            </div>
+                            <textarea id="instructions-${p.id}" class="instruction-textarea" placeholder="इस चैनल के लिए निर्देश लिखें...">${p.instructions || ''}</textarea>
+                        </div>
+                    </div>
+
+                    <div class="card-actions">
+                        ${isConnected ? `
+                            <button class="btn-connect btn-disconnect" onclick="disconnect('${p.id}')">
+                                🔌 Disconnect Channel
+                            </button>
+                            <div class="btn-row">
+                                <button class="btn-test" onclick="triggerTest('${p.id}')">
+                                    ▶️ Test Production Run
+                                </button>
+                                ${!isDefault ? `
+                                    <button class="btn-delete-card" onclick="deleteChannel('${p.id}')" title="Delete Channel">
+                                        🗑️
+                                    </button>
+                                ` : ''}
+                            </div>
+                        ` : `
+                            <a href="/api/auth/login?profile=${p.id}" class="btn-connect btn-google">
+                                <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.8-2.4 3.67v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.16z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.26v3.15C3.25 21.36 7.31 24 12 24z"/><path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.26C.46 8.16 0 9.99 0 12s.46 3.84 1.26 5.42l4.02-3.15z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.25 2.64 1.26 6.58l4.02 3.15c.95-2.83 3.6-4.93 6.72-4.93z"/></svg>
+                                Login With Google
+                            </a>
+                            ${!isDefault ? `
+                                <div class="btn-row">
+                                    <button class="btn-test" onclick="triggerTest('${p.id}')">
+                                        ▶️ Test Run
+                                    </button>
+                                    <button class="btn-delete-card" onclick="deleteChannel('${p.id}')" title="Delete Channel">
+                                        🗑️
+                                    </button>
+                                </div>
+                            ` : ''}
+                        `}
+                    </div>
+                </div>
                 `;
-            } else {
-                badge.innerHTML = '<span style="color: #8b98b5;">● Disconnected</span>';
-                title.innerText = "Not Connected";
-                handle.innerText = `@${profile}_channel`;
-                subs.innerText = "-";
-                vids.innerText = "-";
-                avatar.innerHTML = profile === 'nagpuri' ? '📻' : '🔊';
-                secretBox.innerText = "Not generated yet";
+            }).join('');
+        }
+
+        function getEmojiForProfile(id) {
+            if (id === 'nagpuri') return '📻';
+            if (id === 'vibration') return '🔊';
+            if (id === 'edm') return '⚡';
+            return '🎵';
+        }
+
+        function renderSecrets(profiles) {
+            const list = document.getElementById('secretsTokensList');
+            const tokenRows = profiles.map(p => {
+                const envKey = `YOUTUBE_REFRESH_TOKEN_${p.id.toUpperCase()}`;
+                const hasToken = !!p.refresh_token;
+                const tokenVal = p.refresh_token || 'Not generated yet (Login first)';
+
+                return `
+                <div class="token-row">
+                    <span class="token-label">${envKey}</span>
+                    <span class="token-val" id="secret-${p.id}-token">${tokenVal}</span>
+                    <button class="btn-copy" onclick="copyTokenText('${p.refresh_token || ''}', '${envKey}')">
+                        Copy
+                    </button>
+                </div>
+                `;
+            }).join('');
+
+            list.innerHTML = tokenRows;
+        }
+
+        async function handleAddChannel(e) {
+            e.preventDefault();
+            const id = document.getElementById('newChannelId').value.trim();
+            const name = document.getElementById('newChannelName').value.trim();
+            const schedule = document.getElementById('newChannelSchedule').value.trim();
+            const tag = document.getElementById('newChannelTag').value.trim();
+            const instructions = document.getElementById('newChannelInstructions').value.trim();
+
+            if (!id || !name) {
+                alert("कृपया चैनल ID और नाम भरें");
+                return;
+            }
+
+            try {
+                const res = await fetch('/api/channels/add', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        id: id,
+                        name: name,
+                        schedule: schedule,
+                        tag: tag,
+                        instructions: instructions,
+                        color: selectedColor.name,
+                        accent_hex: selectedColor.hex
+                    })
+                });
+
+                if (!res.ok) {
+                    const err = await res.json();
+                    alert(err.detail || "चैनल जोड़ने में त्रुटि हुई!");
+                    return;
+                }
+
+                closeModal();
+                showToast("नया चैनल सफलतापूर्वक जुड़ गया!");
+
+                // Ask if user wants to login immediately
+                if (confirm(`चैनल '${name}' जुड़ गया है! क्या आप अभी इस चैनल का गूगल अकाउंट लॉगिन करना चाहते हैं?`)) {
+                    window.location.href = `/api/auth/login?profile=${id}`;
+                } else {
+                    fetchStatus();
+                }
+            } catch (err) {
+                console.error("Error adding channel:", err);
+                alert("चैनल जोड़ने में त्रुटि हुई!");
+            }
+        }
+
+        async function saveInstructions(profileId) {
+            const text = document.getElementById(`instructions-${profileId}`).value;
+            try {
+                const res = await fetch('/api/channels/update_instructions', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        profile_id: profileId,
+                        instructions: text
+                    })
+                });
+                if (res.ok) {
+                    showToast("चैनल के निर्देश सफलतापूर्वक सेव हो गए!");
+                } else {
+                    alert("निर्देश सेव करने में त्रुटि हुई");
+                }
+            } catch (err) {
+                console.error("Error saving instructions:", err);
+                alert("निर्देश सेव करने में त्रुटि हुई");
             }
         }
 
         async function disconnect(profile) {
-            if (!confirm(`Are you sure you want to disconnect ${profile} channel?`)) return;
+            if (!confirm(`क्या आप सच में '${profile}' चैनल को डिस्कनेक्ट करना चाहते हैं?`)) return;
             await fetch(`/api/auth/disconnect?profile=${profile}`, { method: 'POST' });
+            showToast("चैनल डिस्कनेक्ट हो गया");
             fetchStatus();
         }
 
+        async function deleteChannel(profile) {
+            if (!confirm(`क्या आप इस कस्टम चैनल '${profile}' को हटाना चाहते हैं?`)) return;
+            try {
+                const res = await fetch(`/api/channels/delete?profile=${profile}`, { method: 'POST' });
+                if (res.ok) {
+                    showToast("चैनल हटा दिया गया");
+                    fetchStatus();
+                }
+            } catch (err) {
+                console.error("Delete failed:", err);
+            }
+        }
+
         async function triggerTest(profile) {
-            alert(`Triggering test run for ${profile} in background...`);
+            showToast(`'${profile}' के लिए टेस्ट रन बैकग्राउंड में शुरू किया गया...`, "🚀");
             await fetch(`/api/run_mix?profile=${profile}`, { method: 'POST' });
         }
 
-        function copyToken(elementId) {
-            const text = document.getElementById(elementId).innerText;
-            if (!text || text.includes("Not generated")) {
-                alert("Please connect the channel first to generate the token!");
+        function copyTokenText(token, keyName) {
+            if (!token || token.includes("Not generated")) {
+                alert(`कृपया पहले इस चैनल में लॉगिन करें ताकि टोकन जेनरेट हो सके!`);
                 return;
             }
-            navigator.clipboard.writeText(text);
-            alert("Copied token to clipboard!");
+            navigator.clipboard.writeText(token);
+            showToast(`${keyName} क्लिपबोर्ड पर कॉपी हो गया!`);
         }
 
         // Initialize on load

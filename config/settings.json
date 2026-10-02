@@ -43,6 +43,25 @@
         "nonstop vibration mix",
         "tapori vibration dj"
       ]
+    },
+    "edm": {
+      "channel_title": "Mega EDM DJ Remix 2026",
+      "genre": "EDM Trance & Hard Drop Mix",
+      "min_duration_minutes": 120,
+      "max_duration_minutes": 240,
+      "target_tracks": 25,
+      "logo_file": "assets/My EDM LOGO.png",
+      "tags": [
+        "edm remix",
+        "edm drop mix",
+        "electro dance mix",
+        "hard drop edm",
+        "club dj remix",
+        "nonstop edm",
+        "trending edm",
+        "bhojpuri edm",
+        "hindi edm drop"
+      ]
     }
   },
   "audio": {
