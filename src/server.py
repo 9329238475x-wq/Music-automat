@@ -43,8 +43,22 @@ SCOPES = [
 
 app = FastAPI(title="Music-Automat Multi-Channel Hub")
 
-# In-memory oauth pending states: state -> {"profile": profile, "verifier": verifier}
-oauth_states: Dict[str, Dict[str, Any]] = {}
+# Persistent file-based oauth pending states to survive server restarts/reloads
+OAUTH_STATES_FILE = TOKENS_DIR / "oauth_pending_states.json"
+
+def get_oauth_states() -> Dict[str, Any]:
+    if OAUTH_STATES_FILE.exists():
+        try:
+            return json.loads(OAUTH_STATES_FILE.read_text(encoding="utf-8"))
+        except Exception:
+            return {}
+    return {}
+
+def save_oauth_states(states: Dict[str, Any]):
+    try:
+        OAUTH_STATES_FILE.write_text(json.dumps(states, indent=2), encoding="utf-8")
+    except Exception as e:
+        logger.error(f"Failed to persist oauth states: {e}")
 
 
 def get_token_file(profile: str) -> Path:
@@ -278,71 +292,165 @@ async def auth_login(profile: str = Query("nagpuri"), request: Request = None):
         include_granted_scopes="true"
     )
 
-    oauth_states[state] = {
+    states = get_oauth_states()
+    states[state] = {
         "profile": profile.lower().strip(),
         "verifier": getattr(flow, "code_verifier", None)
     }
+    save_oauth_states(states)
+    logger.info(f"Initiated OAuth for profile '{profile}' with state '{state}' and verifier: {bool(getattr(flow, 'code_verifier', None))}")
 
     return RedirectResponse(auth_url)
 
 
 @app.get("/api/channels/oauth2callback")
-async def oauth2_callback(request: Request, code: str = Query(None), state: str = Query(None)):
+async def oauth2_callback(request: Request, code: str = Query(None), state: str = Query(None), error: str = Query(None)):
+    if error:
+        logger.warning(f"OAuth error from Google: {error}")
+        return HTMLResponse(f"""
+        <!DOCTYPE html>
+        <html>
+        <head><meta charset="utf-8"><title>Login Error</title></head>
+        <body style="background:#07090e;color:#fff;font-family:sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;">
+            <div style="background:#131926;border:1px solid #ff4b4b;border-radius:16px;padding:32px;max-width:480px;text-align:center;">
+                <h2 style="color:#ff5e5e;">⚠️ गूगल लॉगिन रद्द या अस्वीकृत</h2>
+                <p style="color:#94a3b8;font-size:14px;line-height:1.6;">गूगल द्वारा एरर: {error}</p>
+                <a href="/" style="background:#00e5ff;color:#000;text-decoration:none;padding:12px 24px;border-radius:8px;font-weight:bold;display:inline-block;margin-top:16px;">होम पेज पर जाएँ</a>
+            </div>
+        </body>
+        </html>
+        """, status_code=400)
+
     if not code:
         return HTMLResponse("<h3>Authorization error: No code received</h3>", status_code=400)
 
-    state_data = oauth_states.pop(state, {})
+    states = get_oauth_states()
+    state_data = states.pop(state, {}) if state else {}
+    save_oauth_states(states)
+
     profile = state_data.get("profile", "nagpuri")
     code_verifier = state_data.get("verifier")
 
     redirect_uri = "http://localhost:8000/api/channels/oauth2callback"
 
-    flow = Flow.from_client_secrets_file(
-        str(CLIENT_SECRETS_FILE),
-        scopes=SCOPES,
-        redirect_uri=redirect_uri,
-        state=state
-    )
-    if code_verifier:
-        flow.code_verifier = code_verifier
+    try:
+        flow = Flow.from_client_secrets_file(
+            str(CLIENT_SECRETS_FILE),
+            scopes=SCOPES,
+            redirect_uri=redirect_uri,
+            state=state
+        )
+        if code_verifier:
+            flow.code_verifier = code_verifier
+            flow.fetch_token(code=code, code_verifier=code_verifier)
+        else:
+            logger.warning(f"No code_verifier found for state {state}. Session may have expired or server restarted.")
+            # Session expired screen with instant retry button
+            return HTMLResponse(f"""
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="utf-8">
+                <title>Session Expired - Music Automat</title>
+                <style>
+                    body {{ background: #07090e; color: #fff; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }}
+                    .box {{ background: #131926; border: 1px solid rgba(255,255,255,0.12); border-radius: 18px; padding: 36px; max-width: 480px; text-align: center; box-shadow: 0 15px 40px rgba(0,0,0,0.6); }}
+                    h2 {{ color: #00e5ff; font-size: 22px; margin-bottom: 12px; }}
+                    p {{ color: #94a3b8; font-size: 14px; line-height: 1.6; margin-bottom: 24px; }}
+                    .btn {{ background: linear-gradient(135deg, #00e5ff 0%, #a855f7 50%, #ff2a85 100%); color: #fff; text-decoration: none; padding: 13px 28px; border-radius: 10px; font-weight: bold; display: inline-block; box-shadow: 0 4px 15px rgba(0,229,255,0.3); transition: transform 0.2s; }}
+                    .btn:hover {{ transform: translateY(-2px); }}
+                    .home-link {{ display: block; margin-top: 18px; color: #64748b; text-decoration: none; font-size: 13px; }}
+                    .home-link:hover {{ color: #cbd5e1; }}
+                </style>
+            </head>
+            <body>
+                <div class="box">
+                    <h2>⚠️ लॉगिन सत्र समाप्त (Session Expired)</h2>
+                    <p>सर्वर अपडेट होने के कारण पिछला ऑथेंटिकेशन टोकन एक्सपायर हो गया था। कृपया नीचे दिए बटन पर क्लिक करके दोबारा लॉगिन करें (यह 5 सेकंड में हो जाएगा):</p>
+                    <a href="/api/auth/login?profile={profile}" class="btn">🔄 दोबारा लॉगिन करें (Retry Login)</a>
+                    <a href="/" class="home-link">होम पेज पर वापस जाएँ</a>
+                </div>
+            </body>
+            </html>
+            """)
 
-    flow.fetch_token(code=code)
-    creds = flow.credentials
+        creds = flow.credentials
 
-    # Query YouTube for channel identity
-    youtube = build("youtube", "v3", credentials=creds)
-    resp = youtube.channels().list(part="snippet,statistics", mine=True).execute()
+        # Query YouTube for channel identity
+        youtube = build("youtube", "v3", credentials=creds)
+        resp = youtube.channels().list(part="snippet,statistics", mine=True).execute()
 
-    items = resp.get("items", [])
-    if not items:
-        return HTMLResponse("<h3>No YouTube channel found for this Google account!</h3>", status_code=400)
+        items = resp.get("items", [])
+        if not items:
+            return HTMLResponse("""
+            <!DOCTYPE html>
+            <html>
+            <head><meta charset="utf-8"><title>No Channel Found</title></head>
+            <body style="background:#07090e;color:#fff;font-family:sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;">
+                <div style="background:#131926;border:1px solid #ff4b4b;border-radius:16px;padding:32px;max-width:480px;text-align:center;">
+                    <h2 style="color:#ff5e5e;">⚠️ कोई यूट्यूब चैनल नहीं मिला</h2>
+                    <p style="color:#94a3b8;font-size:14px;line-height:1.6;">जिस गूगल अकाउंट से आपने लॉगिन किया है, उस पर कोई YouTube चैनल नहीं बना हुआ है। कृपया वह गूगल अकाउंट चुनें जिस पर आपका चैनल है।</p>
+                    <a href="/api/auth/login?profile=""" + profile + """" style="background:#00e5ff;color:#000;text-decoration:none;padding:12px 24px;border-radius:8px;font-weight:bold;display:inline-block;margin-top:16px;">दोबारा सही अकाउंट से लॉगिन करें</a>
+                </div>
+            </body>
+            </html>
+            """, status_code=400)
 
-    ch = items[0]
-    ch_id = ch["id"]
-    snippet = ch.get("snippet", {})
-    stats = ch.get("statistics", {})
+        ch = items[0]
+        ch_id = ch["id"]
+        snippet = ch.get("snippet", {})
+        stats = ch.get("statistics", {})
 
-    token_payload = {
-        "profile": profile,
-        "channel_id": ch_id,
-        "channel_title": snippet.get("title", ""),
-        "custom_url": snippet.get("customUrl", ""),
-        "thumbnail": snippet.get("thumbnails", {}).get("default", {}).get("url", ""),
-        "subscriber_count": stats.get("subscriberCount", "0"),
-        "video_count": stats.get("videoCount", "0"),
-        "token": creds.token,
-        "refresh_token": creds.refresh_token,
-        "token_uri": creds.token_uri,
-        "client_id": creds.client_id,
-        "client_secret": creds.client_secret,
-        "scopes": creds.scopes
-    }
+        token_payload = {
+            "profile": profile,
+            "channel_id": ch_id,
+            "channel_title": snippet.get("title", ""),
+            "custom_url": snippet.get("customUrl", ""),
+            "thumbnail": snippet.get("thumbnails", {}).get("default", {}).get("url", ""),
+            "subscriber_count": stats.get("subscriberCount", "0"),
+            "video_count": stats.get("videoCount", "0"),
+            "token": creds.token,
+            "refresh_token": creds.refresh_token,
+            "token_uri": creds.token_uri,
+            "client_id": creds.client_id,
+            "client_secret": creds.client_secret,
+            "scopes": creds.scopes
+        }
 
-    t_file = get_token_file(profile)
-    t_file.write_text(json.dumps(token_payload, indent=2, ensure_ascii=False), encoding="utf-8")
-    logger.info(f"Connected {profile} channel: {snippet.get('title')} ({ch_id})")
+        t_file = get_token_file(profile)
+        t_file.write_text(json.dumps(token_payload, indent=2, ensure_ascii=False), encoding="utf-8")
+        logger.info(f"Successfully connected {profile} channel: {snippet.get('title')} ({ch_id})")
 
-    return RedirectResponse(url="/")
+        return RedirectResponse(url="/")
+    except Exception as e:
+        logger.error(f"Error during OAuth callback: {e}", exc_info=True)
+        return HTMLResponse(f"""
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8">
+            <title>Authentication Error</title>
+            <style>
+                body {{ background: #07090e; color: #fff; font-family: sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }}
+                .box {{ background: #131926; border: 1px solid rgba(255,100,100,0.3); border-radius: 16px; padding: 32px; max-width: 500px; text-align: center; }}
+                h2 {{ color: #ff5e5e; margin-bottom: 12px; }}
+                p {{ color: #94a3b8; font-size: 14px; line-height: 1.6; margin-bottom: 20px; }}
+                .err {{ background: rgba(0,0,0,0.5); padding: 10px; border-radius: 8px; font-family: monospace; font-size: 12px; color: #ff9999; margin-bottom: 20px; word-break: break-all; }}
+                a {{ background: #00e5ff; color: #000; text-decoration: none; padding: 12px 24px; border-radius: 8px; font-weight: bold; display: inline-block; }}
+            </style>
+        </head>
+        <body>
+            <div class="box">
+                <h2>⚠️ लॉगिन प्रमाणीकरण में त्रुटि</h2>
+                <p>गूगल से टोकन प्राप्त करते समय निम्नलिखित समस्या आई:</p>
+                <div class="err">{str(e)}</div>
+                <a href="/api/auth/login?profile={profile}">🔄 दोबारा लॉगिन करें</a>
+                <br><br>
+                <a href="/" style="background:transparent;border:1px solid #475569;color:#cbd5e1;font-size:13px;padding:8px 16px;">होम पेज</a>
+            </div>
+        </body>
+        </html>
+        """, status_code=500)
 
 
 @app.post("/api/auth/disconnect")
