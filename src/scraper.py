@@ -82,7 +82,7 @@ class DJScraper:
 
         cmd = [
             "yt-dlp",
-            "--extractor-args", "youtube:player_client=android,web",
+            "--extractor-args", "youtube:player_client=android",
             "--flat-playlist",
             "--dump-single-json",
             "--playlist-end", "3",
@@ -168,7 +168,7 @@ class DJScraper:
 
         cmd = [
             "yt-dlp",
-            "--extractor-args", "youtube:player_client=android,web",
+            "--extractor-args", "youtube:player_client=android",
             "-x",
             "--audio-format", "mp3",
             "--audio-quality", "320k",
@@ -184,6 +184,12 @@ class DJScraper:
         logger.info(f"[{idx}/{total}] Downloading ({track['remixer']}): {track['title'][:35]}...")
         try:
             res = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, timeout=120)
+            # If failed, retry with ios client
+            if not os.path.exists(audio_out):
+                retry_cmd = list(cmd)
+                retry_cmd[2] = "youtube:player_client=ios"
+                res = subprocess.run(retry_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, timeout=120)
+
             if os.path.exists(audio_out):
                 track["audio_path"] = audio_out
                 actual_thumb = None
