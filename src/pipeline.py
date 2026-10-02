@@ -34,7 +34,9 @@ class DJProductionPipeline:
         self.visual_engine = DJVisualEngine(profile=self.profile, base_dir=self.base_dir)
         self.uploader = YouTubeUploader(profile=self.profile, base_dir=self.base_dir)
 
-    def run(self, target_tracks: int = 25, skip_upload: bool = False) -> bool:
+    def run(self, target_tracks: int = 0, skip_upload: bool = False) -> bool:
+        if not target_tracks or target_tracks <= 0:
+            target_tracks = self.settings.get("profiles", {}).get(self.profile, {}).get("target_tracks", len(self.scraper.channels))
         start_time = time.time()
         logger.info(f"==================================================")
         logger.info(f"Starting Autonomous DJ Pipeline | Profile: {self.profile.upper()}")
@@ -131,8 +133,8 @@ def main():
     parser.add_argument(
         "--target-tracks",
         type=int,
-        default=25,
-        help="Number of tracks to include in mix (default: 25 for ~2-3 hours)"
+        default=0,
+        help="Number of tracks to include in mix (default: from profile settings)"
     )
     parser.add_argument(
         "--skip-upload",

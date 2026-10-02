@@ -137,7 +137,31 @@ try:
         default_profile = "vibration"
     profile = os.environ.get("DJ_PROFILE") or default_profile
     profile = profile.lower()
-    target_tracks = int(os.environ.get("DJ_TARGET_TRACKS", "25"))
+    # Dynamically resolve target tracks based on profile and channels
+    settings_file = os.path.join(WORK_DIR, "config", "settings.json")
+    channels_file = os.path.join(WORK_DIR, "config", "channels.json")
+    default_tracks = 41 if profile == "edm" else (20 if profile == "nagpuri" else 24)
+    if os.path.exists(settings_file):
+        try:
+            with open(settings_file, "r", encoding="utf-8") as f:
+                s_data = json.load(f)
+                default_tracks = s_data.get("profiles", {}).get(profile, {}).get("target_tracks", default_tracks)
+        except Exception:
+            pass
+    if os.path.exists(channels_file):
+        try:
+            with open(channels_file, "r", encoding="utf-8") as f:
+                c_data = json.load(f)
+                if profile in c_data and len(c_data[profile]) > 0:
+                    default_tracks = len(c_data[profile])
+        except Exception:
+            pass
+
+    env_tracks = os.environ.get("DJ_TARGET_TRACKS", "").strip()
+    if env_tracks and env_tracks.isdigit() and int(env_tracks) > 0:
+        target_tracks = int(env_tracks)
+    else:
+        target_tracks = default_tracks
     skip_upload = os.environ.get("DJ_SKIP_UPLOAD", "0") == "1"
 
     print(f"Selected Profile : {profile.upper()} (UTC Hour: {utc_hour})", flush=True)

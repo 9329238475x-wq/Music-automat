@@ -214,14 +214,17 @@ class DJScraper:
             logger.error(f"Error downloading {vid_id}: {e}")
         return None
 
-    def download_tracks(self, target_count: int = 25) -> List[Dict[str, Any]]:
+    def download_tracks(self, target_count: int | None = None) -> List[Dict[str, Any]]:
         """Downloads selected tracks concurrently at 320 kbps using ThreadPoolExecutor."""
         candidates = self.discover_fresh_videos()
         if not candidates:
             logger.error("No valid candidates found.")
             return []
 
-        selected = candidates[:target_count]
+        if target_count is not None and target_count > 0:
+            selected = candidates[:target_count]
+        else:
+            selected = candidates
         logger.info(f"🚀 Starting PARALLEL download of {len(selected)} unique tracks from {len(selected)} different channels...")
 
         items = [(i, len(selected), track) for i, track in enumerate(selected, 1)]
