@@ -1,9 +1,9 @@
 """
 DJ Track Scraper & Downloader Module
-Scrapes fresh (12-48h) remix tracks from curated channels using yt-dlp.
+Scrapes the latest fresh remix tracks from curated channels using yt-dlp.
 STRICT RULES:
 1. STRICTLY 1 SONG PER CHANNEL (Never 2 songs from the same channel).
-2. Freshness priority (12h first, skips channels with no recent uploads).
+2. Parallel fast scanner across all channels (ThreadPoolExecutor).
 3. 5x Parallel multi-threaded downloading at 320 kbps MP3.
 """
 
@@ -68,11 +68,11 @@ class DJScraper:
 
     def _scan_single_channel(self, ch: Dict[str, str]) -> Optional[Dict[str, Any]]:
         """
-        Scans a single channel for its latest video.
-        Enforces:
+        Scans a single channel for its newest valid video using fast flat-playlist.
+        Guarantees:
         - At most 1 song from this channel.
-        - Skips if older than freshness threshold.
         - Skips shorts and long mixes.
+        - Skips previously used songs in history.
         """
         name = ch.get("name", "Unknown")
         url = ch.get("url", "")
@@ -83,25 +83,23 @@ class DJScraper:
         cmd = [
             "yt-dlp",
             "--extractor-args", "youtube:player_client=android,web",
-            "--dump-json",
-            "--playlist-end", "2",
+            "--flat-playlist",
+            "--dump-single-json",
+            "--playlist-end", "3",
             "--no-warnings",
             "--quiet",
             videos_url
         ]
 
         try:
-            proc = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, timeout=25)
+            proc = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, timeout=20)
             if proc.returncode != 0 or not proc.stdout.strip():
                 return None
 
-            lines = [line.strip() for line in proc.stdout.strip().split("\n") if line.strip()]
-            for line in lines:
-                try:
-                    entry = json.loads(line)
-                except Exception:
-                    continue
+            data = json.loads(proc.stdout)
+            entries = data.get("entries") or []
 
+            for entry in entries:
                 vid_id = entry.get("id")
                 if not vid_id or vid_id in self.history:
                     continue
@@ -113,22 +111,11 @@ class DJScraper:
                 if duration < 100.0 or duration > 840.0:
                     continue
 
-                # Check timestamp age
-                now_ts = time.time()
-                video_ts = entry.get("timestamp") or 0
-                age_hours = (now_ts - video_ts) / 3600.0 if video_ts else 999.0
-
-                # Skip if older than 72 hours (3 days)
-                if age_hours > 72.0:
-                    logger.debug(f"Skipping {name}: Latest upload is {age_hours:.1f}h old.")
-                    return None
-
-                # Found the 1 best song for this channel! Return immediately (STRICT 1 PER CHANNEL)
+                # Found the 1 best latest song for this channel! Return immediately (STRICT 1 PER CHANNEL)
                 return {
                     "id": vid_id,
                     "title": title,
                     "duration": duration,
-                    "age_hours": age_hours,
                     "remixer": name,
                     "channel_url": url,
                     "url": f"https://www.youtube.com/watch?v={vid_id}"
@@ -141,7 +128,7 @@ class DJScraper:
     def discover_fresh_videos(self) -> List[Dict[str, Any]]:
         """
         Inspects all channels concurrently with strict 1-song-per-channel enforcement.
-        Ranks by freshness (12h uploads prioritized first).
+        Every candidate is guaranteed to be from a unique channel.
         """
         logger.info(f"Scanning {len(self.channels)} channels for {self.profile} profile (Parallel Scanner)...")
         candidates = []
@@ -161,15 +148,8 @@ class DJScraper:
                 seen_remixers.add(c["remixer"])
                 unique_candidates.append(c)
 
-        # Sort: Freshest first (uploaded < 12h at top, then 24h, etc.)
-        unique_candidates.sort(key=lambda x: x["age_hours"])
-
-        within_12 = sum(1 for c in unique_candidates if c["age_hours"] <= 12.0)
-        within_24 = sum(1 for c in unique_candidates if c["age_hours"] <= 24.0)
-
         logger.info(
-            f"✅ Found {len(unique_candidates)} unique tracks from {len(unique_candidates)} different channels! "
-            f"({within_12} within 12h, {within_24} within 24h)"
+            f"✅ Found {len(unique_candidates)} unique fresh tracks from {len(unique_candidates)} different channels!"
         )
         return unique_candidates
 
