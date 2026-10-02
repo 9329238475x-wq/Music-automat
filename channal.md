@@ -4,26 +4,25 @@
 
 ---
 
-## 📻 चैनल 1: नागपुरी Normal DJ Remix (21 Channels)
+## 📻 चैनल 1: नागपुरी Normal DJ Remix (20 Channels)
 > **कंटेंट टाइप:** रीजनल नागपुरी, ठेठ DJ, शादी-पार्टी डांस रिमिक्स (नॉर्मल बास)  
 > **टारगेट:** नागपुरी / झारखंडी ऑडियंस (डेली 2–4 घंटे का नॉनस्टॉप मिक्स)
 
 | क्र. | चैनल का नाम (Channel Name) | यूट्यूब हैंडल (Handle) | यूट्यूब लिंक (YouTube URL) |
 |:---:|:---|:---|:---|
-| 1 | **RL REMIX RAJPUR 807** | `@Djrambaburajpur807` | https://www.youtube.com/@Djrambaburajpur807 |
-| 2 | **Dj Ashish Pahartoli** | `@AkshayLakra-t2l` | https://www.youtube.com/@AkshayLakra-t2l |
-| 3 | **DB Music Jharkhand** | `@DBMusicJharkhand-f1s` | https://www.youtube.com/@DBMusicJharkhand-f1s |
-| 4 | **DJ PIYUSH BABU 04** | `@DJPIYUSHBABU04-c1v` | https://www.youtube.com/@DJPIYUSHBABU04-c1v |
-| 5 | **Dj Vishal Ranchi** | `@djvishalranchi94` | https://www.youtube.com/@djvishalranchi94 |
-| 6 | **LX NAGPURI KING_👑** | `@LXARVINDBABULXARVINDBABU` | https://www.youtube.com/@LXARVINDBABULXARVINDBABU |
-| 7 | **Dj Sandip Nagra 907** | `@DjSandipNagra907` | https://www.youtube.com/@DjSandipNagra907 |
-| 8 | **Dj Zorden (ramgarh)** | `@DjZordenramgarh-d7y` | https://www.youtube.com/@DjZordenramgarh-d7y |
-| 9 | **Mukesh Music Official** | `@MukeshMusicOfficial-m8l` | https://www.youtube.com/@MukeshMusicOfficial-m8l |
-| 10 | **lx Ariyan babu 143** | `@Ariyan150-g3s` | https://www.youtube.com/@Ariyan150-g3s |
-| 11 | **RP REWAPUR** | `@anildjmix471` | https://www.youtube.com/@anildjmix471 |
-| 12 | **Wi-Fi _Nagpuri_ haldidohar** | `@wi-fipankajhaldidohar` | https://www.youtube.com/@wi-fipankajhaldidohar |
-| 13 | **Birendra Music official 807** | `@BirendraMusicofficial807` | https://www.youtube.com/@BirendraMusicofficial807 |
-| 14 | **Birendra Bhai 2.0** | `@Birendra_Bhai_2.0` | https://www.youtube.com/@Birendra_Bhai_2.0 |
+| 2 | **RL REMIX RAJPUR 807** | `@Djrambaburajpur807` | https://www.youtube.com/@Djrambaburajpur807 |
+| 3 | **Dj Ashish Pahartoli** | `@AkshayLakra-t2l` | https://www.youtube.com/@AkshayLakra-t2l |
+| 4 | **DB Music Jharkhand** | `@DBMusicJharkhand-f1s` | https://www.youtube.com/@DBMusicJharkhand-f1s |
+| 5 | **DJ PIYUSH BABU 04** | `@DJPIYUSHBABU04-c1v` | https://www.youtube.com/@DJPIYUSHBABU04-c1v |
+| 6 | **Dj Vishal Ranchi** | `@djvishalranchi94` | https://www.youtube.com/@djvishalranchi94 |
+| 7 | **LX NAGPURI KING_👑** | `@LXARVINDBABULXARVINDBABU` | https://www.youtube.com/@LXARVINDBABULXARVINDBABU |
+| 8 | **Dj Sandip Nagra 907** | `@DjSandipNagra907` | https://www.youtube.com/@DjSandipNagra907 |
+| 9 | **Dj Zorden (ramgarh)** | `@DjZordenramgarh-d7y` | https://www.youtube.com/@DjZordenramgarh-d7y |
+| 10 | **Mukesh Music Official** | `@MukeshMusicOfficial-m8l` | https://www.youtube.com/@MukeshMusicOfficial-m8l |
+| 11 | **lx Ariyan babu 143** | `@Ariyan150-g3s` | https://www.youtube.com/@Ariyan150-g3s |
+| 12 | **RP REWAPUR** | `@anildjmix471` | https://www.youtube.com/@anildjmix471 |
+| 13 | **Wi-Fi _Nagpuri_ haldidohar** | `@wi-fipankajhaldidohar` | https://www.youtube.com/@wi-fipankajhaldidohar |
+| 14 | **Birendra Music official 807** | `@BirendraMusicofficial807` | https://www.youtube.com/@BirendraMusicofficial807 |
 | 15 | **ANIL DJ JONE** | `@ANILDJJONE` | https://www.youtube.com/@ANILDJJONE |
 | 16 | **Dj Nagpuri Topic** | `@Nagpuri_Topic_999` | https://www.youtube.com/@Nagpuri_Topic_999 |
 | 17 | **Dj Motu Rathia** | `@HorilalRathia-q3r` | https://www.youtube.com/@HorilalRathia-q3r |
@@ -31,10 +30,7 @@
 | 19 | **Dj Hembram Official 2.0** | `@DjHembramOfficial2.0` | https://www.youtube.com/@DjHembramOfficial2.0 |
 | 20 | **NAGPURI REMIX HUB** | `@nagpuriremixhub` | https://www.youtube.com/@nagpuriremixhub |
 | 21 | **Danger Remix Zone** | `@DangerRemixZone-u5y` | https://www.youtube.com/@DangerRemixZone-u5y |
-
----
-
-## 🔊 चैनल 2: Vibration / Hard Bass DJ Remix (23 Channels)
+## 🔊 चैनल 2: Vibration / Hard Bass DJ Remix (24 Channels)
 > **कंटेंट टाइप:** कंपटीशन हार्ड वाइब्रेशन, बास बूस्टेड, छत्तीसगढ़ी / नागपुरी / भोजपुरी डीजे मिक्स  
 > **टारगेट:** हेवी बास और डीजे कंपटीशन लवर्स (डेली 2–4 घंटे का नॉनस्टॉप मिक्स)
 
@@ -63,9 +59,7 @@
 | 21 | **DZ SATYAM BABU 00** | `@DZSATYAMBABU00` | https://www.youtube.com/@DZSATYAMBABU00 |
 | 22 | **DJ UMESH MUNGELI** | `@DJUMESHMUNGELI` | https://www.youtube.com/@DJUMESHMUNGELI |
 | 23 | **Umesh Babu 1** | `@UmeshBabu1-b30` | https://www.youtube.com/@UmeshBabu1-b30 |
-
----
-
+| 24 | **Birendra Bhai 2.0** | `@Birendra_Bhai_2.0` | https://www.youtube.com/@Birendra_Bhai_2.0 |
 ## 🛠️ सिस्टम आर्किटेक्चर और मुख्य नियम (System Specifications)
 
 1. **ऑडियो पाइपलाइन (Audio Pipeline):**

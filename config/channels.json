@@ -66,11 +66,6 @@
       "url": "https://www.youtube.com/@BirendraMusicofficial807"
     },
     {
-      "name": "Birendra Bhai 2.0",
-      "handle": "@Birendra_Bhai_2.0",
-      "url": "https://www.youtube.com/@Birendra_Bhai_2.0"
-    },
-    {
       "name": "ANIL DJ JONE",
       "handle": "@ANILDJJONE",
       "url": "https://www.youtube.com/@ANILDJJONE"
@@ -221,6 +216,11 @@
       "name": "Umesh Babu 1",
       "handle": "@UmeshBabu1-b30",
       "url": "https://www.youtube.com/@UmeshBabu1-b30"
+    },
+    {
+      "name": "Birendra Bhai 2.0",
+      "handle": "@Birendra_Bhai_2.0",
+      "url": "https://www.youtube.com/@Birendra_Bhai_2.0"
     }
   ]
 }
