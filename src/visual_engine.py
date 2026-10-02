@@ -297,6 +297,9 @@ class DJVisualEngine:
                 "-preset", "p4",
                 "-tune", "ll",
                 "-cq", "24",
+                "-b:v", "1500k",
+                "-maxrate", "2500k",
+                "-bufsize", "5000k",
                 "-pix_fmt", "yuv420p"
             ]
         else:
@@ -305,6 +308,9 @@ class DJVisualEngine:
                 "-c:v", "libx264",
                 "-preset", "ultrafast",
                 "-crf", "25",
+                "-b:v", "1500k",
+                "-maxrate", "2500k",
+                "-bufsize", "5000k",
                 "-pix_fmt", "yuv420p"
             ]
 
