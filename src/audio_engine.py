@@ -3,7 +3,7 @@ DJ Audio Engine & Seamless Nonstop DJ Transition Module
 1. Cuts unwanted intro (first 10s) and outro (last 10s) of every track to eliminate jingles and channel promos.
 2. Applies smooth 1.5s fade-in and 1.5s fade-out on every song.
 3. Overlaps songs with seamless crossfade (zero blank gap, zero abrupt cuts, zero artificial sound effects).
-4. Anti-Fingerprint protection: Micro-pitch (+2.5%), tempo offset, DJ sub-bass boost & EBU R128 loudness.
+4. Anti-Fingerprint protection: Super Pitch (+20%), tempo offset, DJ sub-bass boost & EBU R128 loudness.
 5. Produces master continuous 320 kbps MP3 and clickable YouTube tracklist chapters.
 """
 
@@ -56,7 +56,8 @@ class DJAudioEngine:
         track_index: int,
         cut_intro_sec: float = 10.0,
         cut_outro_sec: float = 10.0,
-        fade_sec: float = 1.5
+        fade_sec: float = 1.5,
+        pitch_factor: float = 1.20
     ) -> bool:
         """
         Processes an individual song for the nonstop DJ mix:
@@ -64,7 +65,8 @@ class DJAudioEngine:
         - Trims trailing 10s to eliminate outros / promo announcements.
         - Adds smooth fade-in (1.5s) at the start so the song enters gently.
         - Adds smooth fade-out (1.5s) at the end so the song exits smoothly.
-        - Applies Anti-Fingerprint (+2.5% pitch & tempo offset, +2.5 dB sub-bass boost around 60Hz, +1.5 dB treble).
+        - Applies Anti-Fingerprint (+20% pitch & tempo offset, +3.0 dB sub-bass boost around 60Hz, +2.0 dB treble)
+          to completely eliminate YouTube Content ID copyright claims.
         - Normalizes to broadcast standard EBU R128 (-14 LUFS, -1.0 dBTP).
         """
         raw_dur = self._get_audio_duration(in_file)
@@ -80,15 +82,18 @@ class DJAudioEngine:
         trimmed_len = end_s - start_s
         fade_out_start = max(0.0, trimmed_len - fade_sec)
 
+        env_pitch = os.environ.get("DJ_PITCH_FACTOR")
+        eff_pitch = float(env_pitch) if env_pitch else pitch_factor
+
         filter_chain = (
             f"atrim=start={start_s:.2f}:end={end_s:.2f},"
             f"asetpts=PTS-STARTPTS,"
             f"afade=t=in:st=0:d={fade_sec:.2f},"
             f"afade=t=out:st={fade_out_start:.2f}:d={fade_sec:.2f},"
-            f"asetrate=44100*1.025,"
+            f"asetrate=44100*{eff_pitch:.4f},"
             f"aresample=44100,"
-            f"equalizer=f=60:width_type=h:width=50:g=2.5,"
-            f"treble=g=1.5,"
+            f"equalizer=f=60:width_type=h:width=50:g=3.0,"
+            f"treble=g=2.0,"
             f"loudnorm=I=-14:TP=-1.0:LRA=11,"
             f"aformat=sample_fmts=s16:sample_rates=44100:channel_layouts=stereo"
         )
