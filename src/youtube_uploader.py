@@ -81,11 +81,11 @@ class YouTubeUploader:
         year = now.year
 
         if self.profile == "edm":
-            # Channel: EDM DJ Remix / Mega EDM Collection Profile
-            title = f"NEW TRENDING EDM DJ REMIX {year} 🔥 Electro Dance Nonstop Mix || Hard Drop EDM Mashup ⚡"
+            # Channel: sumit rmx 2.0 (Mega EDM Collection Profile)
+            title = f"NEW TRENDING EDM DJ REMIX {year} 🔥 Electro Dance Nonstop Mix || Sumit Rmx 2.0 ⚡"
             
             description = f"""⚡ NEW TRENDING EDM DJ REMIX {year} - HARD DROP ELECTRO JUKEBOX!
-Get ready for the ultimate EDM rush! High-energy festival electro drops, club dance mix, hard bass drops, and non-stop viral EDM remixes mastered in studio-grade 320 kbps HD audio!
+Welcome to Sumit Rmx 2.0! Get ready for the ultimate EDM rush! High-energy festival electro drops, club dance mix, hard bass drops, and non-stop viral EDM remixes mastered in studio-grade 320 kbps HD audio!
 
 ⚡ Audio Specs: 320 kbps HD Master | Sub-Bass Boosted +2.5dB | 1080p Avee Bass Visualizer
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -115,11 +115,11 @@ Get ready for the ultimate EDM rush! High-energy festival electro drops, club da
 All songs and remixes featured in this nonstop mix belong to their respective original creators, artists, and music labels. This mix is created purely for promotional, cultural, and entertainment purposes. If any artist, label, or copyright holder has any concern regarding any track, please contact us and we will promptly resolve it.
 """
         elif self.profile == "nagpuri":
-            # Channel: sumit rmx 2.0 (Nagpuri Profile)
-            title = f"New Trending Nagpuri DJ Remix {year} 🔥 Nonstop Nagpuri DJ Song || Theth Nagpuri Dance Mix 💃 Sumit Rmx"
+            # Channel: nagpuri non-stop remix 2.0 (Nagpuri Profile)
+            title = f"New Trending Nagpuri DJ Remix {year} 🔥 Nonstop Nagpuri DJ Song || Theth Nagpuri Dance Mix 💃"
             
             description = f"""🎧 NEW TRENDING NAGPURI DJ REMIX {year} - NONSTOP DHAMAKA JUKEBOX!
-Welcome to Sumit Rmx 2.0! Enjoy the most popular and viral Nagpuri DJ Remix songs, non-stop high-energy dance mix with pure 320 kbps HD sound & deep sub-bass boost!
+Welcome to Nagpuri Non-Stop Remix 2.0! Enjoy the most popular and viral Nagpuri DJ Remix songs, non-stop high-energy dance mix with pure 320 kbps HD sound & deep sub-bass boost!
 
 ⚡ Audio Specs: 320 kbps HD Master | Sub-Bass Boosted +2.5dB | 1080p Avee Bass Visualizer
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -151,11 +151,11 @@ Welcome to Sumit Rmx 2.0! Enjoy the most popular and viral Nagpuri DJ Remix song
 All songs and remixes featured in this nonstop mix belong to their respective original creators, artists, and music labels. This mix is created purely for promotional, cultural, and entertainment purposes. If any artist, label, or copyright holder has any concern regarding any track, please contact us and we will promptly resolve it.
 """
         else:
-            # Channel: nagpuri non-stop remix 2.0 (Hard Vibration Profile)
-            title = f"HARD VIBRATION DJ REMIX {year} 🔊 Monster Bass Boosted Competition Mix || Nonstop CG & Nagpuri DJ"
+            # Channel: Sumit RMX 6.0 (Hard Vibration Profile)
+            title = f"HARD VIBRATION DJ REMIX {year} 🔊 Monster Bass Boosted Competition Mix || Sumit RMX 6.0"
             
             description = f"""🔊 HARD VIBRATION DJ REMIX {year} - MONSTER SUB-BASS COMPETITION MIX!
-Feel the extreme sub-bass vibration, hard kick drops, and non-stop roadshow power! Tuned for heavy woofers, competition DJ setups, and bass lovers!
+Welcome to Sumit RMX 6.0! Feel the extreme sub-bass vibration, hard kick drops, and non-stop roadshow power! Tuned for heavy woofers, competition DJ setups, and bass lovers!
 
 ⚡ Audio Specs: 320 kbps HD Master | Sub-Bass Boosted +2.5dB | 1080p Avee Bass Visualizer
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

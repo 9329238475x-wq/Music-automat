@@ -4,7 +4,9 @@
 
 ---
 
-## 📻 चैनल 1: नागपुरी Normal DJ Remix (20 Channels)
+## 📻 चैनल 1: Nagpuri Non-Stop Remix 2.0 - Nonstop Nagpuri DJ Remix (20 Channels)
+> **यूट्यूब चैनल:** nagpuri non-stop remix 2.0 (@nagpurirmxsumit0.1) &bull; https://www.youtube.com/@nagpurirmxsumit0.1
+> **अपलोड समय:** रोज़ाना सुबह 09:06 AM IST (03:36 UTC)
 > **कंटेंट टाइप:** रीजनल नागपुरी, ठेठ DJ, शादी-पार्टी डांस रिमिक्स (नॉर्मल बास)  
 > **टारगेट:** नागपुरी / झारखंडी ऑडियंस (डेली 2–4 घंटे का नॉनस्टॉप मिक्स)
 
@@ -37,7 +39,9 @@
 
 
 
-## 🔊 चैनल 2: Vibration / Hard Bass DJ Remix (24 Channels)
+## 🔊 चैनल 2: Sumit RMX 6.0 - Hard Vibration DJ Remix (24 Channels)
+> **यूट्यूब चैनल:** sumit rmx 2.0 (@sumitrmx2.0-m6f) &bull; https://www.youtube.com/@sumitrmx2.0-m6f
+> **अपलोड समय:** रोज़ाना शाम 07:00 PM IST (13:30 UTC)
 > **कंटेंट टाइप:** कंपटीशन हार्ड वाइब्रेशन, बास बूस्टेड, छत्तीसगढ़ी / नागपुरी / भोजपुरी डीजे मिक्स  
 > **टारगेट:** हेवी बास और डीजे कंपटीशन लवर्स (डेली 2–4 घंटे का नॉनस्टॉप मिक्स)
 
@@ -75,8 +79,8 @@
 
 
 
-## ⚡ चैनल 3: Sumit RMX 6.0 - EDM DJ Remix / Mega EDM Collection (41 Channels)
-> **यूट्यूब चैनल:** Sumit RMX 6.0 (@sumitrmx6.0) &bull; https://www.youtube.com/@sumitrmx6.0  
+## ⚡ चैनल 3: Sumit Rmx 2.0 - EDM DJ Remix / Mega EDM Collection (33 Channels)
+> **यूट्यूब चैनल:** sumit rmx 2.0 (@sumitrmx2.0-m6f) &bull; https://www.youtube.com/@sumitrmx2.0-m6f  
 > **कंटेंट टाइप:** EDM ड्रॉप मिक्स, इलेक्ट्रो डांस, क्लब मैशअप, भोजपुरी ईडीएम, ट्रान्स डांस मिक्स  
 > **अपलोड समय:** रोज़ाना सुबह 06:12 AM IST (00:42 UTC)  
 > **वीडियो सेंटर लोगो:** `assets/My EDM LOGO.png` (नियोन पल्सिंग डिस्क एनीमेशन)  
