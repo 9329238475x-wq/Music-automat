@@ -175,7 +175,8 @@ class DJScraper:
 
         cmd = [
             "yt-dlp",
-            "--extractor-args", "youtube:player_client=android",
+            "--js-runtimes", "node",
+            "--extractor-args", "youtube:player_client=android,web,tv",
             "-x",
             "--audio-format", "mp3",
             "--audio-quality", "320k",
@@ -193,8 +194,9 @@ class DJScraper:
             res = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, timeout=120)
             # If failed, retry with ios client
             if not os.path.exists(audio_out):
+                time.sleep(2)
                 retry_cmd = list(cmd)
-                retry_cmd[2] = "youtube:player_client=ios"
+                retry_cmd[4] = "youtube:player_client=tv_embedded,mweb"
                 res = subprocess.run(retry_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, timeout=120)
 
             if os.path.exists(audio_out):
@@ -230,8 +232,11 @@ class DJScraper:
         items = [(i, len(selected), track) for i, track in enumerate(selected, 1)]
         downloaded_tracks = []
 
-        with ThreadPoolExecutor(max_workers=5) as executor:
-            future_to_track = {executor.submit(self._download_single_track, item): item for item in items}
+        with ThreadPoolExecutor(max_workers=2) as executor:
+            future_to_track = {}
+            for item in items:
+                future_to_track[executor.submit(self._download_single_track, item)] = item
+                time.sleep(1.5)  # Anti-Bot: human jitter delay prevents YouTube 429 rate limits
             for future in as_completed(future_to_track):
                 res = future.result()
                 if res and res.get("audio_path"):

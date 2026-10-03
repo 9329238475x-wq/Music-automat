@@ -47,7 +47,7 @@ try:
     print("\n[3/5] Installing cloud dependencies...", flush=True)
     pip_cmd = [
         sys.executable, "-m", "pip", "install", "-q", "--upgrade",
-        "yt-dlp",
+        "yt-dlp[default]",
         "google-api-python-client",
         "google-auth-oauthlib",
         "google-auth-httplib2",

@@ -30,6 +30,13 @@
 | 19 | **Dj Hembram Official 2.0** | `@DjHembramOfficial2.0` | https://www.youtube.com/@DjHembramOfficial2.0 |
 | 20 | **NAGPURI REMIX HUB** | `@nagpuriremixhub` | https://www.youtube.com/@nagpuriremixhub |
 | 21 | **Danger Remix Zone** | `@DangerRemixZone-u5y` | https://www.youtube.com/@DangerRemixZone-u5y |
+
+
+
+
+
+
+
 ## 🔊 चैनल 2: Vibration / Hard Bass DJ Remix (24 Channels)
 > **कंटेंट टाइप:** कंपटीशन हार्ड वाइब्रेशन, बास बूस्टेड, छत्तीसगढ़ी / नागपुरी / भोजपुरी डीजे मिक्स  
 > **टारगेट:** हेवी बास और डीजे कंपटीशन लवर्स (डेली 2–4 घंटे का नॉनस्टॉप मिक्स)
@@ -60,6 +67,14 @@
 | 22 | **DJ UMESH MUNGELI** | `@DJUMESHMUNGELI` | https://www.youtube.com/@DJUMESHMUNGELI |
 | 23 | **Umesh Babu 1** | `@UmeshBabu1-b30` | https://www.youtube.com/@UmeshBabu1-b30 |
 | 24 | **Birendra Bhai 2.0** | `@Birendra_Bhai_2.0` | https://www.youtube.com/@Birendra_Bhai_2.0 |
+
+
+
+
+
+
+
+
 ## ⚡ चैनल 3: Sumit RMX 6.0 - EDM DJ Remix / Mega EDM Collection (41 Channels)
 > **यूट्यूब चैनल:** Sumit RMX 6.0 (@sumitrmx6.0) &bull; https://www.youtube.com/@sumitrmx6.0  
 > **कंटेंट टाइप:** EDM ड्रॉप मिक्स, इलेक्ट्रो डांस, क्लब मैशअप, भोजपुरी ईडीएम, ट्रान्स डांस मिक्स  
