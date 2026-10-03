@@ -230,39 +230,159 @@
   ],
   "edm": [
     {
+      "name": "DJ RAJAN ( EDM MIX )",
+      "handle": "@DJRAJANEDMKING",
+      "url": "https://www.youtube.com/@DJRAJANEDMKING"
+    },
+    {
+      "name": "DjGolu BaBu Kadipur No.1",
+      "handle": "@djgolubabukadipurno.1",
+      "url": "https://www.youtube.com/@djgolubabukadipurno.1"
+    },
+    {
+      "name": "Dj Anish Ghazipur",
+      "handle": "@djanishghazipur01",
+      "url": "https://www.youtube.com/@djanishghazipur01"
+    },
+    {
+      "name": "Dj Rahul Khairaha",
+      "handle": "@djrahulkhairaha1",
+      "url": "https://www.youtube.com/@djrahulkhairaha1"
+    },
+    {
+      "name": "Dj Rahul 3.0",
+      "handle": "@DjRahul3.0-no.1",
+      "url": "https://www.youtube.com/@DjRahul3.0-no.1"
+    },
+    {
+      "name": "SMK EDM DROP MIX",
+      "handle": "@SMKEDMDROPMIX-NO1",
+      "url": "https://www.youtube.com/@SMKEDMDROPMIX-NO1"
+    },
+    {
+      "name": "EDM_MIX",
+      "handle": "@EDMMIX555",
+      "url": "https://www.youtube.com/@EDMMIX555"
+    },
+    {
+      "name": "DJ ARYAN BABU",
+      "handle": "@djaryanbabu694",
+      "url": "https://www.youtube.com/@djaryanbabu694"
+    },
+    {
+      "name": "Dj Abhishek Tanda",
+      "handle": "@DjAbhishekTanda.No1",
+      "url": "https://www.youtube.com/@DjAbhishekTanda.No1"
+    },
+    {
+      "name": "DJ AMAN ROCK AZAMGARH",
+      "handle": "@djamansahaniup50",
+      "url": "https://www.youtube.com/@djamansahaniup50"
+    },
+    {
+      "name": "DJ NITIN ROCK",
+      "handle": "@djnitinrock.1",
+      "url": "https://www.youtube.com/@djnitinrock.1"
+    },
+    {
+      "name": "AS KING OFFICIAL",
+      "handle": "@DJASKINGOFFICIAL",
+      "url": "https://www.youtube.com/@DJASKINGOFFICIAL"
+    },
+    {
+      "name": "JBL Bhojpuri dj Remix 1M",
+      "handle": "@jblbhojpuridjremix1m930",
+      "url": "https://www.youtube.com/@jblbhojpuridjremix1m930"
+    },
+    {
+      "name": "KJ REMIX",
+      "handle": "@KJ_REMIX",
+      "url": "https://www.youtube.com/@KJ_REMIX"
+    },
+    {
+      "name": "DJ SHIVAM ROCK EDM DROP VIBRATION MIX",
+      "handle": "@dj.shivam.rock.",
+      "url": "https://www.youtube.com/@dj.shivam.rock."
+    },
+    {
+      "name": "DJ RISHU REMIXER",
+      "handle": "@dj_rishu_remixer0",
+      "url": "https://www.youtube.com/@dj_rishu_remixer0"
+    },
+    {
+      "name": "DJ RBL REMIX RAEBARELI",
+      "handle": "@Djrblremix",
+      "url": "https://www.youtube.com/@Djrblremix"
+    },
+    {
+      "name": "EXM_ADITYA_REMIXER",
+      "handle": "@EXMADITYAREMIXER",
+      "url": "https://www.youtube.com/@EXMADITYAREMIXER"
+    },
+    {
+      "name": "ᴅᴊ ᴍᴀʀᴄᴏ ᴏғғɪᴄɪᴀʟ",
+      "handle": "@DjMarcoOfficial-j7o",
+      "url": "https://www.youtube.com/@DjMarcoOfficial-j7o"
+    },
+    {
+      "name": "Nx Edm King",
+      "handle": "@nxedmking",
+      "url": "https://www.youtube.com/@nxedmking"
+    },
+    {
+      "name": "RDX EDM DROP REMIX",
+      "handle": "@RDXedmDropREMIX-h4z",
+      "url": "https://www.youtube.com/@RDXedmDropREMIX-h4z"
+    },
+    {
+      "name": "DJ SMC RAJ",
+      "handle": "@DJSMCRAJ",
+      "url": "https://www.youtube.com/@DJSMCRAJ"
+    },
+    {
+      "name": "RISHU IN THE MIX",
+      "handle": "@rishu_in_the_mix",
+      "url": "https://www.youtube.com/@rishu_in_the_mix"
+    },
+    {
+      "name": "AAKASH MASHUP",
+      "handle": "@MASHUP_AAKASH",
+      "url": "https://www.youtube.com/@MASHUP_AAKASH"
+    },
+    {
+      "name": "Dj Sagar Bhitarwar",
+      "handle": "@sagardjgohinda349",
+      "url": "https://www.youtube.com/@sagardjgohinda349"
+    },
+    {
+      "name": "EDM Bass Drop",
+      "handle": "@Edmbassdrop",
+      "url": "https://www.youtube.com/@Edmbassdrop"
+    },
+    {
+      "name": "Bass King",
+      "handle": "@BassKingOfficial",
+      "url": "https://www.youtube.com/@BassKingOfficial"
+    },
+    {
+      "name": "Dj Rohan Raj Official",
+      "handle": "@DjRohanRajOfficial",
+      "url": "https://www.youtube.com/@DjRohanRajOfficial"
+    },
+    {
+      "name": "DJ CHHOTU BALDEVGARH Official",
+      "handle": "@djchotumixingbaldevgarh",
+      "url": "https://www.youtube.com/@djchotumixingbaldevgarh"
+    },
+    {
       "name": "DJ TANMAY PRODUCTION",
       "handle": "@DjTANMAYPRODUCTION",
       "url": "https://www.youtube.com/@DjTANMAYPRODUCTION"
     },
     {
-      "name": "Dvj Dilkhush Raj",
-      "handle": "@Dvjdilkhush",
-      "url": "https://www.youtube.com/@Dvjdilkhush"
-    },
-    {
-      "name": "LUCIFER REMIX",
-      "handle": "@Dj_Lucifer_Remix",
-      "url": "https://www.youtube.com/@Dj_Lucifer_Remix"
-    },
-    {
-      "name": "DJ AYAN REMIX",
+      "name": "AYAN REMIX",
       "handle": "@AyanRemixx",
       "url": "https://www.youtube.com/@AyanRemixx"
-    },
-    {
-      "name": "Ayushx Remixx",
-      "handle": "@AyushxRemix",
-      "url": "https://www.youtube.com/@AyushxRemix"
-    },
-    {
-      "name": "R.D.X EDM DROP MIX",
-      "handle": "@rdx-edmdropmixofficial",
-      "url": "https://www.youtube.com/@rdx-edmdropmixofficial"
-    },
-    {
-      "name": "DJ RAJAN ( EDM MIX )",
-      "handle": "@DJRAJANEDMKING",
-      "url": "https://www.youtube.com/@DJRAJANEDMKING"
     },
     {
       "name": "BHOJPURI DJ SARZEN",
@@ -275,14 +395,89 @@
       "url": "https://www.youtube.com/@DJGOLUBANARAS111"
     },
     {
-      "name": "DjGolu BaBu Kadipur No.1",
-      "handle": "@djgolubabukadipurno.1",
-      "url": "https://www.youtube.com/@djgolubabukadipurno.1"
+      "name": "R.D.X EDM DROP MIX",
+      "handle": "@rdx-edmdropmixofficial",
+      "url": "https://www.youtube.com/@rdx-edmdropmixofficial"
     },
     {
-      "name": "Dj Anish Ghazipur",
-      "handle": "@djanishghazipur01",
-      "url": "https://www.youtube.com/@djanishghazipur01"
+      "name": "Dvj Dilkhush Raj",
+      "handle": "@Dvjdilkhush",
+      "url": "https://www.youtube.com/@Dvjdilkhush"
+    },
+    {
+      "name": "Dj Rahul 2.0",
+      "handle": "@DjRahul2.0-no.1",
+      "url": "https://www.youtube.com/@DjRahul2.0-no.1"
+    },
+    {
+      "name": "DJ AMAN ROCK",
+      "handle": "@DJ_AMAN_ROCK",
+      "url": "https://www.youtube.com/@DJ_AMAN_ROCK"
+    },
+    {
+      "name": "DJ GS BABU",
+      "handle": "@djgsbabu111",
+      "url": "https://www.youtube.com/@djgsbabu111"
+    },
+    {
+      "name": "Dj SR Present",
+      "handle": "@DjSRPresent-1",
+      "url": "https://www.youtube.com/@DjSRPresent-1"
+    },
+    {
+      "name": "SARZEN BEATS",
+      "handle": "@SarzenBeats",
+      "url": "https://www.youtube.com/@SarzenBeats"
+    },
+    {
+      "name": "DPH In The Mix",
+      "handle": "@DphInTheMix",
+      "url": "https://www.youtube.com/@DphInTheMix"
+    },
+    {
+      "name": "DJ SMK REMIX OFFICIAL",
+      "handle": "@DJSMKREMIXOFFICIAL",
+      "url": "https://www.youtube.com/@DJSMKREMIXOFFICIAL"
+    },
+    {
+      "name": "Dj Rohit Rock",
+      "handle": "@djrohitrock-bhojpuri",
+      "url": "https://www.youtube.com/@djrohitrock-bhojpuri"
+    },
+    {
+      "name": "Dj Vivek Rock Official",
+      "handle": "@djvivekrockofficial",
+      "url": "https://www.youtube.com/@djvivekrockofficial"
+    },
+    {
+      "name": "Dj Alok Babu Hi Tech",
+      "handle": "@djalokbabu-bhojpuri",
+      "url": "https://www.youtube.com/@djalokbabu-bhojpuri"
+    },
+    {
+      "name": "Dj Vicky Bihar",
+      "handle": "@djvickybihar-edm",
+      "url": "https://www.youtube.com/@djvickybihar-edm"
+    },
+    {
+      "name": "Dj Munna King",
+      "handle": "@djmunnaking-edm",
+      "url": "https://www.youtube.com/@djmunnaking-edm"
+    },
+    {
+      "name": "Dj Sonu Monu Official",
+      "handle": "@djsonumonuofficial",
+      "url": "https://www.youtube.com/@djsonumonuofficial"
+    },
+    {
+      "name": "Dj Vikash Raj Azamgarh",
+      "handle": "@djvikashrajazamgarh",
+      "url": "https://www.youtube.com/@djvikashrajazamgarh"
+    },
+    {
+      "name": "Dj Saurabh Babu",
+      "handle": "@djsaurabhbabu",
+      "url": "https://www.youtube.com/@djsaurabhbabu"
     }
   ]
 }

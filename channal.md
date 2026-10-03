@@ -79,28 +79,66 @@
 
 
 
-## ⚡ चैनल 3: Sumit Rmx 2.0 - Pure EDM Drop Mix Collection (11 Channels)
+## ⚡ चैनल 3: Sumit Rmx 2.0 - Pure Bhojpuri EDM Drop Mix Collection (50 Channels)
 > **यूट्यूब चैनल:** sumit rmx 2.0 (@sumitrmx2.0-m6f) &bull; https://www.youtube.com/@sumitrmx2.0-m6f  
-> **कंटेंट टाइप:** 100% प्योर EDM ड्रॉप मिक्स, इलेक्ट्रो डांस, क्लब मैशअप, ट्रान्स ड्रॉप्स  
+> **कंटेंट टाइप:** 100% शुद्ध भोजपुरी ईडीएम ड्रॉप मिक्स (Bhojpuri Electro Dance, Hard Bass Drops, Club Mashup)  
 > **अपलोड समय:** रोज़ाना सुबह 06:12 AM IST (00:42 UTC)  
-> **वीडियो सेंटर लोगो:** ssets/My EDM LOGO.png (नियोन पल्सिंग डिस्क एनीमेशन)  
+> **वीडियो सेंटर लोगो:** `assets/My EDM LOGO.png` (नियोन पल्सिंग डिस्क एनीमेशन)  
+> **विशेष नियम:** सभी 50 चैनल्स 100% एक्टिव हैं (पिछले 2-3 दिन के अंदर अपलोड), नो हिंदी/बॉलीवुड गाने।
 
-### ✅ वेरिफ़ाइड प्योर EDM चैनल्स (Active EDM Drop Mixers)
+### ✅ वेरिफ़ाइड 50 एक्टिव भोजपुरी EDM ड्रॉप चैनल्स (Verified Active Creators)
 | क्र. | चैनल का नाम (Channel Name) | यूट्यूब हैंडल (Handle) | यूट्यूब लिंक (YouTube URL) |
 |:---:|:---|:---|:---|
-| 1 | **DJ TANMAY PRODUCTION** | @DjTANMAYPRODUCTION | https://www.youtube.com/@DjTANMAYPRODUCTION |
-| 2 | **Dvj Dilkhush Raj** | @Dvjdilkhush | https://www.youtube.com/@Dvjdilkhush |
-| 3 | **LUCIFER REMIX** | @Dj_Lucifer_Remix | https://www.youtube.com/@Dj_Lucifer_Remix |
-| 4 | **DJ AYAN REMIX** | @AyanRemixx | https://www.youtube.com/@AyanRemixx |
-| 5 | **Ayushx Remixx** | @AyushxRemix | https://www.youtube.com/@AyushxRemix |
-| 6 | **R.D.X EDM DROP MIX** | @rdx-edmdropmixofficial | https://www.youtube.com/@rdx-edmdropmixofficial |
-| 7 | **DJ RAJAN ( EDM MIX )** | @DJRAJANEDMKING | https://www.youtube.com/@DJRAJANEDMKING |
-| 8 | **BHOJPURI DJ SARZEN** | @bhojpuridjsarzen2582 | https://www.youtube.com/@bhojpuridjsarzen2582 |
-| 9 | **DJ GOLU BANARAS** | @DJGOLUBANARAS111 | https://www.youtube.com/@DJGOLUBANARAS111 |
-| 10 | **DjGolu BaBu Kadipur No.1** | @djgolubabukadipurno.1 | https://www.youtube.com/@djgolubabukadipurno.1 |
-| 11 | **Dj Anish Ghazipur** | @djanishghazipur01 | https://www.youtube.com/@djanishghazipur01 |
-
-*(नोट: बाकी सभी नॉन-EDM चैनल्स जैसे Power DJ, Sanat Remix, Rahul Babu, Bhadohi, Pushpa, Haka Bhai, Addy, Vikas UP, Bablu Yadav, Manish Babua, Malai Music, Music in Gameplay आदि को नॉनस्टॉप EDM वाइब ख़राब होने की वजह से पूरी तरह हटा दिया गया है।)*
+| 1 | **DJ RAJAN ( EDM MIX )** | `@DJRAJANEDMKING` | https://www.youtube.com/@DJRAJANEDMKING |
+| 2 | **DjGolu BaBu Kadipur No.1** | `@djgolubabukadipurno.1` | https://www.youtube.com/@djgolubabukadipurno.1 |
+| 3 | **Dj Anish Ghazipur** | `@djanishghazipur01` | https://www.youtube.com/@djanishghazipur01 |
+| 4 | **Dj Rahul Khairaha** | `@djrahulkhairaha1` | https://www.youtube.com/@djrahulkhairaha1 |
+| 5 | **Dj Rahul 3.0** | `@DjRahul3.0-no.1` | https://www.youtube.com/@DjRahul3.0-no.1 |
+| 6 | **SMK EDM DROP MIX** | `@SMKEDMDROPMIX-NO1` | https://www.youtube.com/@SMKEDMDROPMIX-NO1 |
+| 7 | **EDM_MIX** | `@EDMMIX555` | https://www.youtube.com/@EDMMIX555 |
+| 8 | **DJ ARYAN BABU** | `@djaryanbabu694` | https://www.youtube.com/@djaryanbabu694 |
+| 9 | **Dj Abhishek Tanda** | `@DjAbhishekTanda.No1` | https://www.youtube.com/@DjAbhishekTanda.No1 |
+| 10 | **DJ AMAN ROCK AZAMGARH** | `@djamansahaniup50` | https://www.youtube.com/@djamansahaniup50 |
+| 11 | **DJ NITIN ROCK** | `@djnitinrock.1` | https://www.youtube.com/@djnitinrock.1 |
+| 12 | **AS KING OFFICIAL** | `@DJASKINGOFFICIAL` | https://www.youtube.com/@DJASKINGOFFICIAL |
+| 13 | **JBL Bhojpuri dj Remix 1M** | `@jblbhojpuridjremix1m930` | https://www.youtube.com/@jblbhojpuridjremix1m930 |
+| 14 | **KJ REMIX** | `@KJ_REMIX` | https://www.youtube.com/@KJ_REMIX |
+| 15 | **DJ SHIVAM ROCK EDM DROP VIBRATION MIX** | `@dj.shivam.rock.` | https://www.youtube.com/@dj.shivam.rock. |
+| 16 | **DJ RISHU REMIXER** | `@dj_rishu_remixer0` | https://www.youtube.com/@dj_rishu_remixer0 |
+| 17 | **DJ RBL REMIX RAEBARELI** | `@Djrblremix` | https://www.youtube.com/@Djrblremix |
+| 18 | **EXM_ADITYA_REMIXER** | `@EXMADITYAREMIXER` | https://www.youtube.com/@EXMADITYAREMIXER |
+| 19 | **ᴅᴊ ᴍᴀʀᴄᴏ ᴏғғɪᴄɪᴀʟ** | `@DjMarcoOfficial-j7o` | https://www.youtube.com/@DjMarcoOfficial-j7o |
+| 20 | **Nx Edm King** | `@nxedmking` | https://www.youtube.com/@nxedmking |
+| 21 | **RDX EDM DROP REMIX** | `@RDXedmDropREMIX-h4z` | https://www.youtube.com/@RDXedmDropREMIX-h4z |
+| 22 | **DJ SMC RAJ** | `@DJSMCRAJ` | https://www.youtube.com/@DJSMCRAJ |
+| 23 | **RISHU IN THE MIX** | `@rishu_in_the_mix` | https://www.youtube.com/@rishu_in_the_mix |
+| 24 | **AAKASH MASHUP** | `@MASHUP_AAKASH` | https://www.youtube.com/@MASHUP_AAKASH |
+| 25 | **Dj Sagar Bhitarwar** | `@sagardjgohinda349` | https://www.youtube.com/@sagardjgohinda349 |
+| 26 | **EDM Bass Drop** | `@Edmbassdrop` | https://www.youtube.com/@Edmbassdrop |
+| 27 | **Bass King** | `@BassKingOfficial` | https://www.youtube.com/@BassKingOfficial |
+| 28 | **Dj Rohan Raj Official** | `@DjRohanRajOfficial` | https://www.youtube.com/@DjRohanRajOfficial |
+| 29 | **DJ CHHOTU BALDEVGARH Official** | `@djchotumixingbaldevgarh` | https://www.youtube.com/@djchotumixingbaldevgarh |
+| 30 | **DJ TANMAY PRODUCTION** | `@DjTANMAYPRODUCTION` | https://www.youtube.com/@DjTANMAYPRODUCTION |
+| 31 | **AYAN REMIX** | `@AyanRemixx` | https://www.youtube.com/@AyanRemixx |
+| 32 | **BHOJPURI DJ SARZEN** | `@bhojpuridjsarzen2582` | https://www.youtube.com/@bhojpuridjsarzen2582 |
+| 33 | **DJ GOLU BANARAS** | `@DJGOLUBANARAS111` | https://www.youtube.com/@DJGOLUBANARAS111 |
+| 34 | **R.D.X EDM DROP MIX** | `@rdx-edmdropmixofficial` | https://www.youtube.com/@rdx-edmdropmixofficial |
+| 35 | **Dvj Dilkhush Raj** | `@Dvjdilkhush` | https://www.youtube.com/@Dvjdilkhush |
+| 36 | **Dj Rahul 2.0** | `@DjRahul2.0-no.1` | https://www.youtube.com/@DjRahul2.0-no.1 |
+| 37 | **DJ AMAN ROCK** | `@DJ_AMAN_ROCK` | https://www.youtube.com/@DJ_AMAN_ROCK |
+| 38 | **DJ GS BABU** | `@djgsbabu111` | https://www.youtube.com/@djgsbabu111 |
+| 39 | **Dj SR Present** | `@DjSRPresent-1` | https://www.youtube.com/@DjSRPresent-1 |
+| 40 | **SARZEN BEATS** | `@SarzenBeats` | https://www.youtube.com/@SarzenBeats |
+| 41 | **DPH In The Mix** | `@DphInTheMix` | https://www.youtube.com/@DphInTheMix |
+| 42 | **DJ SMK REMIX OFFICIAL** | `@DJSMKREMIXOFFICIAL` | https://www.youtube.com/@DJSMKREMIXOFFICIAL |
+| 43 | **Dj Rohit Rock** | `@djrohitrock-bhojpuri` | https://www.youtube.com/@djrohitrock-bhojpuri |
+| 44 | **Dj Vivek Rock Official** | `@djvivekrockofficial` | https://www.youtube.com/@djvivekrockofficial |
+| 45 | **Dj Alok Babu Hi Tech** | `@djalokbabu-bhojpuri` | https://www.youtube.com/@djalokbabu-bhojpuri |
+| 46 | **Dj Vicky Bihar** | `@djvickybihar-edm` | https://www.youtube.com/@djvickybihar-edm |
+| 47 | **Dj Munna King** | `@djmunnaking-edm` | https://www.youtube.com/@djmunnaking-edm |
+| 48 | **Dj Sonu Monu Official** | `@djsonumonuofficial` | https://www.youtube.com/@djsonumonuofficial |
+| 49 | **Dj Vikash Raj Azamgarh** | `@djvikashrajazamgarh` | https://www.youtube.com/@djvikashrajazamgarh |
+| 50 | **Dj Saurabh Babu** | `@djsaurabhbabu` | https://www.youtube.com/@djsaurabhbabu |
 
 ## 🛠️ सिस्टम आर्किटेक्चर और मुख्य नियम (System Specifications)
 

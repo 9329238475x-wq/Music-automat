@@ -45,22 +45,23 @@
       ]
     },
     "edm": {
-      "channel_title": "Mega EDM DJ Remix 2026",
-      "genre": "EDM Trance & Hard Drop Mix",
+      "channel_title": "Bhojpuri EDM Drop Mix 2026",
+      "genre": "Bhojpuri EDM Drop & Electro Dance Mix",
       "min_duration_minutes": 120,
       "max_duration_minutes": 240,
-      "target_tracks": 33,
+      "target_tracks": 50,
       "logo_file": "assets/My EDM LOGO.png",
       "tags": [
-        "edm remix",
-        "edm drop mix",
-        "electro dance mix",
-        "hard drop edm",
-        "club dj remix",
-        "nonstop edm",
-        "trending edm",
         "bhojpuri edm",
-        "hindi edm drop"
+        "bhojpuri edm drop",
+        "bhojpuri edm remix",
+        "bhojpuri electro dance mix",
+        "hard drop edm",
+        "bhojpuri club mix",
+        "nonstop bhojpuri edm",
+        "trending bhojpuri edm 2026",
+        "rdx edm drop",
+        "sarzen edm mix"
       ]
     }
   },
