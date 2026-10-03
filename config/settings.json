@@ -34,7 +34,6 @@
         "hard bass dj remix",
         "cg vibration dj",
         "competition bass mix",
-        "sound check dj remix",
         "danger vibration mix",
         "dj remix 2026",
         "nagpuri vibration",
@@ -99,5 +98,12 @@
         180
       ]
     }
+  },
+  "scraper": {
+    "max_track_age_hours": 11.0,
+    "max_tracks_per_channel": 1,
+    "min_track_duration_seconds": 100.0,
+    "max_track_duration_seconds": 840.0,
+    "ban_sound_check": true
   }
 }

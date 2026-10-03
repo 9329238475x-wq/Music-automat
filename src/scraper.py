@@ -68,11 +68,13 @@ class DJScraper:
 
     def _scan_single_channel(self, ch: Dict[str, str]) -> Optional[Dict[str, Any]]:
         """
-        Scans a single channel for its newest valid video using fast flat-playlist.
-        Guarantees:
-        - At most 1 song from this channel.
-        - Skips shorts and long mixes.
-        - Skips previously used songs in history.
+        Scans a single channel for its newest valid video using fast yt-dlp metadata.
+        STRICT RULES:
+        1. At most 1 song from this channel.
+        2. STRICT 11-HOUR RULE: If no video was uploaded within the last 11 hours, SKIP channel entirely!
+        3. Skips shorts (<100s) and long nonstop mixes (>840s / 14 mins).
+        4. Skips previously used songs in history.
+        5. Skips any song containing Sound Check / Frequency test keywords.
         """
         name = ch.get("name", "Unknown")
         url = ch.get("url", "")
@@ -80,11 +82,14 @@ class DJScraper:
             url = f"https://www.youtube.com/{ch['handle']}"
         videos_url = f"{url.rstrip('/')}/videos"
 
+        # Configurable max age rule (STRICT 11 HOURS DEFAULT)
+        max_age_hours = float(self.settings.get("scraper", {}).get("max_track_age_hours", 11.0))
+
         cmd = [
             "yt-dlp",
             "--extractor-args", "youtube:player_client=android",
-            "--flat-playlist",
-            "--dump-single-json",
+            "--ignore-errors",
+            "--print", "%(id)s\t%(duration)s\t%(view_count)s\t%(timestamp)s\t%(title)s",
             "--playlist-end", "3",
             "--no-warnings",
             "--quiet",
@@ -92,27 +97,63 @@ class DJScraper:
         ]
 
         try:
-            proc = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, timeout=20)
-            if proc.returncode != 0 or not proc.stdout.strip():
+            proc = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, timeout=25)
+            if not proc.stdout or not proc.stdout.strip():
+                logger.info(f"[SKIP] {name}: Could not fetch recent videos.")
                 return None
 
-            data = json.loads(proc.stdout)
-            entries = data.get("entries") or []
+            lines = proc.stdout.strip().splitlines()
+            now_ts = time.time()
 
-            for entry in entries:
-                vid_id = entry.get("id")
+            for line in lines:
+                parts = line.split("	")
+                if len(parts) < 5:
+                    continue
+
+                vid_id = parts[0].strip()
+                dur_str = parts[1].strip()
+                vc_str = parts[2].strip()
+                ts_str = parts[3].strip()
+                title = parts[4].strip()
+
                 if not vid_id or vid_id in self.history:
                     continue
 
-                title = entry.get("title", "")
-                duration = float(entry.get("duration") or 0.0)
+                # 1. STRICT 11-HOUR RULE: Song must be uploaded within last 11 hours!
+                try:
+                    timestamp = float(ts_str) if ts_str and ts_str != "None" else 0.0
+                except (ValueError, TypeError):
+                    timestamp = 0.0
 
-                # Filter out Shorts (< 100s) and full 1-2 hour nonstop mixes (> 14 mins / 840s)
+                if timestamp <= 0.0:
+                    continue
+
+                age_hours = (now_ts - timestamp) / 3600.0
+                if age_hours > max_age_hours:
+                    logger.info(f"[SKIP AGE] {name} ({vid_id}): Uploaded {age_hours:.1f}h ago (Older than {max_age_hours}h rule)")
+                    continue
+
+                # 2. Duration filter (skip Shorts < 100s, skip full nonstop mixes > 840s / 14 mins)
+                try:
+                    duration = float(dur_str) if dur_str and dur_str != "None" else 0.0
+                except (ValueError, TypeError):
+                    duration = 0.0
+
                 if duration < 100.0 or duration > 840.0:
                     continue
 
-                # Found the 1 best latest song for this channel! Return immediately (STRICT 1 PER CHANNEL)
-                view_cnt = int(entry.get("view_count") or 0)
+                # 3. Strictly NO Sound Check in song title
+                if any(b in title.lower() for b in ["sound check", "soundcheck", "sound test", "frequency test", "woofer test"]):
+                    logger.info(f"[SKIP SOUNDCHECK] {name} ({vid_id}): Sound check detected in title")
+                    continue
+
+                # 4. Valid fresh song found within 11 hours!
+                try:
+                    view_cnt = int(vc_str) if vc_str and vc_str != "None" else 0
+                except (ValueError, TypeError):
+                    view_cnt = 0
+
+                logger.info(f"[ACCEPTED 11H] ({age_hours:.1f}h ago <= {max_age_hours}h): [{name}] {title[:45]}")
                 return {
                     "id": vid_id,
                     "title": title,
@@ -120,8 +161,11 @@ class DJScraper:
                     "view_count": view_cnt,
                     "remixer": name,
                     "channel_url": url,
-                    "url": f"https://www.youtube.com/watch?v={vid_id}"
+                    "url": f"https://www.youtube.com/watch?v={vid_id}",
+                    "age_hours": age_hours
                 }
+
+            logger.info(f"[SKIP CHANNEL] '{name}': No fresh upload within the last {max_age_hours} hours.")
 
         except Exception as e:
             logger.debug(f"Error checking channel {name}: {e}")
