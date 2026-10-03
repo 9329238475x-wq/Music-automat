@@ -61,9 +61,9 @@
 > **यूट्यूब चैनल:** Sumit RMX 6.0 (@sumitrmx6.0) &bull; https://www.youtube.com/@sumitrmx6.0  
 > **कंटेंट टाइप:** 100% छत्तीसगढ़िया ऑडियंस स्पेशल: CG, ठेठ नागपुरी, भोजपुरी और टपोरी वाइब्रेशन रीमिक्स (नो साउंड चेक, नो हरियाणवी, नो मेरठ)  
 > **अपलोड समय:** रोज़ाना शाम 07:00 PM IST (01:30 UTC)  
-> **विशेष नियम:** सभी 38 चैनल्स 100% एक्टिव हैं (2-3 दिन के अंदर अपलोड किए हुए) और कोई साउंड चेक/फ्रीक्वेंसी टेस्ट शामिल नहीं है।
+> **विशेष नियम:** सभी 36 चैनल्स 100% एक्टिव हैं (2-3 दिन के अंदर अपलोड किए हुए) और कोई साउंड चेक/फ्रीक्वेंसी टेस्ट शामिल नहीं है।
 
-### ✅ वेरिफ़ाइड 38 एक्टिव छत्तीसगढ़िया व वाइब्रेशन चैनल्स
+### ✅ वेरिफ़ाइड 36 एक्टिव छत्तीसगढ़िया व वाइब्रेशन चैनल्स
 | क्र. | चैनल का नाम (Channel Name) | यूट्यूब हैंडल (Handle) | यूट्यूब लिंक (YouTube URL) |
 |:---:|:---|:---|:---|
 | 1 | **djbudhram-r6o** | `@djbudhram-r6o` | https://www.youtube.com/@djbudhram-r6o |
@@ -78,32 +78,30 @@
 | 10 | **DJ SARAN PGM MIX** | `@programmix-i9g` | https://www.youtube.com/@programmix-i9g |
 | 11 | **DJ BHEEM EXCLUSIVE** | `@djbheemexclusive` | https://www.youtube.com/@djbheemexclusive |
 | 12 | **DZ SATYAM BABU 00** | `@dzsatyambabu00` | https://www.youtube.com/@dzsatyambabu00 |
-| 13 | **Hitesh Remix Yavatmal** | `@hiteshremixyavatmal5750` | https://www.youtube.com/@hiteshremixyavatmal5750 |
-| 14 | **Dj Krishna Mix Jharkhand** | `@djkrishnamixjh` | https://www.youtube.com/@djkrishnamixjh |
-| 15 | **PX DJ OFFICIAL CG** | `@pxdjofficialcg` | https://www.youtube.com/@pxdjofficialcg |
-| 16 | **DJ SONU BHAI 2.0** | `@cgremixtura` | https://www.youtube.com/@cgremixtura |
-| 17 | **DJ Ganesh GR** | `@dj_ganesh_gr` | https://www.youtube.com/@dj_ganesh_gr |
-| 18 | **Mashup &amp; Remix Zone** | `@mashupremixzone` | https://www.youtube.com/@mashupremixzone |
-| 19 | **Bhageshwar Digital Studio** | `@djbhageshwarmandla` | https://www.youtube.com/@djbhageshwarmandla |
-| 20 | **Dj Prakash Salka Ghutrapara** | `@djprakashsalkaghutrapara` | https://www.youtube.com/@djprakashsalkaghutrapara |
-| 21 | **DJ SUMIT MANDLA 0.2** | `@djsumitmandla0.2` | https://www.youtube.com/@djsumitmandla0.2 |
-| 22 | **DJ NK PRODUCTion CHHINDWARA** | `@djnkproductioncwa` | https://www.youtube.com/@djnkproductioncwa |
-| 23 | **DJ ROHIT EXCLUSIVE OFFICIAL** | `@djrohitexclusiveofficial202` | https://www.youtube.com/@djrohitexclusiveofficial202 |
-| 24 | **DJ NANU OFFICIAL 82 k 2 hours** | `@djnanuofficial____82_k_2_hours` | https://www.youtube.com/@djnanuofficial____82_k_2_hours |
-| 25 | **DJ VK MUSIC** | `@vinay_official09` | https://www.youtube.com/@vinay_official09 |
-| 26 | **Dj Ms Mandla** | `@djmsmandla9795` | https://www.youtube.com/@djmsmandla9795 |
-| 27 | **Dj Tapori** | `@djtapori51` | https://www.youtube.com/@djtapori51 |
-| 28 | **PX DJ PROFESSIONAL CG** | `@pxdjprofessionalcg` | https://www.youtube.com/@pxdjprofessionalcg |
-| 29 | **Virtual Dj** | `@virtualdj-f6r` | https://www.youtube.com/@virtualdj-f6r |
-| 30 | **DJ ROHAN BARGAH** | `@djrohanbargah-r15` | https://www.youtube.com/@djrohanbargah-r15 |
-| 31 | **Dj Ram Official CG** | `@djramofficial30` | https://www.youtube.com/@djramofficial30 |
-| 32 | **DJ SONU PANDEY** | `@djsonupandey` | https://www.youtube.com/@djsonupandey |
-| 33 | **Dj Raju Bhai** | `@djrajuofficial3435` | https://www.youtube.com/@djrajuofficial3435 |
-| 34 | **Dj KARTIK NIWAS** | `@djkartikexclusive-z4q` | https://www.youtube.com/@djkartikexclusive-z4q |
-| 35 | **DZ SUMIT PROFESSIONAL** | `@dzsumitprofessional` | https://www.youtube.com/@dzsumitprofessional |
-| 36 | **Dj Arman Jashpur** | `@dj_arman_jashpur_official` | https://www.youtube.com/@dj_arman_jashpur_official |
-| 37 | **DJ SK JTL** | `@djskjtl` | https://www.youtube.com/@djskjtl |
-| 38 | **𝐃𝐉 𝐒𝐞𝐲𝐚𝐦 𝐆𝐮𝐦𝐥𝐚** | `@siyammusiclover8541` | https://www.youtube.com/@siyammusiclover8541 |
+| 13 | **PX DJ OFFICIAL CG** | `@pxdjofficialcg` | https://www.youtube.com/@pxdjofficialcg |
+| 14 | **DJ SONU BHAI 2.0** | `@cgremixtura` | https://www.youtube.com/@cgremixtura |
+| 15 | **DJ Ganesh GR** | `@dj_ganesh_gr` | https://www.youtube.com/@dj_ganesh_gr |
+| 16 | **Mashup &amp; Remix Zone** | `@mashupremixzone` | https://www.youtube.com/@mashupremixzone |
+| 17 | **Bhageshwar Digital Studio** | `@djbhageshwarmandla` | https://www.youtube.com/@djbhageshwarmandla |
+| 18 | **Dj Prakash Salka Ghutrapara** | `@djprakashsalkaghutrapara` | https://www.youtube.com/@djprakashsalkaghutrapara |
+| 19 | **DJ SUMIT MANDLA 0.2** | `@djsumitmandla0.2` | https://www.youtube.com/@djsumitmandla0.2 |
+| 20 | **DJ NK PRODUCTion CHHINDWARA** | `@djnkproductioncwa` | https://www.youtube.com/@djnkproductioncwa |
+| 21 | **DJ ROHIT EXCLUSIVE OFFICIAL** | `@djrohitexclusiveofficial202` | https://www.youtube.com/@djrohitexclusiveofficial202 |
+| 22 | **DJ NANU OFFICIAL 82 k 2 hours** | `@djnanuofficial____82_k_2_hours` | https://www.youtube.com/@djnanuofficial____82_k_2_hours |
+| 23 | **DJ VK MUSIC** | `@vinay_official09` | https://www.youtube.com/@vinay_official09 |
+| 24 | **Dj Ms Mandla** | `@djmsmandla9795` | https://www.youtube.com/@djmsmandla9795 |
+| 25 | **Dj Tapori** | `@djtapori51` | https://www.youtube.com/@djtapori51 |
+| 26 | **PX DJ PROFESSIONAL CG** | `@pxdjprofessionalcg` | https://www.youtube.com/@pxdjprofessionalcg |
+| 27 | **Virtual Dj** | `@virtualdj-f6r` | https://www.youtube.com/@virtualdj-f6r |
+| 28 | **DJ ROHAN BARGAH** | `@djrohanbargah-r15` | https://www.youtube.com/@djrohanbargah-r15 |
+| 29 | **Dj Ram Official CG** | `@djramofficial30` | https://www.youtube.com/@djramofficial30 |
+| 30 | **DJ SONU PANDEY** | `@djsonupandey` | https://www.youtube.com/@djsonupandey |
+| 31 | **Dj Raju Bhai** | `@djrajuofficial3435` | https://www.youtube.com/@djrajuofficial3435 |
+| 32 | **Dj KARTIK NIWAS** | `@djkartikexclusive-z4q` | https://www.youtube.com/@djkartikexclusive-z4q |
+| 33 | **DZ SUMIT PROFESSIONAL** | `@dzsumitprofessional` | https://www.youtube.com/@dzsumitprofessional |
+| 34 | **Dj Arman Jashpur** | `@dj_arman_jashpur_official` | https://www.youtube.com/@dj_arman_jashpur_official |
+| 35 | **DJ SK JTL** | `@djskjtl` | https://www.youtube.com/@djskjtl |
+| 36 | **𝐃𝐉 𝐒𝐞𝐲𝐚𝐦 𝐆𝐮𝐦𝐥𝐚** | `@siyammusiclover8541` | https://www.youtube.com/@siyammusiclover8541 |
 
 
 ---
