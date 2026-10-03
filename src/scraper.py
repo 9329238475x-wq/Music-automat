@@ -147,6 +147,18 @@ class DJScraper:
                     logger.info(f"[SKIP SOUNDCHECK] {name} ({vid_id}): Sound check detected in title")
                     continue
 
+                # 4. Strictly NO Bhakti / Devotional tracks (Preserves Party / Dance / EDM vibe)
+                BHAKTI_KEYWORDS = ["bhakti", "bhajan", "navratri", "maiya", "devi geet", "pachra", "aarti", "bol bam", "kanwar", "jiutiya", "durga puja", "chath puja", "chath geet"]
+                if any(b in title.lower() for b in BHAKTI_KEYWORDS):
+                    logger.info(f"[SKIP BHAKTI] {name} ({vid_id}): Bhakti/Devotional title detected")
+                    continue
+
+                # 5. Strictly NO Nonstop / Jukebox in song title
+                NONSTOP_KEYWORDS = ["nonstop", "non stop", "jukebox", "mashup"]
+                if any(b in title.lower() for b in NONSTOP_KEYWORDS):
+                    logger.info(f"[SKIP NONSTOP] {name} ({vid_id}): Nonstop/Jukebox title detected")
+                    continue
+
                 # 4. Valid fresh song found within 11 hours!
                 try:
                     view_cnt = int(vc_str) if vc_str and vc_str != "None" else 0

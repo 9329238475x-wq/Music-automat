@@ -110,13 +110,13 @@
 
 ---
 
-## ⚡ चैनल 3: sumit rmx 2.0 - Pure Bhojpuri EDM Drop Special (50 Channels)
+## ⚡ चैनल 3: sumit rmx 2.0 - Pure Bhojpuri EDM Drop Special (47 Channels)
 > **यूट्यूब चैनल:** sumit rmx 2.0 (@sumitrmx2.0-m6f) &bull; https://www.youtube.com/@sumitrmx2.0-m6f  
 > **कंटेंट टाइप:** 100% शुद्ध भोजपुरी EDM ड्रॉप रीमिक्स (नो हिंदी, नो हरियाणवी, नो साउंड चेक)  
 > **अपलोड समय:** रोज़ाना सुबह 06:12 AM IST (00:42 UTC)  
-> **विशेष नियम:** सभी 50 चैनल्स 100% एक्टिव हैं (पिछले 2-3 दिन के अंदर अपलोड किए हुए) और शुद्ध EDM ड्रॉप ट्रैक रीमिक्स करते हैं।
+> **विशेष नियम:** सभी 47 चैनल्स 100% एक्टिव हैं (केवल पार्टी EDM ड्रॉप, कोई भक्ति या नॉनस्टॉप नहीं) (पिछले 2-3 दिन के अंदर अपलोड किए हुए) और शुद्ध EDM ड्रॉप ट्रैक रीमिक्स करते हैं।
 
-### ✅ वेरिफ़ाइड 50 एक्टिव भोजपुरी EDM ड्रॉप चैनल्स
+### ✅ वेरिफ़ाइड 47 एक्टिव भोजपुरी EDM ड्रॉप चैनल्स (Pure Dance & Party Drop Only - No Bhakti, No Nonstop)
 | क्र. | चैनल का नाम (Channel Name) | यूट्यूब हैंडल (Handle) | यूट्यूब लिंक (YouTube URL) |
 |:---:|:---|:---|:---|
 | 1 | **Dj Anish Ghazipur** | `@djanishghazipur01` | https://www.youtube.com/@djanishghazipur01 |
@@ -145,30 +145,27 @@
 | 24 | **POWER DJ OFFICIAL** | `@powerdjofficial` | https://www.youtube.com/@powerdjofficial |
 | 25 | **Dj Piyush Babu Production** | `@djpiyushbabuproduction` | https://www.youtube.com/@djpiyushbabuproduction |
 | 26 | **EDM drop mix official** | `@edmdropmixofficial1` | https://www.youtube.com/@edmdropmixofficial1 |
-| 27 | **Suraj Music Saidpur** | `@surajmusicsaidpur` | https://www.youtube.com/@surajmusicsaidpur |
-| 28 | **Dj SkMedia** | `@djskmedia` | https://www.youtube.com/@djskmedia |
-| 29 | **Dj Akash Babu Jaunpur No.1** | `@dj.akash.babu.jaunpur007` | https://www.youtube.com/@dj.akash.babu.jaunpur007 |
-| 30 | **𝗗𝗷 𝗩𝗶𝗸𝗮𝘀𝗵 𝗥𝗼𝗰𝗸 𝗕𝗮𝗻𝗮𝗿𝗮𝘀** | `@djvikashrockbanaras111` | https://www.youtube.com/@djvikashrockbanaras111 |
-| 31 | **Dj Br Remixaer** | `@djbrremixaer` | https://www.youtube.com/@djbrremixaer |
-| 32 | **Dj Sachin Babu King** | `@prodjsachinbabubassking` | https://www.youtube.com/@prodjsachinbabubassking |
-| 33 | **Pradeep Dj Prayagraj** | `@pradeepdjprayagraj` | https://www.youtube.com/@pradeepdjprayagraj |
-| 34 | **Vikram Gola Wala** | `@vikramgolawala` | https://www.youtube.com/@vikramgolawala |
-| 35 | **Dj Shailesh Rock Mau** | `@djshailesrock` | https://www.youtube.com/@djshailesrock |
-| 36 | **Dj SuMIT Rock Diamond** | `@sumitchauhan-ox2ul` | https://www.youtube.com/@sumitchauhan-ox2ul |
-| 37 | **Itz Emran Official** | `@itzemranofficial` | https://www.youtube.com/@itzemranofficial |
-| 38 | **Prajapati Music ( Deepak )** | `@prajapatimusicdeepak16` | https://www.youtube.com/@prajapatimusicdeepak16 |
-| 39 | **DJ APX ROCK** | `@djapxrock` | https://www.youtube.com/@djapxrock |
-| 40 | **Dj Abishek Jharkhand** | `@djabishekjharkhand` | https://www.youtube.com/@djabishekjharkhand |
-| 41 | **DJ Rahul EDM Drop official** | `@DJRahulEDMDropofficial` | https://www.youtube.com/@DJRahulEDMDropofficial |
-| 42 | **Ayush&#39;X Remixx** | `@AyushxRemix` | https://www.youtube.com/@AyushxRemix |
-| 43 | **RN EDM DROP MIX** | `@Rnedmdropmix` | https://www.youtube.com/@Rnedmdropmix |
-| 44 | **Adbhangi Baas King** | `@Adbhangibaasking` | https://www.youtube.com/@Adbhangibaasking |
-| 45 | **VYXARO** | `@vyxaro1m` | https://www.youtube.com/@vyxaro1m |
-| 46 | **Cobra Records** | `@cobrarecords12` | https://www.youtube.com/@cobrarecords12 |
-| 47 | **Zender Music** | `@ZenderMusic1` | https://www.youtube.com/@ZenderMusic1 |
-| 48 | **ᴅᴊ ᴍᴀʀᴄᴏ ᴏғғɪᴄɪᴀʟ** | `@DjMarcoOfficial-j7o` | https://www.youtube.com/@DjMarcoOfficial-j7o |
-| 49 | **Dj Manish Patna Jila** | `@DjManishPatnaJila` | https://www.youtube.com/@DjManishPatnaJila |
-| 50 | **R.D.X EDM DROP MIX official** | `@rdxedmdropofficial72` | https://www.youtube.com/@rdxedmdropofficial72 |
+| 27 | **Dj SkMedia** | `@djskmedia` | https://www.youtube.com/@djskmedia |
+| 28 | **Dj Akash Babu Jaunpur No.1** | `@dj.akash.babu.jaunpur007` | https://www.youtube.com/@dj.akash.babu.jaunpur007 |
+| 29 | **𝗗𝗷 𝗩𝗶𝗸𝗮𝘀𝗵 𝗥𝗼𝗰𝗸 𝗕𝗮𝗻𝗮𝗿𝗮𝘀** | `@djvikashrockbanaras111` | https://www.youtube.com/@djvikashrockbanaras111 |
+| 30 | **Dj Br Remixaer** | `@djbrremixaer` | https://www.youtube.com/@djbrremixaer |
+| 31 | **Dj Sachin Babu King** | `@prodjsachinbabubassking` | https://www.youtube.com/@prodjsachinbabubassking |
+| 32 | **Vikram Gola Wala** | `@vikramgolawala` | https://www.youtube.com/@vikramgolawala |
+| 33 | **Dj SuMIT Rock Diamond** | `@sumitchauhan-ox2ul` | https://www.youtube.com/@sumitchauhan-ox2ul |
+| 34 | **Itz Emran Official** | `@itzemranofficial` | https://www.youtube.com/@itzemranofficial |
+| 35 | **Dj Abishek Jharkhand** | `@djabishekjharkhand` | https://www.youtube.com/@djabishekjharkhand |
+| 36 | **DJ Rahul EDM Drop official** | `@DJRahulEDMDropofficial` | https://www.youtube.com/@DJRahulEDMDropofficial |
+| 37 | **Ayush&#39;X Remixx** | `@AyushxRemix` | https://www.youtube.com/@AyushxRemix |
+| 38 | **Dj Manish Patna Jila** | `@DjManishPatnaJila` | https://www.youtube.com/@DjManishPatnaJila |
+| 39 | **DJ SATYAM ROCK Japla** | `` | https://www.youtube.com/channel/UCMjWpaLo-fZD00KziXSaWFg |
+| 40 | **EDM drop mix official  ** | `` | https://www.youtube.com/channel/UCh5HJOGIrk62mPBFuCoOWIg |
+| 41 | **Hard Bass Kick** | `` | https://www.youtube.com/channel/UCvsR-T3tU0M-IsfkfjaN4rw |
+| 42 | **R.D.X EDM DROP MIX official No.1** | `` | https://www.youtube.com/channel/UCQF6dW3q8-jN634oIZBsfSg |
+| 43 | **R.D.X EDM DROP MIX official ** | `` | https://www.youtube.com/channel/UCkkxcmvj8AI7vkwkU8niDSQ |
+| 44 | **Dj Rdx King Jaunpur** | `` | https://www.youtube.com/channel/UCa5APJq975bEik7gRw8ZXyg |
+| 45 | **AYAN REMIX ** | `` | https://www.youtube.com/channel/UCc6S1E8SqCGqzuQHLmNvHmA |
+| 46 | **DJ Official ** | `` | https://www.youtube.com/channel/UCM1iNKRGQ67TT5d0Z7p1g7w |
+| 47 | **DJ SMK REMIX OFFICIAL ** | `` | https://www.youtube.com/channel/UCx4JcOA4LytUyUl3pAp3bSg |
 
 
 ---
@@ -179,3 +176,4 @@
 3. **सख्त नो साउंड चेक नियम (Strictly NO Sound Check / Frequency Test):** किसी भी ऐसे चैनल को अनुमति नहीं है जो साउंड चेक, वूफर टेस्ट या फ्रीक्वेंसी टेस्ट रीमिक्स अपलोड करता हो (जैसे @DjLalanTopHazaribag3520)। केवल शुद्ध गाने, डांस ट्रैक और ड्रॉप्स शामिल हैं ताकि गानों का वाइब खराब न हो।
 4. **छत्तीसगढ़िया व रीजनल टेस्ट फ़िल्टर (Pure Regional Audience Filter):** छत्तीसगढ़िया और रीजनल श्रोताओं की पसंद के अनुसार केवल CG, ठेठ नागपुरी, सादरी, भोजपुरी और टपोरी रीमिक्स शामिल हैं। हरियाणवी (जैसे DEEJAY YODHA) और मेरठ/वेस्ट-यूपी हाई-गेन बिल्कुल बाहर हैं।
 5. **सख्त 24 घंटे का डेली फ्रेशनेस व स्किप नियम (Strict 24-Hour Upload Freshness Rule):** रोज़ाना के दो वीडियो के बीच पूरे 24 घंटे का समय होता है। इसलिए स्क्रैपर पिछले 24 घंटे के भीतर अपलोड हुए सभी ताज़ा गानों को शामिल करता है। यदि किसी चैनल ने पिछले 24 घंटे में कोई गाना अपलोड नहीं किया है, तो उसे तुरंत SKIP कर दिया जाता है। साथ ही history.json मेमोरी के कारण पहले इस्तेमाल हो चुका गाना दोबारा रिपीट होने का चांस 0% है।
+6. **सख्त नो भक्ति व नो नॉनस्टॉप नियम (Strictly NO Bhakti & NO Nonstop in Scraper):** पार्टी और डांस वाइब को 100% शुद्ध रखने के लिए स्क्रैपर किसी भी भक्ति/नवरात्रि/भजन या 15-30 मिनट के नॉन-स्टॉप मिक्स को अपने आप SKIP कर देता है।
