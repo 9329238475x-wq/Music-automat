@@ -1,11 +1,11 @@
 {
   "profiles": {
     "nagpuri": {
-      "channel_title": "Nonstop Nagpuri DJ Remix",
-      "genre": "Nagpuri DJ Remix",
+      "channel_title": "Nonstop Theth Nagpuri DJ Dance Mix 2026",
+      "genre": "Pure Theth Nagpuri & Jharkhandi DJ Dance Mix (No Sound Check)",
       "min_duration_minutes": 120,
       "max_duration_minutes": 240,
-      "target_tracks": 21,
+      "target_tracks": 40,
       "logo_file": "assets/logo_nagpuri.png",
       "tags": [
         "nagpuri dj song",
@@ -23,8 +23,8 @@
       ]
     },
     "vibration": {
-      "channel_title": "Hard Vibration DJ Remix",
-      "genre": "Nagpuri, CG, Bhojpuri & Tapori Vibration Mix",
+      "channel_title": "Nonstop CG & Regional Vibration Tapori Mix 2026",
+      "genre": "Pure Chhattisgarhiya, Theth Nagpuri & Tapori Vibration (No Sound Check)",
       "min_duration_minutes": 120,
       "max_duration_minutes": 240,
       "target_tracks": 40,
@@ -46,8 +46,8 @@
       ]
     },
     "edm": {
-      "channel_title": "Bhojpuri EDM Drop Mix 2026",
-      "genre": "Bhojpuri EDM Drop & Electro Dance Mix",
+      "channel_title": "Nonstop Bhojpuri EDM Drop Special 2026",
+      "genre": "Pure Bhojpuri EDM Drop (No Sound Check, No Hindi)",
       "min_duration_minutes": 120,
       "max_duration_minutes": 240,
       "target_tracks": 50,
