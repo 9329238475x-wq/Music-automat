@@ -9,7 +9,7 @@ on:
       target_tracks:
         description: 'Number of Tracks'
         required: false
-        default: '24'
+        default: '40'
       skip_upload:
         description: 'Skip YouTube Upload (Test Only)'
         required: false
@@ -47,7 +47,7 @@ jobs:
           YOUTUBE_REFRESH_TOKEN_VIBRATION: ${{ secrets.YOUTUBE_REFRESH_TOKEN_VIBRATION }}
           ALERT_GMAIL_APP_PASS: ${{ secrets.ALERT_GMAIL_APP_PASS }}
           DJ_PROFILE: vibration
-          DJ_TARGET_TRACKS: ${{ inputs.target_tracks || '24' }}
+          DJ_TARGET_TRACKS: ${{ inputs.target_tracks || '40' }}
           DJ_SKIP_UPLOAD: ${{ inputs.skip_upload }}
         run: |
           python push_to_kaggle.py

@@ -24,24 +24,25 @@
     },
     "vibration": {
       "channel_title": "Hard Vibration DJ Remix",
-      "genre": "Vibration Hard Bass DJ",
+      "genre": "Nagpuri, CG, Bhojpuri & Tapori Vibration Mix",
       "min_duration_minutes": 120,
       "max_duration_minutes": 240,
-      "target_tracks": 24,
+      "target_tracks": 40,
       "logo_file": "assets/logo_vibration.png",
       "tags": [
         "vibration dj song",
         "hard bass dj remix",
         "cg vibration dj",
-        "competition dj remix",
-        "chhattisgarhi dj song",
-        "dj vibration 2026",
-        "hard kick dj",
+        "competition bass mix",
+        "sound check dj remix",
+        "danger vibration mix",
+        "dj remix 2026",
+        "nagpuri vibration",
         "bhojpuri vibration dj",
-        "bass boosted dj",
-        "dj competition mix",
-        "nonstop vibration mix",
-        "tapori vibration dj"
+        "theth nagpuri dj",
+        "cg tapori mix",
+        "tapori style remix",
+        "dehati vibration mix"
       ]
     },
     "edm": {
