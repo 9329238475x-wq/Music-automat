@@ -1,9 +1,7 @@
 name: "📻 Channel 1 - Nagpuri Non-Stop Remix 2.0 (Nagpuri Daily 09:06 AM)"
 
 on:
-  schedule:
-    # 09:06 AM IST = 03:36 UTC
-    - cron: '36 3 * * *'
+  # Triggered exclusively via Cloudflare Worker API to prevent duplicate runs
   workflow_dispatch:
     inputs:
       target_tracks:

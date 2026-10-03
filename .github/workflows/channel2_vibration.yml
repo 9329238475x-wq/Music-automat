@@ -1,9 +1,7 @@
 name: "🔊 Channel 2 - Sumit RMX 6.0 (Vibration Daily 07:00 PM)"
 
 on:
-  schedule:
-    # 07:00 PM IST = 13:30 UTC
-    - cron: '30 13 * * *'
+  # Triggered exclusively via Cloudflare Worker API to prevent duplicate runs
   workflow_dispatch:
     inputs:
       target_tracks:

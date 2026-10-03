@@ -1,9 +1,7 @@
 name: "⚡ Channel 3 - Sumit Rmx 2.0 EDM (Daily 06:12 AM)"
 
 on:
-  schedule:
-    # 06:12 AM IST = 00:42 UTC
-    - cron: '42 0 * * *'
+  # Triggered exclusively via Cloudflare Worker API to prevent duplicate runs
   workflow_dispatch:
     inputs:
       target_tracks:
