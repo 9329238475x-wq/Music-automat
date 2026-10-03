@@ -150,13 +150,15 @@ class DJScraper:
                 seen_remixers.add(c["remixer"])
                 unique_candidates.append(c)
 
-        # SORT BY VIEWS DESCENDING: Highest views at the very top (Track 1, 2, 3...)
-        unique_candidates.sort(key=lambda x: x.get("view_count", 0), reverse=True)
+        # SORT BY DURATION ASCENDING: Shortest track length at the very top (Track 1, 2, 3...)
+        unique_candidates.sort(key=lambda x: float(x.get("duration") or 999999.0), reverse=False)
         for rank, c in enumerate(unique_candidates, 1):
-            logger.info(f"Rank #{rank:02d} | Views: {c.get('view_count', 0):,} | ({c['remixer']}): {c['title'][:40]}")
+            dur_mins = int((c.get("duration") or 0) // 60)
+            dur_secs = int((c.get("duration") or 0) % 60)
+            logger.info(f"Rank #{rank:02d} | Length: {dur_mins:02d}:{dur_secs:02d} ({c.get('duration', 0):.0f}s) | ({c['remixer']}): {c['title'][:40]}")
 
         logger.info(
-            f"✅ Found {len(unique_candidates)} unique fresh tracks sorted by highest views from {len(unique_candidates)} channels!"
+            f"✅ Found {len(unique_candidates)} unique fresh tracks sorted by shortest track length first from {len(unique_candidates)} channels!"
         )
         return unique_candidates
 
@@ -243,10 +245,10 @@ class DJScraper:
                     downloaded_tracks.append(res)
                     self.history.append(res["id"])
 
-        # Preserve strict descending order by views so top viral hits play first!
-        downloaded_tracks.sort(key=lambda x: x.get("view_count", 0), reverse=True)
+        # Preserve strict ascending order by track length so shortest songs play first!
+        downloaded_tracks.sort(key=lambda x: float(x.get("duration") or 999999.0), reverse=False)
         self._save_history()
-        logger.info(f"✅ Successfully downloaded {len(downloaded_tracks)} unique tracks (ordered by views: highest to lowest).")
+        logger.info(f"✅ Successfully downloaded {len(downloaded_tracks)} unique tracks (ordered by length: shortest to longest).")
         return downloaded_tracks
 
 
