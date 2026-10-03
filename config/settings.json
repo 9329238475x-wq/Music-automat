@@ -100,7 +100,7 @@
     }
   },
   "scraper": {
-    "max_track_age_hours": 11.0,
+    "max_track_age_hours": 24.0,
     "max_tracks_per_channel": 1,
     "min_track_duration_seconds": 100.0,
     "max_track_duration_seconds": 840.0,

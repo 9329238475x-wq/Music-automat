@@ -71,7 +71,7 @@ class DJScraper:
         Scans a single channel for its newest valid video using fast yt-dlp metadata.
         STRICT RULES:
         1. At most 1 song from this channel.
-        2. STRICT 11-HOUR RULE: If no video was uploaded within the last 11 hours, SKIP channel entirely!
+        2. STRICT 24-HOUR RULE: If no video was uploaded within the last 24 hours, SKIP channel entirely!
         3. Skips shorts (<100s) and long nonstop mixes (>840s / 14 mins).
         4. Skips previously used songs in history.
         5. Skips any song containing Sound Check / Frequency test keywords.
@@ -83,7 +83,7 @@ class DJScraper:
         videos_url = f"{url.rstrip('/')}/videos"
 
         # Configurable max age rule (STRICT 11 HOURS DEFAULT)
-        max_age_hours = float(self.settings.get("scraper", {}).get("max_track_age_hours", 11.0))
+        max_age_hours = float(self.settings.get("scraper", {}).get("max_track_age_hours", 24.0))
 
         cmd = [
             "yt-dlp",
@@ -119,7 +119,7 @@ class DJScraper:
                 if not vid_id or vid_id in self.history:
                     continue
 
-                # 1. STRICT 11-HOUR RULE: Song must be uploaded within last 11 hours!
+                # 1. STRICT 24-HOUR RULE: Song must be uploaded within last 11 hours!
                 try:
                     timestamp = float(ts_str) if ts_str and ts_str != "None" else 0.0
                 except (ValueError, TypeError):
@@ -153,7 +153,7 @@ class DJScraper:
                 except (ValueError, TypeError):
                     view_cnt = 0
 
-                logger.info(f"[ACCEPTED 11H] ({age_hours:.1f}h ago <= {max_age_hours}h): [{name}] {title[:45]}")
+                logger.info(f"[ACCEPTED 24H] ({age_hours:.1f}h ago <= {max_age_hours}h): [{name}] {title[:45]}")
                 return {
                     "id": vid_id,
                     "title": title,
