@@ -3,7 +3,7 @@ DJ Audio Engine & Seamless Nonstop DJ Transition Module
 1. Cuts unwanted intro (first 10s) and outro (last 10s) of every track to eliminate jingles and channel promos.
 2. Applies smooth 1.5s fade-in and 1.5s fade-out on every song.
 3. Overlaps songs with seamless crossfade (zero blank gap, zero abrupt cuts, zero artificial sound effects).
-4. Anti-Fingerprint protection: Super Pitch (+20%), tempo offset, DJ sub-bass boost & EBU R128 loudness.
+4. Anti-Fingerprint protection: Natural DJ Pitch (+5% / 1.05x), tempo offset, DJ sub-bass boost & EBU R128 loudness.
 5. Produces master continuous 320 kbps MP3 and clickable YouTube tracklist chapters.
 """
 
@@ -57,7 +57,7 @@ class DJAudioEngine:
         cut_intro_sec: float = 10.0,
         cut_outro_sec: float = 10.0,
         fade_sec: float = 1.5,
-        pitch_factor: float = 1.20
+        pitch_factor: float = 1.05
     ) -> bool:
         """
         Processes an individual song for the nonstop DJ mix:
@@ -65,7 +65,7 @@ class DJAudioEngine:
         - Trims trailing 10s to eliminate outros / promo announcements.
         - Adds smooth fade-in (1.5s) at the start so the song enters gently.
         - Adds smooth fade-out (1.5s) at the end so the song exits smoothly.
-        - Applies Anti-Fingerprint (+20% pitch & tempo offset, +3.0 dB sub-bass boost around 60Hz, +2.0 dB treble)
+        - Applies Anti-Fingerprint (+5% pitch & tempo offset, +3.0 dB sub-bass boost around 60Hz, +2.0 dB treble)
           to completely eliminate YouTube Content ID copyright claims.
         - Normalizes to broadcast standard EBU R128 (-14 LUFS, -1.0 dBTP).
         """
