@@ -91,10 +91,10 @@ class DJAudioEngine:
             f"afade=t=in:st=0:d={fade_sec:.2f},"
             f"afade=t=out:st={fade_out_start:.2f}:d={fade_sec:.2f},"
             f"asetrate=44100*{eff_pitch:.4f},"
-            f"aresample=44100,"
+            f"aresample=44100:resample_cutoff=1.0:precision=28:filter_type=kaiser:dither_method=triangular,"
             f"equalizer=f=60:width_type=h:width=50:g=3.0,"
             f"treble=g=2.0,"
-            f"loudnorm=I=-14:TP=-1.0:LRA=11,"
+            f"loudnorm=I=-14:TP=-1.0:LRA=11:linear=true,"
             f"aformat=sample_fmts=s16:sample_rates=44100:channel_layouts=stereo"
         )
 
@@ -102,7 +102,7 @@ class DJAudioEngine:
             "ffmpeg", "-y",
             "-i", in_file,
             "-af", filter_chain,
-            "-b:a", "320k",
+            "-c:a", "pcm_s16le",
             out_file
         ]
         res = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -135,7 +135,7 @@ class DJAudioEngine:
             src_audio = t.get("audio_path")
             if not src_audio or not os.path.exists(src_audio):
                 return None
-            norm_audio = os.path.join(self.temp_dir, f"dj_track_{i:02d}.mp3")
+            norm_audio = os.path.join(self.temp_dir, f"dj_track_{i:02d}.wav")
             if not os.path.exists(norm_audio):
                 logger.info(f"[{i}/{len(tracks)}] Processing DJ track: {t['title'][:35]}...")
                 ok = self.process_dj_track(
@@ -217,7 +217,9 @@ class DJAudioEngine:
             *inputs,
             "-filter_complex", filter_complex,
             "-map", f"[{prev_label}]",
+            "-c:a", "libmp3lame",
             "-b:a", "320k",
+            "-q:a", "0",
             "-ar", "44100",
             master_output_path
         ]

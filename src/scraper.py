@@ -222,7 +222,7 @@ class DJScraper:
         idx, total, track = item
         vid_id = track["id"]
         out_prefix = os.path.join(self.downloads_dir, f"track_{idx:02d}_{vid_id}")
-        audio_out = f"{out_prefix}.mp3"
+        audio_out = f"{out_prefix}.wav"
         thumb_out = f"{out_prefix}.jpg"
 
         if os.path.exists(audio_out) and os.path.exists(thumb_out):
@@ -236,8 +236,7 @@ class DJScraper:
             "--js-runtimes", "node",
             "--extractor-args", "youtube:player_client=android,web,tv",
             "-x",
-            "--audio-format", "mp3",
-            "--audio-quality", "320k",
+            "--audio-format", "wav",
             "--write-thumbnail",
             "--convert-thumbnails", "jpg",
             "-o", f"{out_prefix}.%(ext)s",
