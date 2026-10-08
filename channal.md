@@ -4,11 +4,11 @@
 
 ---
 
-## 📻 चैनल 1: Theth Nagpuri Mix - Pure Theth Nagpuri DJ Dance Mix (40 Channels)
-- **कुल चैनल्स:** 40 (100% सत्यापित शुद्ध Theth Nagpuri Single-Track DJ Remixers)
+## 📻 चैनल 1: Theth Nagpuri Mix - Pure Theth Nagpuri DJ Dance Mix (41 Channels)
+- **कुल चैनल्स:** 41 (100% सत्यापित शुद्ध Theth Nagpuri Single-Track DJ Remixers)
 - **विशेषता:** 0% नॉनस्टॉप मिक्स (सभी 2-6 मिनट के सिंगल ट्रैक), 0% Raw Official Video / Singer Video, 0% भक्ति, प्रत्येक चैनल का प्रथम (Latest) वीडियो लाइव DJ Remix सत्यापित।
 
-### ✅ वेरिफ़ाइड 40 एक्टिव शुद्ध नागपुरी DJ Remix चैनल्स
+### ✅ वेरिफ़ाइड 41 एक्टिव शुद्ध नागपुरी DJ Remix चैनल्स
 
 | # | चैनल का नाम | हैंडल / URL | जॉनर / प्रकार |
 |---|---|---|---|
@@ -30,37 +30,38 @@
 | 16 | **◀️Nagpuri Mixing Boyzz▶️** | [@hardremixer1](https://www.youtube.com/@hardremixer1) | Theth Nagpuri DJ Remix |
 | 17 | **Dj ram Babu Rajpur 807 - 2.0** | [@rambaburajpur_807](https://www.youtube.com/@rambaburajpur_807) | Theth Nagpuri DJ Remix |
 | 18 | **Dj Nagpuri Topic** | [@nagpuri_topic_999](https://www.youtube.com/@nagpuri_topic_999) | Theth Nagpuri DJ Remix |
-| 19 | **Nagpuri kita** | [https://www.youtube.com/channel/UCRKzRwEwHxyoKZJnXZIYQAA](https://www.youtube.com/channel/UCRKzRwEwHxyoKZJnXZIYQAA) | Theth Nagpuri DJ Remix |
-| 20 | **Dj Umesh Kena** | [https://www.youtube.com/channel/UCnbnCAa5CMYHnTI6HxIjcLQ](https://www.youtube.com/channel/UCnbnCAa5CMYHnTI6HxIjcLQ) | Theth Nagpuri DJ Remix |
-| 21 | **DJ LISEN BHURKUNDA KING NO 1** | [https://www.youtube.com/channel/UCuaM2SYS5_C7IIE0AuaA46w](https://www.youtube.com/channel/UCuaM2SYS5_C7IIE0AuaA46w) | Theth Nagpuri DJ Remix |
-| 22 | **Dj Anuj Padma** | [https://www.youtube.com/channel/UCWw1ZBxtPektavJD5MaFC1Q](https://www.youtube.com/channel/UCWw1ZBxtPektavJD5MaFC1Q) | Theth Nagpuri DJ Remix |
-| 23 | **Dj sanjay khunti** | [https://www.youtube.com/channel/UC5rqGyPPgPThVn2OsLC3BAA](https://www.youtube.com/channel/UC5rqGyPPgPThVn2OsLC3BAA) | Theth Nagpuri DJ Remix |
-| 24 | **DJ AKASH SITAPUR** | [https://www.youtube.com/channel/UCy4GG2pmPpDVwrY3NvFHPmg](https://www.youtube.com/channel/UCy4GG2pmPpDVwrY3NvFHPmg) | Theth Nagpuri DJ Remix |
-| 25 | **DJ deepak Remix** | [https://www.youtube.com/channel/UCMyMHy5UPzTecMWy6ohapRg](https://www.youtube.com/channel/UCMyMHy5UPzTecMWy6ohapRg) | Theth Nagpuri DJ Remix |
-| 26 | **Sanam dj balrampur** | [https://www.youtube.com/channel/UCKf7QM0Yf6nRt8xseoCeFJg](https://www.youtube.com/channel/UCKf7QM0Yf6nRt8xseoCeFJg) | Theth Nagpuri DJ Remix |
-| 27 | **DJ Rajesh Kusum kona  UT Vibration beat mix** | [https://www.youtube.com/channel/UCRSfYPIziVz3f9nwX8elMlQ](https://www.youtube.com/channel/UCRSfYPIziVz3f9nwX8elMlQ) | Theth Nagpuri DJ Remix |
-| 28 | **DJ SARZEN REMIX** | [https://www.youtube.com/channel/UC5aXQ1QmaSvAIFglyt8nnKQ](https://www.youtube.com/channel/UC5aXQ1QmaSvAIFglyt8nnKQ) | Theth Nagpuri DJ Remix |
-| 29 | **X Musc** | [https://www.youtube.com/channel/UC0yaQkM_dMW00LCvOXhJ9qA](https://www.youtube.com/channel/UC0yaQkM_dMW00LCvOXhJ9qA) | Theth Nagpuri DJ Remix |
-| 30 | **Zilli Nagpuri** | [https://www.youtube.com/channel/UCB1LvIxWxNt2nd1FdT22s_g](https://www.youtube.com/channel/UCB1LvIxWxNt2nd1FdT22s_g) | Theth Nagpuri DJ Remix |
-| 31 | **DJ ANSEL JASHPUR** | [https://www.youtube.com/channel/UCYUwu4McWED3hwpTFCN2D2A](https://www.youtube.com/channel/UCYUwu4McWED3hwpTFCN2D2A) | Theth Nagpuri DJ Remix |
-| 32 | **Mukesh Music Official** | [https://www.youtube.com/channel/UCB-jncdNi5VkxhpgR7McL5g](https://www.youtube.com/channel/UCB-jncdNi5VkxhpgR7McL5g) | Theth Nagpuri DJ Remix |
-| 33 | **Mix By AN** | [https://www.youtube.com/channel/UCjCooB4L4G3Q9Wf7aFXwCQg](https://www.youtube.com/channel/UCjCooB4L4G3Q9Wf7aFXwCQg) | Theth Nagpuri DJ Remix |
-| 34 | **Dj Deepu Official** | [https://www.youtube.com/channel/UChB806_FGbRwAR_O_-cN2Uw](https://www.youtube.com/channel/UChB806_FGbRwAR_O_-cN2Uw) | Theth Nagpuri DJ Remix |
-| 35 | **AS Music Production No.1** | [https://www.youtube.com/channel/UCY7AAK6o1PTahAkTHssypeQ](https://www.youtube.com/channel/UCY7AAK6o1PTahAkTHssypeQ) | Theth Nagpuri DJ Remix |
-| 36 | **DJ PINTU SITAPUR** | [https://www.youtube.com/channel/UC6Wg-M248fj6QmAbgtsKefQ](https://www.youtube.com/channel/UC6Wg-M248fj6QmAbgtsKefQ) | Theth Nagpuri DJ Remix |
-| 37 | **DJ Rahim RK Music** | [https://www.youtube.com/channel/UCQtkK2_LcSCsDCuL01fBoCA](https://www.youtube.com/channel/UCQtkK2_LcSCsDCuL01fBoCA) | Theth Nagpuri DJ Remix |
-| 38 | **Dj Pushpa Jharkhand** | [https://www.youtube.com/channel/UCQhqvB6kJVkfO8-s9XgLeCQ](https://www.youtube.com/channel/UCQhqvB6kJVkfO8-s9XgLeCQ) | Theth Nagpuri DJ Remix |
-| 39 | **DJ RAHUL BHURKUNDA LRS KING** | [https://www.youtube.com/channel/UCqFd4Twqt-rjs7cPzCSUc9Q](https://www.youtube.com/channel/UCqFd4Twqt-rjs7cPzCSUc9Q) | Theth Nagpuri DJ Remix |
-| 40 | **Choice Exclusive Rémíx** | [https://www.youtube.com/channel/UCdwDfmFzJtSLLG7EceEyqyQ](https://www.youtube.com/channel/UCdwDfmFzJtSLLG7EceEyqyQ) | Theth Nagpuri DJ Remix |
+| 20 | **Dj Arman Jashpur** | [@dj_arman_jashpur_official](https://www.youtube.com/@dj_arman_jashpur_official) | Theth Nagpuri DJ Remix |
+| 20 | **Nagpuri kita** | [https://www.youtube.com/channel/UCRKzRwEwHxyoKZJnXZIYQAA](https://www.youtube.com/channel/UCRKzRwEwHxyoKZJnXZIYQAA) | Theth Nagpuri DJ Remix |
+| 21 | **Dj Umesh Kena** | [https://www.youtube.com/channel/UCnbnCAa5CMYHnTI6HxIjcLQ](https://www.youtube.com/channel/UCnbnCAa5CMYHnTI6HxIjcLQ) | Theth Nagpuri DJ Remix |
+| 22 | **DJ LISEN BHURKUNDA KING NO 1** | [https://www.youtube.com/channel/UCuaM2SYS5_C7IIE0AuaA46w](https://www.youtube.com/channel/UCuaM2SYS5_C7IIE0AuaA46w) | Theth Nagpuri DJ Remix |
+| 23 | **Dj Anuj Padma** | [https://www.youtube.com/channel/UCWw1ZBxtPektavJD5MaFC1Q](https://www.youtube.com/channel/UCWw1ZBxtPektavJD5MaFC1Q) | Theth Nagpuri DJ Remix |
+| 24 | **Dj sanjay khunti** | [https://www.youtube.com/channel/UC5rqGyPPgPThVn2OsLC3BAA](https://www.youtube.com/channel/UC5rqGyPPgPThVn2OsLC3BAA) | Theth Nagpuri DJ Remix |
+| 25 | **DJ AKASH SITAPUR** | [https://www.youtube.com/channel/UCy4GG2pmPpDVwrY3NvFHPmg](https://www.youtube.com/channel/UCy4GG2pmPpDVwrY3NvFHPmg) | Theth Nagpuri DJ Remix |
+| 26 | **DJ deepak Remix** | [https://www.youtube.com/channel/UCMyMHy5UPzTecMWy6ohapRg](https://www.youtube.com/channel/UCMyMHy5UPzTecMWy6ohapRg) | Theth Nagpuri DJ Remix |
+| 27 | **Sanam dj balrampur** | [https://www.youtube.com/channel/UCKf7QM0Yf6nRt8xseoCeFJg](https://www.youtube.com/channel/UCKf7QM0Yf6nRt8xseoCeFJg) | Theth Nagpuri DJ Remix |
+| 28 | **DJ Rajesh Kusum kona  UT Vibration beat mix** | [https://www.youtube.com/channel/UCRSfYPIziVz3f9nwX8elMlQ](https://www.youtube.com/channel/UCRSfYPIziVz3f9nwX8elMlQ) | Theth Nagpuri DJ Remix |
+| 29 | **DJ SARZEN REMIX** | [https://www.youtube.com/channel/UC5aXQ1QmaSvAIFglyt8nnKQ](https://www.youtube.com/channel/UC5aXQ1QmaSvAIFglyt8nnKQ) | Theth Nagpuri DJ Remix |
+| 30 | **X Musc** | [https://www.youtube.com/channel/UC0yaQkM_dMW00LCvOXhJ9qA](https://www.youtube.com/channel/UC0yaQkM_dMW00LCvOXhJ9qA) | Theth Nagpuri DJ Remix |
+| 31 | **Zilli Nagpuri** | [https://www.youtube.com/channel/UCB1LvIxWxNt2nd1FdT22s_g](https://www.youtube.com/channel/UCB1LvIxWxNt2nd1FdT22s_g) | Theth Nagpuri DJ Remix |
+| 32 | **DJ ANSEL JASHPUR** | [https://www.youtube.com/channel/UCYUwu4McWED3hwpTFCN2D2A](https://www.youtube.com/channel/UCYUwu4McWED3hwpTFCN2D2A) | Theth Nagpuri DJ Remix |
+| 33 | **Mukesh Music Official** | [https://www.youtube.com/channel/UCB-jncdNi5VkxhpgR7McL5g](https://www.youtube.com/channel/UCB-jncdNi5VkxhpgR7McL5g) | Theth Nagpuri DJ Remix |
+| 34 | **Mix By AN** | [https://www.youtube.com/channel/UCjCooB4L4G3Q9Wf7aFXwCQg](https://www.youtube.com/channel/UCjCooB4L4G3Q9Wf7aFXwCQg) | Theth Nagpuri DJ Remix |
+| 35 | **Dj Deepu Official** | [https://www.youtube.com/channel/UChB806_FGbRwAR_O_-cN2Uw](https://www.youtube.com/channel/UChB806_FGbRwAR_O_-cN2Uw) | Theth Nagpuri DJ Remix |
+| 36 | **AS Music Production No.1** | [https://www.youtube.com/channel/UCY7AAK6o1PTahAkTHssypeQ](https://www.youtube.com/channel/UCY7AAK6o1PTahAkTHssypeQ) | Theth Nagpuri DJ Remix |
+| 37 | **DJ PINTU SITAPUR** | [https://www.youtube.com/channel/UC6Wg-M248fj6QmAbgtsKefQ](https://www.youtube.com/channel/UC6Wg-M248fj6QmAbgtsKefQ) | Theth Nagpuri DJ Remix |
+| 38 | **DJ Rahim RK Music** | [https://www.youtube.com/channel/UCQtkK2_LcSCsDCuL01fBoCA](https://www.youtube.com/channel/UCQtkK2_LcSCsDCuL01fBoCA) | Theth Nagpuri DJ Remix |
+| 39 | **Dj Pushpa Jharkhand** | [https://www.youtube.com/channel/UCQhqvB6kJVkfO8-s9XgLeCQ](https://www.youtube.com/channel/UCQhqvB6kJVkfO8-s9XgLeCQ) | Theth Nagpuri DJ Remix |
+| 40 | **DJ RAHUL BHURKUNDA LRS KING** | [https://www.youtube.com/channel/UCqFd4Twqt-rjs7cPzCSUc9Q](https://www.youtube.com/channel/UCqFd4Twqt-rjs7cPzCSUc9Q) | Theth Nagpuri DJ Remix |
+| 41 | **Choice Exclusive Rémíx** | [https://www.youtube.com/channel/UCdwDfmFzJtSLLG7EceEyqyQ](https://www.youtube.com/channel/UCdwDfmFzJtSLLG7EceEyqyQ) | Theth Nagpuri DJ Remix |
 
 
-## 🔊 चैनल 2: Sumit RMX 6.0 - Chhattisgarhiya Regional Hard Vibration & Tapori Mix (40 Channels)
+## 🔊 चैनल 2: Sumit RMX 6.0 - Chhattisgarhiya Regional Hard Vibration & Tapori Mix (38 Channels)
 > **यूट्यूब चैनल:** Sumit RMX 6.0 (@sumitrmx6.0) &bull; https://www.youtube.com/@sumitrmx6.0  
 > **कंटेंट टाइप:** 100% छत्तीसगढ़िया ऑडियंस स्पेशल: CG, ठेठ नागपुरी, भोजपुरी और टपोरी वाइब्रेशन रीमिक्स (नो साउंड चेक, नो हरियाणवी, नो मेरठ)  
 > **अपलोड समय:** रोज़ाना शाम 07:00 PM IST (01:30 UTC)  
-> **विशेष नियम:** सभी 40 चैनल्स 100% एक्टिव हैं (केवल सिंगल वाइब्रेशन ट्रैक्स, कोई नॉन-स्टॉप नहीं) (2-3 दिन के अंदर अपलोड किए हुए) और कोई साउंड चेक/फ्रीक्वेंसी टेस्ट शामिल नहीं है।
+> **विशेष नियम:** सभी 38 चैनल्स 100% एक्टिव हैं (केवल सिंगल वाइब्रेशन ट्रैक्स, कोई नॉन-स्टॉप नहीं) (2-3 दिन के अंदर अपलोड किए हुए) और कोई साउंड चेक/फ्रीक्वेंसी टेस्ट शामिल नहीं है।
 
-### ✅ वेरिफ़ाइड 40 एक्टिव छत्तीसगढ़िया व वाइब्रेशन चैनल्स (Pure Single-Track Remix Only)
+### ✅ वेरिफ़ाइड 38 एक्टिव छत्तीसगढ़िया व वाइब्रेशन चैनल्स (Pure Single-Track Remix Only)
 | क्र. | चैनल का नाम (Channel Name) | यूट्यूब हैंडल (Handle) | यूट्यूब लिंक (YouTube URL) |
 |:---:|:---|:---|:---|
 | 1 | **Dj Durgesh Surajpur** | `@Dj_durgeshsurajpur` | https://www.youtube.com/@Dj_durgeshsurajpur |
@@ -78,31 +79,29 @@
 | 13 | **DJ SARAN PGM MIX** | `@ProgramMix-i9g` | https://www.youtube.com/@ProgramMix-i9g |
 | 14 | **DJ BN BHAI** | `@djbnbhai29` | https://www.youtube.com/@djbnbhai29 |
 | 15 | **Dj Siyan Bhai Rmx** | `@DjSiyanBhaiRmx1` | https://www.youtube.com/@DjSiyanBhaiRmx1 |
-| 16 | **Dj Goutam Raj** | `@DjGoutamRaj` | https://www.youtube.com/@DjGoutamRaj |
-| 17 | **CG REMIX TURA 2.0** | `@CGRemixTura` | https://www.youtube.com/@CGRemixTura |
-| 18 | **Dj SuRaj TunGa 2.0** | `@DjSuRajTunGa2.0` | https://www.youtube.com/@DjSuRajTunGa2.0 |
-| 19 | **Dj Nagesh MNP** | `@DjNageshMnp443` | https://www.youtube.com/@DjNageshMnp443 |
-| 20 | **DJ BHEEM EXCLUSIVE** | `@DJBHEEMEXCLUSIVE` | https://www.youtube.com/@DJBHEEMEXCLUSIVE |
-| 21 | **DZ SATYAM BABU 00** | `@DZSATYAMBABU00` | https://www.youtube.com/@DZSATYAMBABU00 |
-| 22 | **DJ UMESH MUNGELI** | `@DJUMESHMUNGELI` | https://www.youtube.com/@DJUMESHMUNGELI |
-| 23 | **Umesh Babu 1** | `@UmeshBabu1-b30` | https://www.youtube.com/@UmeshBabu1-b30 |
-| 24 | **Birendra Bhai 2.0** | `@Birendra_Bhai_2.0` | https://www.youtube.com/@Birendra_Bhai_2.0 |
-| 25 | **Bhageshwar Digital Studio** | `@djbhageshwarmandla` | https://www.youtube.com/@djbhageshwarmandla |
-| 26 | **Dj Prakash Salka Ghutrapara** | `@djprakashsalkaghutrapara` | https://www.youtube.com/@djprakashsalkaghutrapara |
-| 27 | **DJ SUMIT MANDLA 0.2** | `@djsumitmandla0.2` | https://www.youtube.com/@djsumitmandla0.2 |
-| 28 | **DJ NK PRODUCTion CHHINDWARA** | `@djnkproductioncwa` | https://www.youtube.com/@djnkproductioncwa |
-| 29 | **DJ VK MUSIC** | `@vinay_official09` | https://www.youtube.com/@vinay_official09 |
-| 30 | **DJ SONU PANDEY** | `@djsonupandey` | https://www.youtube.com/@djsonupandey |
-| 31 | **Dj Raju Bhai** | `@djrajuofficial3435` | https://www.youtube.com/@djrajuofficial3435 |
-| 32 | **DZ SUMIT PROFESSIONAL** | `@dzsumitprofessional` | https://www.youtube.com/@dzsumitprofessional |
-| 33 | **Dj Arman Jashpur** | `@dj_arman_jashpur_official` | https://www.youtube.com/@dj_arman_jashpur_official |
-| 34 | **DJ SK JTL** | `@djskjtl` | https://www.youtube.com/@djskjtl |
-| 35 | **𝐃𝐉 𝐒𝐞𝐲𝐚𝐦 𝐆𝐮𝐦𝐥𝐚** | `@siyammusiclover8541` | https://www.youtube.com/@siyammusiclover8541 |
-| 36 | **DJ HITESH RJN** | `@DJHiteshRjn` | https://www.youtube.com/@DJHiteshRjn |
-| 37 | **DJ JSR PRESENT** | `@djjsrpresent` | https://www.youtube.com/@djjsrpresent |
-| 38 | **Dj Nemu Sagarpur** | `@DjNemuSagarpur` | https://www.youtube.com/@DjNemuSagarpur |
-| 39 | **DJ Nagesh Rjn** | `@djnageshrjn` | https://www.youtube.com/@djnageshrjn |
-| 40 | **CG BASS ZONE** | `@cgbasszone` | https://www.youtube.com/@cgbasszone |
+| 16 | **CG REMIX TURA 2.0** | `@CGRemixTura` | https://www.youtube.com/@CGRemixTura |
+| 17 | **Dj SuRaj TunGa 2.0** | `@DjSuRajTunGa2.0` | https://www.youtube.com/@DjSuRajTunGa2.0 |
+| 18 | **Dj Nagesh MNP** | `@DjNageshMnp443` | https://www.youtube.com/@DjNageshMnp443 |
+| 19 | **DJ BHEEM EXCLUSIVE** | `@DJBHEEMEXCLUSIVE` | https://www.youtube.com/@DJBHEEMEXCLUSIVE |
+| 20 | **DZ SATYAM BABU 00** | `@DZSATYAMBABU00` | https://www.youtube.com/@DZSATYAMBABU00 |
+| 21 | **DJ UMESH MUNGELI** | `@DJUMESHMUNGELI` | https://www.youtube.com/@DJUMESHMUNGELI |
+| 22 | **Umesh Babu 1** | `@UmeshBabu1-b30` | https://www.youtube.com/@UmeshBabu1-b30 |
+| 23 | **Birendra Bhai 2.0** | `@Birendra_Bhai_2.0` | https://www.youtube.com/@Birendra_Bhai_2.0 |
+| 24 | **Bhageshwar Digital Studio** | `@djbhageshwarmandla` | https://www.youtube.com/@djbhageshwarmandla |
+| 25 | **Dj Prakash Salka Ghutrapara** | `@djprakashsalkaghutrapara` | https://www.youtube.com/@djprakashsalkaghutrapara |
+| 26 | **DJ SUMIT MANDLA 0.2** | `@djsumitmandla0.2` | https://www.youtube.com/@djsumitmandla0.2 |
+| 27 | **DJ NK PRODUCTion CHHINDWARA** | `@djnkproductioncwa` | https://www.youtube.com/@djnkproductioncwa |
+| 28 | **DJ VK MUSIC** | `@vinay_official09` | https://www.youtube.com/@vinay_official09 |
+| 29 | **DJ SONU PANDEY** | `@djsonupandey` | https://www.youtube.com/@djsonupandey |
+| 30 | **Dj Raju Bhai** | `@djrajuofficial3435` | https://www.youtube.com/@djrajuofficial3435 |
+| 31 | **DZ SUMIT PROFESSIONAL** | `@dzsumitprofessional` | https://www.youtube.com/@dzsumitprofessional |
+| 32 | **DJ SK JTL** | `@djskjtl` | https://www.youtube.com/@djskjtl |
+| 33 | **𝐃𝐉 𝐒𝐞𝐲𝐚𝐦 𝐆𝐮𝐦𝐥𝐚** | `@siyammusiclover8541` | https://www.youtube.com/@siyammusiclover8541 |
+| 34 | **DJ HITESH RJN** | `@DJHiteshRjn` | https://www.youtube.com/@DJHiteshRjn |
+| 35 | **DJ JSR PRESENT** | `@djjsrpresent` | https://www.youtube.com/@djjsrpresent |
+| 36 | **Dj Nemu Sagarpur** | `@DjNemuSagarpur` | https://www.youtube.com/@DjNemuSagarpur |
+| 37 | **DJ Nagesh Rjn** | `@djnageshrjn` | https://www.youtube.com/@djnageshrjn |
+| 38 | **CG BASS ZONE** | `@cgbasszone` | https://www.youtube.com/@cgbasszone |
 
 
 ---
