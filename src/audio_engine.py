@@ -49,6 +49,38 @@ class DJAudioEngine:
         secs = int(seconds % 60)
         return f"{hrs:02d}:{mins:02d}:{secs:02d}"
 
+    def _extract_song_keywords(self, title: str, remixer: str = "") -> set:
+        """Extracts core distinguishing song keywords from title, stripping promos and stop words."""
+        import re
+        t = title.lower()
+        if remixer:
+            t = t.replace(remixer.lower(), " ")
+        t = re.sub(r"\[.*?\]|\(.*?\)", " ", t)
+        t = re.sub(r"(?:\+?91|mob|contact|no|call)?[-\s:]*[6-9]\d{9}", " ", t)
+        stop_words = {
+            "dj", "remix", "rmx", "song", "songs", "video", "audio", "mp3", "hd", "4k", "hq",
+            "official", "original", "fl", "studio", "competition", "roadshow", "vibration",
+            "sound", "check", "soundcheck", "test", "bass", "boosted", "dhamaka", "superhit",
+            "hit", "new", "latest", "theth", "dance", "mix", "nonstop", "jukebox", "mashup",
+            "2024", "2025", "2026", "2027", "nagpuri", "bhojpuri", "cg", "khortha", "purulia",
+            "jharkhandi", "by", "ft", "feat", "prod", "present", "presents", "re", "ho", "se",
+            "डीजे", "रीमिक्स", "गाने", "गाना", "नागपुरी", "भोजपुरी", "नया", "धमाका", "सुपरहिट"
+        }
+        words = re.findall(r"[\u0900-\u097f]+|[a-z0-9]{3,}", t)
+        return {w for w in words if w not in stop_words}
+
+    def _is_duplicate_song(self, title1: str, rmx1: str, title2: str, rmx2: str) -> bool:
+        """Checks if two titles refer to the exact same song using keyword fingerprinting."""
+        kw1 = self._extract_song_keywords(title1, rmx1)
+        kw2 = self._extract_song_keywords(title2, rmx2)
+        if not kw1 or not kw2:
+            return False
+        intersection = kw1.intersection(kw2)
+        union = kw1.union(kw2)
+        similarity = len(intersection) / len(union) if union else 0.0
+        is_subset = len(intersection) >= 2 and (len(intersection) == len(kw1) or len(intersection) == len(kw2))
+        return similarity >= 0.50 or len(intersection) >= 3 or is_subset
+
     def process_dj_track(
         self,
         in_file: str,
@@ -123,7 +155,18 @@ class DJAudioEngine:
         if not tracks:
             raise ValueError("No tracks provided to assemble.")
 
-        logger.info(f"Preparing {len(tracks)} tracks for seamless Nonstop DJ assembly...")
+        # Step 0: Secondary Duplicate Song Protection (Exact Title/Remixer Keyword Fingerprint)
+        deduped_tracks = []
+        for t in tracks:
+            t_title = t.get("title", "")
+            t_remixer = t.get("remixer", "")
+            if any(self._is_duplicate_song(t_title, t_remixer, ex.get("title", ""), ex.get("remixer", "")) for ex in deduped_tracks):
+                logger.warning(f"⚠️ AudioEngine deduplication: Skipping duplicate song in mix: '{t_title[:45]}' ({t_remixer})")
+                continue
+            deduped_tracks.append(t)
+        tracks = deduped_tracks
+
+        logger.info(f"Preparing {len(tracks)} unique tracks for seamless Nonstop DJ assembly...")
         master_output_path = os.path.join(self.output_dir, output_name)
         tracklist_path = os.path.join(self.output_dir, "tracklist.txt")
 
@@ -179,6 +222,7 @@ class DJAudioEngine:
             line = f"{ts} - {idx+1}. {credit_line}"
             tracklist_lines.append(line)
             chapters.append({
+                **t,
                 "index": idx + 1,
                 "timestamp": ts,
                 "seconds": current_time,

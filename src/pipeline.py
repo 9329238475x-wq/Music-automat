@@ -64,8 +64,9 @@ class DJProductionPipeline:
             crossfade_sec=1.5,
             output_name=audio_out_name
         )
+        tracks = chapters  # Strictly use deduplicated and successfully assembled tracks!
 
-        logger.info(f"Step 2 Complete: Master audio assembled ({master_audio_path}).")
+        logger.info(f"Step 2 Complete: Master audio assembled ({master_audio_path}) with {len(tracks)} unique tracks.")
 
         # -----------------------------------------------------------------
         # STEP 3: Thumbnail Wall Collage & Avee Player Bass Visualizer

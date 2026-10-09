@@ -183,10 +183,43 @@ class DJScraper:
             logger.debug(f"Error checking channel {name}: {e}")
         return None
 
+    def _extract_song_keywords(self, title: str, remixer: str = "") -> set:
+        """Extracts core distinguishing song keywords from title, stripping promos and stop words."""
+        import re
+        t = title.lower()
+        if remixer:
+            t = t.replace(remixer.lower(), " ")
+        t = re.sub(r"\[.*?\]|\(.*?\)", " ", t)
+        t = re.sub(r"(?:\+?91|mob|contact|no|call)?[-\s:]*[6-9]\d{9}", " ", t)
+        stop_words = {
+            "dj", "remix", "rmx", "song", "songs", "video", "audio", "mp3", "hd", "4k", "hq",
+            "official", "original", "fl", "studio", "competition", "roadshow", "vibration",
+            "sound", "check", "soundcheck", "test", "bass", "boosted", "dhamaka", "superhit",
+            "hit", "new", "latest", "theth", "dance", "mix", "nonstop", "jukebox", "mashup",
+            "2024", "2025", "2026", "2027", "nagpuri", "bhojpuri", "cg", "khortha", "purulia",
+            "jharkhandi", "by", "ft", "feat", "prod", "present", "presents", "re", "ho", "se",
+            "डीजे", "रीमिक्स", "गाने", "गाना", "नागपुरी", "भोजपुरी", "नया", "धमाका", "सुपरहिट"
+        }
+        words = re.findall(r"[\u0900-\u097f]+|[a-z0-9]{3,}", t)
+        keywords = {w for w in words if w not in stop_words}
+        return keywords
+
+    def _is_duplicate_song(self, title1: str, rmx1: str, title2: str, rmx2: str) -> bool:
+        """Checks if two titles refer to the exact same song using keyword fingerprinting."""
+        kw1 = self._extract_song_keywords(title1, rmx1)
+        kw2 = self._extract_song_keywords(title2, rmx2)
+        if not kw1 or not kw2:
+            return False
+        intersection = kw1.intersection(kw2)
+        union = kw1.union(kw2)
+        similarity = len(intersection) / len(union) if union else 0.0
+        is_subset = len(intersection) >= 2 and (len(intersection) == len(kw1) or len(intersection) == len(kw2))
+        return similarity >= 0.50 or len(intersection) >= 3 or is_subset
+
     def discover_fresh_videos(self) -> List[Dict[str, Any]]:
         """
-        Inspects all channels concurrently with strict 1-song-per-channel enforcement.
-        Every candidate is guaranteed to be from a unique channel.
+        Inspects all channels concurrently with strict 1-song-per-channel enforcement
+        AND eliminates duplicate songs (same song remixed by different DJs).
         """
         logger.info(f"Scanning {len(self.channels)} channels for {self.profile} profile (Parallel Scanner)...")
         candidates = []
@@ -198,13 +231,35 @@ class DJScraper:
                 if res is not None:
                     candidates.append(res)
 
-        # STRICT GUARANTEE: Exactly 1 song per channel (each candidate is from a unique remixer)
+        # STRICT GUARANTEE: Exactly 1 song per channel AND 0 duplicate songs in mix!
         seen_remixers = set()
+        seen_channel_urls = set()
         unique_candidates = []
         for c in candidates:
-            if c["remixer"] not in seen_remixers:
-                seen_remixers.add(c["remixer"])
-                unique_candidates.append(c)
+            # 1. Remixer & Channel URL check: strictly 1 song per channel (case-insensitive & trimmed)
+            norm_remixer = c["remixer"].strip().lower()
+            norm_url = c.get("channel_url", "").strip().lower().rstrip("/")
+            if norm_remixer in seen_remixers or (norm_url and norm_url in seen_channel_urls):
+                logger.info(f"[SKIP DUPLICATE CHANNEL] '{c['remixer']}' already represented.")
+                continue
+
+            # 2. Song Title duplicate check: check against all already accepted tracks
+            is_dup = False
+            for existing in unique_candidates:
+                if self._is_duplicate_song(c["title"], c["remixer"], existing["title"], existing["remixer"]):
+                    logger.info(
+                        f"[SKIP DUPLICATE SONG] '{c['title'][:40]}' ({c['remixer']}) matches '{existing['title'][:40]}' ({existing['remixer']}) -> Skipping to prevent repeat song!"
+                    )
+                    is_dup = True
+                    break
+
+            if is_dup:
+                continue
+
+            seen_remixers.add(norm_remixer)
+            if norm_url:
+                seen_channel_urls.add(norm_url)
+            unique_candidates.append(c)
 
         # SORT BY DURATION ASCENDING: Shortest track length at the very top (Track 1, 2, 3...)
         unique_candidates.sort(key=lambda x: float(x.get("duration") or 999999.0), reverse=False)
