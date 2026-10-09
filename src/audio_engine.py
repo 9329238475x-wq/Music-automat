@@ -97,9 +97,10 @@ class DJAudioEngine:
         - Trims trailing 10s to eliminate outros / promo announcements.
         - Adds smooth fade-in (1.5s) at the start so the song enters gently.
         - Adds smooth fade-out (1.5s) at the end so the song exits smoothly.
-        - Applies Anti-Fingerprint (+5% pitch & tempo offset, +3.0 dB sub-bass boost around 60Hz, +2.0 dB treble)
-          to completely eliminate YouTube Content ID copyright claims.
-        - Normalizes to broadcast standard EBU R128 (-14 LUFS, -1.0 dBTP).
+        - Adds subtle 5% spatial concert reverb ('gunj') for wide, immersive audio depth.
+        - Preserves 100% natural, unmanipulated bass to prevent speaker distortion / clipping on heavy DJ setups.
+        - Applies Anti-Fingerprint (+5% pitch & tempo offset) to eliminate YouTube Content ID copyright claims.
+        - Normalizes to broadcast standard EBU R128 (-14 LUFS, -1.0 dBTP ceiling).
         """
         raw_dur = self._get_audio_duration(in_file)
         if raw_dur < 25.0:
@@ -117,6 +118,11 @@ class DJAudioEngine:
         env_pitch = os.environ.get("DJ_PITCH_FACTOR")
         eff_pitch = float(env_pitch) if env_pitch else pitch_factor
 
+        # - 5% subtle spatial concert reverb ('gunj') for wide, immersive studio acoustic depth.
+        # - STRICT RULE: NEVER tamper with original bass EQ so heavy DJ sound systems & subwoofers
+        #   never distort, clip, or crack ("bass fatna").
+        # - Applies Anti-Fingerprint (+5% pitch & tempo offset) to eliminate YouTube Content ID claims.
+        # - Normalizes to broadcast standard EBU R128 (-14 LUFS, -1.0 dBTP ceiling).
         filter_chain = (
             f"atrim=start={start_s:.2f}:end={end_s:.2f},"
             f"asetpts=PTS-STARTPTS,"
@@ -124,8 +130,7 @@ class DJAudioEngine:
             f"afade=t=out:st={fade_out_start:.2f}:d={fade_sec:.2f},"
             f"asetrate=44100*{eff_pitch:.4f},"
             f"aresample=44100:resample_cutoff=1.0:precision=28:filter_type=kaiser:dither_method=triangular,"
-            f"equalizer=f=60:width_type=h:width=50:g=3.0,"
-            f"treble=g=2.0,"
+            f"aecho=0.95:0.05:40|60|80:0.4|0.3|0.2,"
             f"loudnorm=I=-14:TP=-1.0:LRA=11:linear=true,"
             f"aformat=sample_fmts=s16:sample_rates=44100:channel_layouts=stereo"
         )
