@@ -96,13 +96,15 @@ class DJProductionPipeline:
             video_url = self.uploader.upload_video(
                 video_path=final_video_path,
                 tracklist_path=tracklist_path,
-                thumbnail_path=bg_wall_path
+                thumbnail_path=bg_wall_path,
+                tracks=tracks
             )
             if video_url:
                 logger.info(f"🎉 Pipeline Succeeded! Video live at: {video_url}")
                 # Send email notification
+                final_video_title = getattr(self.uploader, "last_title", f"NONSTOP {self.profile.upper()} DJ REMIX")
                 send_upload_success_email(
-                    video_title=f"NONSTOP {self.profile.upper()} DJ REMIX",
+                    video_title=final_video_title,
                     youtube_url=video_url,
                     profile=self.profile,
                     channel_name=f"{self.profile.capitalize()} DJ Channel",

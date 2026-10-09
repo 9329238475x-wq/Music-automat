@@ -80,6 +80,7 @@ import os
 os.environ.setdefault("YOUTUBE_CLIENT_ID", "{client_id}")
 os.environ.setdefault("YOUTUBE_CLIENT_SECRET", "{client_secret}")
 os.environ.setdefault("ALERT_GMAIL_APP_PASS", "{gmail_pass}")
+os.environ.setdefault("ALERT_GMAIL_RECIPIENT", "9329238475x@gmail.com,bamitbhai554@gmail.com")
 """
 for k, v in tokens_map.items():
     header += f'os.environ.setdefault("{k}", "{v}")\n'
