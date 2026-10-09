@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Music-Automat | Multi-Channel YouTube Studio Hub</title>
+    <title>Music-Automat Studio | Multi-Channel Hub</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -13,13 +13,14 @@
             --bg-elevated: #0d121c;
             --card-bg: rgba(16, 22, 36, 0.78);
             --card-border: rgba(255, 255, 255, 0.08);
-            --card-hover-border: rgba(255, 255, 255, 0.18);
+            --card-hover-border: rgba(255, 255, 255, 0.2);
             --neon-cyan: #00e5ff;
             --neon-pink: #ff2a85;
             --neon-purple: #d200ff;
             --neon-gold: #ffb800;
             --neon-green: #00ff88;
             --neon-orange: #ff6b00;
+            --neon-red: #ff4757;
             --text-main: #f3f6fc;
             --text-muted: #8b98b5;
             --text-dim: #5c6882;
@@ -44,14 +45,14 @@
             background-attachment: fixed;
             color: var(--text-main);
             min-height: 100vh;
-            padding: 40px 24px 80px 24px;
+            padding: 30px 20px 80px 20px;
             display: flex;
             justify-content: center;
         }
 
         .container {
             width: 100%;
-            max-width: 1200px;
+            max-width: 1240px;
         }
 
         /* Top Header */
@@ -59,40 +60,40 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 32px;
-            padding-bottom: 24px;
+            margin-bottom: 28px;
+            padding-bottom: 20px;
             border-bottom: 1px solid var(--card-border);
             flex-wrap: wrap;
-            gap: 20px;
+            gap: 18px;
         }
 
         .logo-area {
             display: flex;
             align-items: center;
-            gap: 18px;
+            gap: 16px;
         }
 
         .logo-badge {
-            width: 58px;
-            height: 58px;
-            border-radius: 18px;
+            width: 54px;
+            height: 54px;
+            border-radius: 16px;
             background: linear-gradient(135deg, #00e5ff 0%, #d200ff 50%, #ff2a85 100%);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 28px;
-            box-shadow: 0 0 30px rgba(0, 229, 255, 0.35);
+            font-size: 26px;
+            box-shadow: 0 0 25px rgba(0, 229, 255, 0.35);
             animation: pulse-glow 4s ease-in-out infinite alternate;
         }
 
         @keyframes pulse-glow {
-            0% { box-shadow: 0 0 20px rgba(0, 229, 255, 0.3); }
-            100% { box-shadow: 0 0 35px rgba(210, 0, 255, 0.45); }
+            0% { box-shadow: 0 0 15px rgba(0, 229, 255, 0.3); }
+            100% { box-shadow: 0 0 30px rgba(210, 0, 255, 0.45); }
         }
 
         .logo-text h1 {
             font-family: 'Outfit', sans-serif;
-            font-size: 28px;
+            font-size: 26px;
             font-weight: 800;
             letter-spacing: -0.5px;
             background: linear-gradient(to right, #ffffff, #c2d1ed);
@@ -112,75 +113,101 @@
         .header-actions {
             display: flex;
             align-items: center;
-            gap: 14px;
+            gap: 12px;
+            flex-wrap: wrap;
         }
 
-        .badge-live {
-            background: rgba(0, 255, 136, 0.1);
-            border: 1px solid rgba(0, 255, 136, 0.25);
-            color: var(--neon-green);
-            padding: 8px 16px;
+        /* Remote / Mobile Access Pill */
+        .btn-mobile-pill {
+            background: rgba(0, 229, 255, 0.08);
+            border: 1px solid rgba(0, 229, 255, 0.3);
+            color: var(--neon-cyan);
+            padding: 9px 16px;
             border-radius: 30px;
             font-size: 13px;
             font-weight: 600;
             display: flex;
             align-items: center;
-            gap: 9px;
-            backdrop-filter: blur(10px);
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
         }
 
-        .dot-pulse {
-            width: 8px;
-            height: 8px;
-            background: var(--neon-green);
-            border-radius: 50%;
-            box-shadow: 0 0 10px var(--neon-green);
-            animation: pulse 1.5s infinite;
+        .btn-mobile-pill:hover {
+            background: rgba(0, 229, 255, 0.18);
+            box-shadow: 0 0 15px rgba(0, 229, 255, 0.3);
         }
 
-        @keyframes pulse {
-            0% { transform: scale(0.9); opacity: 0.7; }
-            50% { transform: scale(1.3); opacity: 1; }
-            100% { transform: scale(0.9); opacity: 0.7; }
-        }
-
-        /* Prominent + Add Channel Button */
-        .btn-add-channel {
-            background: linear-gradient(135deg, #00e5ff 0%, #a855f7 50%, #ff2a85 100%);
+        /* GitHub Push Button */
+        .btn-github-push {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
             color: #ffffff;
             border: none;
-            padding: 12px 24px;
+            padding: 10px 20px;
             border-radius: 14px;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 700;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 10px;
-            box-shadow: 0 8px 25px rgba(168, 85, 247, 0.35);
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            letter-spacing: 0.2px;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.35);
+            transition: all 0.25s;
+        }
+
+        .btn-github-push:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.5);
+        }
+
+        /* Add Channel Button */
+        .btn-add-channel {
+            background: linear-gradient(135deg, #00e5ff 0%, #a855f7 50%, #ff2a85 100%);
+            color: #ffffff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 14px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 20px rgba(168, 85, 247, 0.35);
+            transition: all 0.25s;
         }
 
         .btn-add-channel:hover {
-            transform: translateY(-2px) scale(1.02);
-            box-shadow: 0 12px 30px rgba(0, 229, 255, 0.45);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 229, 255, 0.45);
         }
 
-        .btn-add-channel svg {
-            transition: transform 0.3s ease;
+        /* Verify / Refresh Button */
+        .btn-verify-refresh {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid var(--card-border);
+            color: #cbd5e1;
+            padding: 10px 14px;
+            border-radius: 14px;
+            font-size: 13px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
         }
 
-        .btn-add-channel:hover svg {
-            transform: rotate(90deg);
+        .btn-verify-refresh:hover {
+            background: rgba(255, 255, 255, 0.12);
+            color: #fff;
         }
 
-        /* KPI / Stats Overview Row */
+        /* KPIs Row */
         .kpi-row {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 18px;
-            margin-bottom: 35px;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 16px;
+            margin-bottom: 30px;
         }
 
         .kpi-card {
@@ -188,11 +215,11 @@
             backdrop-filter: blur(16px);
             border: 1px solid var(--card-border);
             border-radius: var(--radius-md);
-            padding: 20px 22px;
+            padding: 18px 20px;
             display: flex;
             align-items: center;
-            gap: 16px;
-            transition: border-color 0.25s ease;
+            gap: 14px;
+            transition: border-color 0.2s;
         }
 
         .kpi-card:hover {
@@ -200,18 +227,18 @@
         }
 
         .kpi-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 14px;
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 22px;
+            font-size: 20px;
             flex-shrink: 0;
         }
 
         .kpi-details h4 {
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 600;
             color: var(--text-muted);
             text-transform: uppercase;
@@ -220,10 +247,10 @@
 
         .kpi-details .kpi-val {
             font-family: 'Outfit', sans-serif;
-            font-size: 20px;
+            font-size: 19px;
             font-weight: 700;
             color: #ffffff;
-            margin-top: 3px;
+            margin-top: 2px;
         }
 
         /* Section Heading */
@@ -232,6 +259,8 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 12px;
         }
 
         .section-title {
@@ -247,27 +276,29 @@
         .section-subtitle {
             font-size: 13px;
             color: var(--text-muted);
+            margin-top: 2px;
         }
 
-        /* Dynamic Channels Grid */
+        /* Channels Grid */
         .channels-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
-            gap: 24px;
+            gap: 22px;
             margin-bottom: 40px;
         }
 
+        /* Channel Card */
         .channel-card {
             background: var(--card-bg);
-            backdrop-filter: blur(20px);
+            backdrop-filter: blur(16px);
             border: 1px solid var(--card-border);
             border-radius: var(--radius-lg);
-            padding: 26px;
+            padding: 24px;
+            position: relative;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
-            position: relative;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             overflow: hidden;
         }
 
@@ -279,96 +310,162 @@
             right: 0;
             height: 3px;
             background: var(--accent-gradient, linear-gradient(90deg, #00e5ff, #d200ff));
-            opacity: 0.8;
+        }
+
+        .channel-card.is-expired {
+            border-color: rgba(255, 71, 87, 0.4);
+            box-shadow: 0 0 25px rgba(255, 71, 87, 0.15);
         }
 
         .channel-card:hover {
-            border-color: var(--card-hover-border);
             transform: translateY(-4px);
-            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+            border-color: var(--card-hover-border);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
         }
 
         .card-top {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
         }
 
         .profile-tag {
             font-size: 11px;
             font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.8px;
             padding: 5px 12px;
             border-radius: 20px;
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px solid rgba(255, 255, 255, 0.12);
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            border: 1px solid;
         }
 
         .status-pill {
             font-size: 12px;
-            font-weight: 600;
+            font-weight: 700;
             display: flex;
             align-items: center;
             gap: 6px;
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
+
+        .status-pill.connected {
+            background: rgba(0, 255, 136, 0.12);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            color: var(--neon-green);
+        }
+
+        .status-pill.expired {
+            background: rgba(255, 71, 87, 0.15);
+            border: 1px solid rgba(255, 71, 87, 0.4);
+            color: var(--neon-red);
+            animation: pulse-border 2s infinite;
+        }
+
+        .status-pill.disconnected {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-muted);
+        }
+
+        @keyframes pulse-border {
+            0% { box-shadow: 0 0 0 0 rgba(255, 71, 87, 0.4); }
+            70% { box-shadow: 0 0 0 8px rgba(255, 71, 87, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 71, 87, 0); }
+        }
+
+        /* 7-Day Countdown Timer Badge */
+        .countdown-banner {
+            padding: 8px 12px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+
+        .countdown-banner.testing {
+            background: rgba(0, 229, 255, 0.08);
+            border: 1px solid rgba(0, 229, 255, 0.25);
+            color: #7dd3fc;
+        }
+
+        .countdown-banner.urgent {
+            background: rgba(255, 184, 0, 0.12);
+            border: 1px solid rgba(255, 184, 0, 0.35);
+            color: #fde047;
+        }
+
+        .countdown-banner.expired {
+            background: rgba(255, 71, 87, 0.15);
+            border: 1px solid rgba(255, 71, 87, 0.35);
+            color: #ff9999;
+        }
+
+        .countdown-banner.production {
+            background: rgba(255, 215, 0, 0.1);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            color: #ffd700;
         }
 
         .channel-info {
             display: flex;
             align-items: center;
-            gap: 16px;
-            margin-bottom: 20px;
+            gap: 14px;
+            margin-bottom: 16px;
         }
 
         .channel-avatar {
-            width: 66px;
-            height: 66px;
+            width: 52px;
+            height: 52px;
             border-radius: 50%;
-            background: #151b2c;
-            border: 2px solid var(--card-border);
-            object-fit: cover;
+            background: #1e293b;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 28px;
-            flex-shrink: 0;
+            font-size: 24px;
             overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            border: 2px solid;
+            flex-shrink: 0;
         }
 
         .channel-avatar img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            border-radius: 50%;
         }
 
         .channel-meta h3 {
             font-family: 'Outfit', sans-serif;
-            font-size: 19px;
+            font-size: 16px;
             font-weight: 700;
-            color: #ffffff;
-            line-height: 1.3;
+            color: #fff;
+            line-height: 1.25;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            max-width: 230px;
         }
 
         .channel-meta p {
-            font-size: 13px;
+            font-size: 12px;
             color: var(--text-muted);
             margin-top: 3px;
-            font-family: monospace;
         }
 
         .channel-schedule-badge {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
+            gap: 5px;
             background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 4px 10px;
-            border-radius: 8px;
-            font-size: 12px;
-            color: #d1d9e6;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            color: #cbd5e1;
             margin-top: 6px;
         }
 
@@ -376,133 +473,134 @@
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 10px;
-            background: rgba(8, 11, 18, 0.6);
-            padding: 12px 14px;
+            background: rgba(6, 9, 15, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 12px;
             border-radius: var(--radius-sm);
-            margin-bottom: 18px;
-            border: 1px solid rgba(255, 255, 255, 0.04);
+            margin-bottom: 16px;
+            text-align: center;
         }
 
-        .stat-box .stat-val {
+        .stat-val {
             font-family: 'Outfit', sans-serif;
             font-size: 16px;
             font-weight: 700;
-            color: #ffffff;
+            color: #fff;
         }
 
-        .stat-box .stat-lbl {
-            font-size: 11px;
-            color: var(--text-dim);
+        .stat-lbl {
+            font-size: 10px;
+            color: var(--text-muted);
+            text-transform: uppercase;
             margin-top: 2px;
         }
 
-        /* Channel Instructions Box */
         .instruction-box {
-            background: rgba(10, 14, 24, 0.7);
-            border: 1px solid rgba(255, 255, 255, 0.06);
+            background: rgba(6, 9, 15, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.05);
             border-radius: var(--radius-sm);
-            padding: 14px;
-            margin-bottom: 20px;
+            padding: 12px;
+            margin-bottom: 18px;
         }
 
         .instruction-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
 
         .instruction-label {
             font-size: 11px;
-            font-weight: 700;
+            font-weight: 600;
             color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
             display: flex;
             align-items: center;
-            gap: 6px;
-        }
-
-        .instruction-textarea {
-            width: 100%;
-            background: rgba(5, 7, 12, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 8px;
-            color: #e2e8f0;
-            font-size: 12px;
-            line-height: 1.5;
-            padding: 10px;
-            resize: vertical;
-            min-height: 58px;
-            transition: border-color 0.2s;
-        }
-
-        .instruction-textarea:focus {
-            outline: none;
-            border-color: var(--neon-cyan);
+            gap: 5px;
         }
 
         .btn-save-instruction {
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            color: #e2e8f0;
-            padding: 4px 10px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #fff;
+            padding: 3px 10px;
             border-radius: 6px;
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
         }
 
         .btn-save-instruction:hover {
-            background: rgba(0, 229, 255, 0.15);
-            border-color: rgba(0, 229, 255, 0.4);
-            color: var(--neon-cyan);
+            background: var(--neon-cyan);
+            color: #000;
         }
 
-        /* Action Buttons */
+        .instruction-textarea {
+            width: 100%;
+            background: transparent;
+            border: none;
+            color: #cbd5e1;
+            font-size: 12px;
+            line-height: 1.5;
+            resize: vertical;
+            min-height: 48px;
+            outline: none;
+        }
+
         .card-actions {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 9px;
+            margin-top: auto;
         }
 
         .btn-connect {
             width: 100%;
-            padding: 13px 18px;
+            padding: 12px;
             border-radius: var(--radius-sm);
             font-size: 13px;
             font-weight: 700;
-            cursor: pointer;
-            border: none;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
-            transition: all 0.25s ease;
+            gap: 8px;
+            cursor: pointer;
             text-decoration: none;
+            border: none;
+            transition: all 0.2s;
         }
 
         .btn-google {
             background: #ffffff;
-            color: #111827;
+            color: #1f2937;
         }
 
         .btn-google:hover {
             background: #f1f5f9;
-            box-shadow: 0 4px 20px rgba(255, 255, 255, 0.25);
-            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-reconnect {
+            background: linear-gradient(135deg, #ff4757 0%, #ff6b81 100%);
+            color: #ffffff;
+            box-shadow: 0 4px 15px rgba(255, 71, 87, 0.35);
+        }
+
+        .btn-reconnect:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 71, 87, 0.5);
         }
 
         .btn-disconnect {
-            background: rgba(255, 75, 75, 0.1);
-            color: #ff5e5e;
+            background: rgba(255, 75, 75, 0.08);
+            color: #ff6b6b;
             border: 1px solid rgba(255, 75, 75, 0.25);
         }
 
         .btn-disconnect:hover {
             background: rgba(255, 75, 75, 0.2);
-            color: #ff7878;
+            color: #ff8585;
         }
 
         .btn-row {
@@ -512,7 +610,7 @@
 
         .btn-test {
             flex: 1;
-            padding: 11px;
+            padding: 10px;
             border-radius: var(--radius-sm);
             font-size: 12px;
             font-weight: 600;
@@ -533,7 +631,7 @@
         }
 
         .btn-delete-card {
-            padding: 11px 14px;
+            padding: 10px 14px;
             border-radius: var(--radius-sm);
             font-size: 12px;
             background: rgba(255, 75, 75, 0.08);
@@ -554,7 +652,7 @@
             backdrop-filter: blur(16px);
             border: 1px solid var(--card-border);
             border-radius: var(--radius-lg);
-            padding: 28px;
+            padding: 24px;
             margin-top: 10px;
         }
 
@@ -562,18 +660,18 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 18px;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 12px;
         }
 
         .secrets-header h3 {
             font-family: 'Outfit', sans-serif;
-            font-size: 18px;
+            font-size: 17px;
             font-weight: 700;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
 
         .token-row {
@@ -582,12 +680,12 @@
             align-items: center;
             background: rgba(6, 9, 15, 0.6);
             border: 1px solid rgba(255, 255, 255, 0.05);
-            padding: 14px 18px;
+            padding: 12px 16px;
             border-radius: var(--radius-sm);
-            margin-bottom: 12px;
+            margin-bottom: 10px;
             font-size: 13px;
             font-family: monospace;
-            gap: 16px;
+            gap: 14px;
         }
 
         .token-label {
@@ -598,7 +696,7 @@
 
         .token-val {
             color: #94a3b8;
-            max-width: 550px;
+            max-width: 500px;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
@@ -609,9 +707,9 @@
             background: rgba(255, 255, 255, 0.08);
             border: 1px solid rgba(255, 255, 255, 0.15);
             color: #fff;
-            padding: 6px 16px;
+            padding: 5px 14px;
             border-radius: 8px;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
@@ -621,11 +719,10 @@
         .btn-copy:hover {
             background: var(--neon-cyan);
             color: #000;
-            border-color: var(--neon-cyan);
-            box-shadow: 0 0 12px rgba(0, 229, 255, 0.4);
+            box-shadow: 0 0 10px rgba(0, 229, 255, 0.4);
         }
 
-        /* ─── MODAL STYLES ─── */
+        /* ─── MODALS ─── */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -643,7 +740,7 @@
 
         .modal-overlay.active {
             display: flex;
-            animation: fadeIn 0.25s ease-out forwards;
+            animation: fadeIn 0.2s ease-out forwards;
         }
 
         @keyframes fadeIn {
@@ -657,27 +754,21 @@
             border-radius: var(--radius-lg);
             width: 100%;
             max-width: 560px;
-            padding: 32px;
+            padding: 28px;
             box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7);
             position: relative;
-            transform: scale(0.95);
-            animation: modalScale 0.25s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
-        }
-
-        @keyframes modalScale {
-            to { transform: scale(1); }
         }
 
         .modal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
         }
 
         .modal-header h2 {
             font-family: 'Outfit', sans-serif;
-            font-size: 22px;
+            font-size: 20px;
             font-weight: 700;
             background: linear-gradient(to right, #ffffff, #a5b4fc);
             -webkit-background-clip: text;
@@ -690,9 +781,7 @@
             color: var(--text-muted);
             font-size: 22px;
             cursor: pointer;
-            padding: 4px;
             line-height: 1;
-            transition: color 0.2s;
         }
 
         .btn-close-modal:hover {
@@ -700,7 +789,7 @@
         }
 
         .form-group {
-            margin-bottom: 18px;
+            margin-bottom: 16px;
         }
 
         .form-group label {
@@ -708,7 +797,7 @@
             font-size: 13px;
             font-weight: 600;
             color: #d1d5db;
-            margin-bottom: 7px;
+            margin-bottom: 6px;
         }
 
         .form-control {
@@ -716,9 +805,9 @@
             background: rgba(10, 14, 22, 0.8);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: var(--radius-sm);
-            padding: 12px 14px;
+            padding: 11px 13px;
             color: #ffffff;
-            font-size: 14px;
+            font-size: 13px;
             transition: border-color 0.2s;
         }
 
@@ -730,17 +819,17 @@
 
         .color-palette {
             display: flex;
-            gap: 12px;
+            gap: 10px;
             margin-top: 6px;
         }
 
         .color-swatch {
-            width: 34px;
-            height: 34px;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
             cursor: pointer;
             border: 2px solid transparent;
-            transition: transform 0.2s, border-color 0.2s;
+            transition: transform 0.2s;
         }
 
         .color-swatch:hover {
@@ -749,61 +838,81 @@
 
         .color-swatch.active {
             border-color: #ffffff;
-            transform: scale(1.2);
-            box-shadow: 0 0 14px currentColor;
+            transform: scale(1.15);
+            box-shadow: 0 0 12px currentColor;
         }
 
         .modal-actions {
             display: flex;
-            gap: 12px;
-            margin-top: 28px;
+            gap: 10px;
+            margin-top: 24px;
         }
 
         .btn-modal-primary {
             flex: 1;
-            padding: 14px;
+            padding: 12px;
             background: linear-gradient(135deg, #00e5ff 0%, #a855f7 50%, #ff2a85 100%);
             border: none;
             border-radius: var(--radius-sm);
             color: #fff;
             font-weight: 700;
-            font-size: 14px;
+            font-size: 13px;
             cursor: pointer;
-            transition: all 0.25s;
-        }
-
-        .btn-modal-primary:hover {
-            box-shadow: 0 6px 20px rgba(168, 85, 247, 0.4);
-            transform: translateY(-1px);
         }
 
         .btn-modal-secondary {
-            padding: 14px 20px;
+            padding: 12px 18px;
             background: rgba(255, 255, 255, 0.08);
             border: 1px solid rgba(255, 255, 255, 0.12);
             border-radius: var(--radius-sm);
             color: #e2e8f0;
             font-weight: 600;
-            font-size: 14px;
+            font-size: 13px;
             cursor: pointer;
-            transition: all 0.2s;
         }
 
-        .btn-modal-secondary:hover {
-            background: rgba(255, 255, 255, 0.14);
+        /* Remote Modal URL list */
+        .url-box {
+            background: rgba(6, 9, 15, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: var(--radius-sm);
+            padding: 14px;
+            margin-bottom: 12px;
         }
 
-        /* Toast Container */
+        .url-label {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--neon-cyan);
+            margin-bottom: 4px;
+        }
+
+        .url-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .url-text {
+            font-family: monospace;
+            font-size: 13px;
+            color: #fff;
+            word-break: break-all;
+        }
+
+        /* Toast */
         .toast {
             position: fixed;
-            bottom: 30px;
-            right: 30px;
+            bottom: 25px;
+            right: 25px;
             background: rgba(13, 18, 30, 0.95);
             border: 1px solid rgba(0, 255, 136, 0.4);
             color: #ffffff;
-            padding: 14px 22px;
+            padding: 12px 20px;
             border-radius: 12px;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
             display: flex;
@@ -812,7 +921,7 @@
             z-index: 10000;
             opacity: 0;
             transform: translateY(20px);
-            transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+            transition: all 0.25s;
             pointer-events: none;
         }
 
@@ -835,17 +944,29 @@
             </div>
 
             <div class="header-actions">
-                <div class="badge-live">
-                    <span class="dot-pulse"></span>
-                    <span>Cloud Pipeline Ready</span>
-                </div>
-                <!-- Prominent + Add Channel Button -->
-                <button class="btn-add-channel" id="openAddModalBtn" onclick="openModal()">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                        <line x1="12" y1="5" x2="12" y2="19"></line>
-                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                <!-- Mobile Remote Access Pill -->
+                <button class="btn-mobile-pill" onclick="openRemoteModal()" id="mobilePillBtn" title="मोबाइल एक्सेस लिंक देखें">
+                    <span>📱</span>
+                    <span id="mobilePillText">मोबाइल एक्सेस (Remote)</span>
+                </button>
+
+                <!-- Push to GitHub Secrets Button -->
+                <button class="btn-github-push" onclick="openGitHubModal()" id="btnGithubPush" title="सारे टोकन सीधे GitHub Secrets में पुश करें">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
                     </svg>
-                    <span>+ नया चैनल जोड़ें (Add Channel)</span>
+                    <span>🚀 GitHub में पुश करें</span>
+                </button>
+
+                <!-- Verify / Refresh Button -->
+                <button class="btn-verify-refresh" onclick="forceVerifyAll()" title="गूगल से टोकन लाइव वेरिफ़ाई करें">
+                    <span>🔄</span>
+                    <span>लाइव चेक</span>
+                </button>
+
+                <!-- Add Channel Button -->
+                <button class="btn-add-channel" onclick="openAddModal()">
+                    <span>➕ नया चैनल जोड़ें</span>
                 </button>
             </div>
         </header>
@@ -869,10 +990,10 @@
             </div>
 
             <div class="kpi-card">
-                <div class="kpi-icon" style="background: rgba(255, 184, 0, 0.12); color: var(--neon-gold);">⏰</div>
+                <div class="kpi-icon" style="background: rgba(255, 71, 87, 0.12); color: var(--neon-red);">⚠️</div>
                 <div class="kpi-details">
-                    <h4>ऑटो-अपलोड शेड्यूल</h4>
-                    <div class="kpi-val" style="font-size: 15px; font-weight: 600;">06:12 AM | 09:06 AM | 07:00 PM</div>
+                    <h4>टोकन एक्सपायर्ड</h4>
+                    <div class="kpi-val" id="kpi-expired-accounts">0 Accounts</div>
                 </div>
             </div>
 
@@ -889,21 +1010,27 @@
         <div class="section-header">
             <div>
                 <h2 class="section-title">📺 आपके सभी यूट्यूब चैनल (Active Channels)</h2>
-                <p class="section-subtitle">किसी भी चैनल पर लॉगिन करें, नए चैनल जोड़ें और हर चैनल के लिए खास निर्देश (Instructions) सेट करें</p>
+                <p class="section-subtitle">असली लाइव Google स्टेटस, 7-डे काउंटडाउन ट्रैकर और 1-क्लिक GitHub सिंक</p>
             </div>
         </div>
 
         <!-- Dynamic Channels Grid -->
         <div class="channels-grid" id="channelsGrid">
-            <!-- Dynamically populated via JS -->
-            <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-muted);">चैनल लोड हो रहे हैं...</div>
+            <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-muted);">
+                चैनल लोड हो रहे हैं और Google से लाइव स्टेटस वेरिफ़ाई किया जा रहा है...
+            </div>
         </div>
 
         <!-- GitHub Secrets Quick Copy Area -->
         <div class="secrets-box">
             <div class="secrets-header">
-                <h3>🔑 GitHub Cloud Secrets Helper (Kaggle Auto-Upload)</h3>
-                <span style="font-size: 12px; color: var(--text-muted);">लॉगिन के बाद संबंधित टोकन कॉपी करके GitHub Secrets में पेस्ट करें</span>
+                <div>
+                    <h3>🔑 GitHub Cloud Secrets Helper</h3>
+                    <p style="font-size: 12px; color: var(--text-muted); margin-top: 3px;">
+                        ऊपर <b>'🚀 GitHub में पुश करें'</b> बटन से 1-क्लिक में ऑटो-अपडेट करें, या नीचे से हाथ से कॉपी करें।
+                    </p>
+                </div>
+                <button class="btn-copy" onclick="copyAllSecrets()">📋 सभी सीक्रेट्स एक साथ कॉपी करें</button>
             </div>
 
             <div id="secretsTokensList">
@@ -912,19 +1039,18 @@
         </div>
     </div>
 
-    <!-- ─── ADD NEW CHANNEL MODAL ─── -->
+    <!-- ─── MODAL 1: ADD NEW CHANNEL ─── -->
     <div class="modal-overlay" id="addChannelModal">
         <div class="modal-content">
             <div class="modal-header">
                 <h2>➕ नया यूट्यूब चैनल जोड़ें (Add Channel)</h2>
-                <button class="btn-close-modal" onclick="closeModal()">&times;</button>
+                <button class="btn-close-modal" onclick="closeModal('addChannelModal')">&times;</button>
             </div>
 
             <form id="addChannelForm" onsubmit="handleAddChannel(event)">
                 <div class="form-group">
                     <label for="newChannelId">चैनल ID / स्लग (Identifier - अंग्रेज़ी में)</label>
-                    <input type="text" id="newChannelId" class="form-control" placeholder="उदा: bhojpuri_dj, lofi_beats, punjabi_remix" required>
-                    <span style="font-size: 11px; color: var(--text-dim);">यह ID सिस्टम में प्रोफ़ाइल नाम बनेगी (उदा: token_bhojpuri_dj.json)</span>
+                    <input type="text" id="newChannelId" class="form-control" placeholder="उदा: bhojpuri_dj, lofi_beats" required>
                 </div>
 
                 <div class="form-group">
@@ -945,7 +1071,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label>थीम नियोन कलर (Card Accent Color)</label>
+                    <label>थीम नियोन कलर (Accent Color)</label>
                     <div class="color-palette" id="colorPalette">
                         <div class="color-swatch active" style="background: #00e5ff;" data-color="cyan" data-hex="#00e5ff" onclick="selectColor(this)"></div>
                         <div class="color-swatch" style="background: #ff2a85;" data-color="pink" data-hex="#ff2a85" onclick="selectColor(this)"></div>
@@ -958,19 +1084,90 @@
 
                 <div class="form-group">
                     <label for="newChannelInstructions">📝 इस चैनल के लिए खास निर्देश (Instructions for AI)</label>
-                    <textarea id="newChannelInstructions" class="form-control" rows="3" placeholder="उदा: इस चैनल में सिर्फ भोजपुरी डांस रिमिक्स गाने लेना, बास बूस्ट +2.5dB रखना, सेंटर में ये लोगो लगाना..."></textarea>
-                    <span style="font-size: 11px; color: var(--text-dim);">आप जो भी नियम यहाँ लिखेंगे, वह इस चैनल के लिए सुरक्षित रहेगा।</span>
+                    <textarea id="newChannelInstructions" class="form-control" rows="3" placeholder="उदा: इस चैनल में सिर्फ भोजपुरी डांस रिमिक्स गाने लेना, बास बूस्ट +2.5dB रखना..."></textarea>
                 </div>
 
                 <div class="modal-actions">
-                    <button type="submit" class="btn-modal-primary" id="btnSaveAndLogin">
-                        💾 सेव करें और गूगल लॉगिन करें
-                    </button>
-                    <button type="button" class="btn-modal-secondary" onclick="closeModal()">
-                        रद्द करें
-                    </button>
+                    <button type="submit" class="btn-modal-primary">💾 सेव करें और लॉगिन करें</button>
+                    <button type="button" class="btn-modal-secondary" onclick="closeModal('addChannelModal')">रद्द करें</button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- ─── MODAL 2: GITHUB SECRETS SYNC ─── -->
+    <div class="modal-overlay" id="githubModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>🚀 GitHub Secrets सिंक इंजन</h2>
+                <button class="btn-close-modal" onclick="closeModal('githubModal')">&times;</button>
+            </div>
+
+            <p style="font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 18px;">
+                यह आपके लोकल एक्टिव यूट्यूब टोकन्स को सीधे GitHub रिपॉजिटरी (<b id="ghRepoName" style="color:#00e5ff;">9329238475x-wq/Music-automat</b>) के Secrets में अपलोड कर देगा ताकि Kaggle और Actions हमेशा ताज़ा टोकन से चलें।
+            </p>
+
+            <div class="form-group">
+                <label for="ghTokenInput">GitHub Personal Access Token (PAT)</label>
+                <input type="password" id="ghTokenInput" class="form-control" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
+                <span style="font-size: 11px; color: var(--text-dim); margin-top: 5px; display: block;">
+                    👉 टोकन कैसे बनाएँ: <a href="https://github.com/settings/tokens" target="_blank" style="color:var(--neon-cyan); text-decoration:none;">GitHub Settings > Developer settings > Tokens</a> में जाकर <b>repo</b> या <b>Secrets (Read & Write)</b> परमिशन दें।
+                </span>
+            </div>
+
+            <div id="syncResultBox" style="display:none; padding:12px; border-radius:8px; font-size:12px; margin-bottom:14px;"></div>
+
+            <div class="modal-actions">
+                <button type="button" class="btn-modal-primary" id="btnExecuteSync" onclick="executeGithubSync()">
+                    ⚡ अभी GitHub Secrets में पुश करें
+                </button>
+                <button type="button" class="btn-modal-secondary" onclick="closeModal('githubModal')">बंद करें</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ─── MODAL 3: MOBILE & REMOTE ACCESS ─── -->
+    <div class="modal-overlay" id="remoteModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>📱 मोबाइल और रिमोट एक्सेस (Mobile URLs)</h2>
+                <button class="btn-close-modal" onclick="closeModal('remoteModal')">&times;</button>
+            </div>
+
+            <p style="font-size: 13px; color: var(--text-muted); line-height: 1.5; margin-bottom: 20px;">
+                आप अपने मोबाइल या किसी भी अन्य डिवाइस से इस डैशबोर्ड को लाइव खोल सकते हैं:
+            </p>
+
+            <!-- Cloudflare Worldwide URL -->
+            <div class="url-box" id="boxTunnelUrl">
+                <div class="url-label">🌍 दुनिया में कहीं से भी (Cloudflare Secure HTTPS)</div>
+                <div class="url-row">
+                    <span class="url-text" id="tunnelUrlText">लोड हो रहा है...</span>
+                    <button class="btn-copy" onclick="copyTextFromId('tunnelUrlText')">कॉपी</button>
+                </div>
+            </div>
+
+            <!-- Wi-Fi LAN URL -->
+            <div class="url-box">
+                <div class="url-label">📶 घर के उसी Wi-Fi नेटवर्क पर (Local LAN)</div>
+                <div class="url-row">
+                    <span class="url-text" id="lanUrlText">http://localhost:8000</span>
+                    <button class="btn-copy" onclick="copyTextFromId('lanUrlText')">कॉपी</button>
+                </div>
+            </div>
+
+            <!-- PC Localhost -->
+            <div class="url-box">
+                <div class="url-label">💻 इस कंप्यूटर पर (Local PC)</div>
+                <div class="url-row">
+                    <span class="url-text">http://localhost:8000</span>
+                    <button class="btn-copy" onclick="copyText('http://localhost:8000')">कॉपी</button>
+                </div>
+            </div>
+
+            <div class="modal-actions">
+                <button type="button" class="btn-modal-secondary" style="width:100%;" onclick="closeModal('remoteModal')">बंद करें</button>
+            </div>
         </div>
     </div>
 
@@ -982,6 +1179,7 @@
 
     <script>
         let selectedColor = { name: "cyan", hex: "#00e5ff" };
+        let appData = { profiles: [], network: {}, github: {} };
 
         function selectColor(el) {
             document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
@@ -999,27 +1197,34 @@
             toast.classList.add('show');
             setTimeout(() => {
                 toast.classList.remove('show');
-            }, 3000);
+            }, 3500);
         }
 
-        function openModal() {
-            document.getElementById('addChannelModal').classList.add('active');
-            document.getElementById('newChannelId').focus();
+        function openModal(id) {
+            document.getElementById(id).classList.add('active');
         }
 
-        function closeModal() {
-            document.getElementById('addChannelModal').classList.remove('active');
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
         }
 
-        // Close modal on Esc key or clicking outside
+        function openAddModal() { openModal('addChannelModal'); }
+        function openGitHubModal() { openModal('githubModal'); }
+        function openRemoteModal() { openModal('remoteModal'); }
+
+        // Close modal on Esc or outside click
         window.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') closeModal();
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('active'));
+            }
         });
-        document.getElementById('addChannelModal').addEventListener('click', (e) => {
-            if (e.target.id === 'addChannelModal') closeModal();
+        document.querySelectorAll('.modal-overlay').forEach(m => {
+            m.addEventListener('click', (e) => {
+                if (e.target === m) m.classList.remove('active');
+            });
         });
 
-        // Auto-slugify channel ID from Display Name
+        // Slugify helper
         document.getElementById('newChannelName').addEventListener('input', (e) => {
             const idInput = document.getElementById('newChannelId');
             if (!idInput.dataset.manual) {
@@ -1034,19 +1239,69 @@
             document.getElementById('newChannelId').dataset.manual = "true";
         });
 
-        // Fetch status and render dynamic cards
-        async function fetchStatus() {
+        // Fetch server status
+        async function fetchStatus(force = false) {
             try {
-                const res = await fetch('/api/status');
+                const url = force ? '/api/status?force=true' : '/api/status';
+                const res = await fetch(url);
                 const data = await res.json();
+                appData = data;
+
                 renderCards(data.profiles || []);
                 renderSecrets(data.profiles || []);
+                updateNetworkInfo(data.network || {});
+                updateGitHubInfo(data.github || {});
 
-                // Update KPIs
+                // Update KPI values
                 document.getElementById('kpi-total-channels').innerText = `${data.total_channels} Channels`;
-                document.getElementById('kpi-connected-accounts').innerText = `${data.connected_count} / ${data.total_channels} Connected`;
+                document.getElementById('kpi-connected-accounts').innerText = `${data.connected_count} / ${data.total_channels} Active`;
+                
+                const expEl = document.getElementById('kpi-expired-accounts');
+                expEl.innerText = `${data.expired_count || 0} Accounts`;
+                expEl.style.color = (data.expired_count > 0) ? 'var(--neon-red)' : '#ffffff';
             } catch (err) {
                 console.error("Status fetch failed:", err);
+            }
+        }
+
+        async function forceVerifyAll() {
+            showToast("Google से सभी टोकन्स की लाइव जांच हो रही है...", "🔄");
+            try {
+                const res = await fetch('/api/channels/verify_all', { method: 'POST' });
+                const data = await res.json();
+                appData = data;
+                renderCards(data.profiles || []);
+                renderSecrets(data.profiles || []);
+                showToast("लाइव टोकन जांच पूर्ण!", "✅");
+            } catch (err) {
+                console.error("Verify all failed:", err);
+                fetchStatus(true);
+            }
+        }
+
+        function updateNetworkInfo(net) {
+            const tunnelUrl = net.tunnel_url;
+            const lanUrl = net.lan_url || "http://localhost:8000";
+
+            document.getElementById('lanUrlText').innerText = lanUrl;
+            const tunEl = document.getElementById('tunnelUrlText');
+
+            if (tunnelUrl) {
+                tunEl.innerText = tunnelUrl;
+                document.getElementById('mobilePillText').innerText = "📱 मोबाइल लिंक (Active)";
+                document.getElementById('mobilePillBtn').style.borderColor = "var(--neon-green)";
+                document.getElementById('mobilePillBtn').style.color = "var(--neon-green)";
+            } else {
+                tunEl.innerText = "Tunnel starting... (Wi-Fi LAN IP उपयोग करें)";
+            }
+        }
+
+        function updateGitHubInfo(gh) {
+            if (gh.repo) {
+                document.getElementById('ghRepoName').innerText = gh.repo;
+            }
+            if (gh.has_token) {
+                document.getElementById('ghTokenInput').placeholder = "सेव किया गया टोकन मौजूद है (बदलने के लिए नया डालें)";
             }
         }
 
@@ -1059,20 +1314,63 @@
 
             grid.innerHTML = profiles.map(p => {
                 const isConnected = !!p.connected;
+                const isExpired = !!p.is_expired;
+                const health = p.health || {};
+                const mode = health.mode || (isConnected ? 'testing' : 'disconnected');
                 const accentHex = p.accent_hex || "#00e5ff";
                 const isDefault = !!p.is_default;
 
+                // Status Pill styling
+                let pillClass = "disconnected";
+                let pillText = "○ Not Connected";
+                if (isConnected) {
+                    pillClass = "connected";
+                    pillText = "● Active & Connected";
+                } else if (isExpired) {
+                    pillClass = "expired";
+                    pillText = "⚠️ Token Expired";
+                }
+
+                // Countdown / Expiry Banner
+                let bannerHtml = '';
+                if (isConnected) {
+                    if (mode === 'production') {
+                        bannerHtml = `
+                        <div class="countdown-banner production">
+                            <span>👑 <b>परमानेंट एक्टिव</b> (No 7-Day Limit)</span>
+                            <span style="font-size:10px;">PROD</span>
+                        </div>`;
+                    } else {
+                        const days = health.days_left || 0;
+                        const hours = health.hours_left || 0;
+                        const isUrgent = days === 0;
+                        bannerHtml = `
+                        <div class="countdown-banner ${isUrgent ? 'urgent' : 'testing'}">
+                            <span>⏳ <b>वैलिडिटी:</b> ${days} दिन ${hours} घंटे बाकी</span>
+                            <span style="font-size:10px;">7-DAY TEST</span>
+                        </div>`;
+                    }
+                } else if (isExpired) {
+                    bannerHtml = `
+                    <div class="countdown-banner expired">
+                        <span>❌ <b>टोकन एक्सपायर:</b> Google 7-Day Limit पूरी</span>
+                        <span style="font-size:10px;">EXPIRED</span>
+                    </div>`;
+                }
+
                 return `
-                <div class="channel-card" style="--accent-gradient: linear-gradient(90deg, ${accentHex}, #ffffff22);">
+                <div class="channel-card ${isExpired ? 'is-expired' : ''}" style="--accent-gradient: linear-gradient(90deg, ${accentHex}, #ffffff22);">
                     <div>
                         <div class="card-top">
                             <span class="profile-tag" style="border-color: ${accentHex}44; color: ${accentHex};">
                                 ${p.tag || 'DJ Profile'}
                             </span>
-                            <span class="status-pill" style="color: ${isConnected ? '#00ff88' : '#8b98b5'};">
-                                ${isConnected ? '● Connected' : '○ Not Connected'}
+                            <span class="status-pill ${pillClass}">
+                                ${pillText}
                             </span>
                         </div>
+
+                        ${bannerHtml}
 
                         <div class="channel-info">
                             <div class="channel-avatar" style="border-color: ${accentHex}66;">
@@ -1110,7 +1408,17 @@
                     </div>
 
                     <div class="card-actions">
-                        ${isConnected ? `
+                        ${isExpired ? `
+                            <a href="/api/auth/login?profile=${p.id}" class="btn-connect btn-reconnect">
+                                🔄 दोबारा लॉगिन करें (Reconnect)
+                            </a>
+                            <div class="btn-row">
+                                <button class="btn-test btn-disconnect" onclick="disconnect('${p.id}')">हटाएँ</button>
+                                ${!isDefault ? `
+                                    <button class="btn-delete-card" onclick="deleteChannel('${p.id}')">🗑️</button>
+                                ` : ''}
+                            </div>
+                        ` : isConnected ? `
                             <button class="btn-connect btn-disconnect" onclick="disconnect('${p.id}')">
                                 🔌 Disconnect Channel
                             </button>
@@ -1158,13 +1466,13 @@
             const tokenRows = profiles.map(p => {
                 const envKey = `YOUTUBE_REFRESH_TOKEN_${p.id.toUpperCase()}`;
                 const hasToken = !!p.refresh_token;
-                const tokenVal = p.refresh_token || 'Not generated yet (Login first)';
+                const tokenVal = p.refresh_token || 'Not generated (Login first)';
 
                 return `
                 <div class="token-row">
                     <span class="token-label">${envKey}</span>
                     <span class="token-val" id="secret-${p.id}-token">${tokenVal}</span>
-                    <button class="btn-copy" onclick="copyTokenText('${p.refresh_token || ''}', '${envKey}')">
+                    <button class="btn-copy" onclick="copyText('${p.refresh_token || ''}', '${envKey}')">
                         Copy
                     </button>
                 </div>
@@ -1208,14 +1516,13 @@
                     return;
                 }
 
-                closeModal();
+                closeModal('addChannelModal');
                 showToast("नया चैनल सफलतापूर्वक जुड़ गया!");
 
-                // Ask if user wants to login immediately
-                if (confirm(`चैनल '${name}' जुड़ गया है! क्या आप अभी इस चैनल का गूगल अकाउंट लॉगिन करना चाहते हैं?`)) {
+                if (confirm(`चैनल '${name}' जुड़ गया है! क्या आप अभी इसका गूगल अकाउंट लॉगिन करना चाहते हैं?`)) {
                     window.location.href = `/api/auth/login?profile=${id}`;
                 } else {
-                    fetchStatus();
+                    fetchStatus(true);
                 }
             } catch (err) {
                 console.error("Error adding channel:", err);
@@ -1241,7 +1548,6 @@
                 }
             } catch (err) {
                 console.error("Error saving instructions:", err);
-                alert("निर्देश सेव करने में त्रुटि हुई");
             }
         }
 
@@ -1249,7 +1555,7 @@
             if (!confirm(`क्या आप सच में '${profile}' चैनल को डिस्कनेक्ट करना चाहते हैं?`)) return;
             await fetch(`/api/auth/disconnect?profile=${profile}`, { method: 'POST' });
             showToast("चैनल डिस्कनेक्ट हो गया");
-            fetchStatus();
+            fetchStatus(true);
         }
 
         async function deleteChannel(profile) {
@@ -1258,7 +1564,7 @@
                 const res = await fetch(`/api/channels/delete?profile=${profile}`, { method: 'POST' });
                 if (res.ok) {
                     showToast("चैनल हटा दिया गया");
-                    fetchStatus();
+                    fetchStatus(true);
                 }
             } catch (err) {
                 console.error("Delete failed:", err);
@@ -1270,17 +1576,88 @@
             await fetch(`/api/run_mix?profile=${profile}`, { method: 'POST' });
         }
 
-        function copyTokenText(token, keyName) {
-            if (!token || token.includes("Not generated")) {
-                alert(`कृपया पहले इस चैनल में लॉगिन करें ताकि टोकन जेनरेट हो सके!`);
+        async function executeGithubSync() {
+            const btn = document.getElementById('btnExecuteSync');
+            const resBox = document.getElementById('syncResultBox');
+            const tokenInput = document.getElementById('ghTokenInput');
+            const token = tokenInput.value.trim();
+
+            btn.disabled = true;
+            btn.innerText = "⏳ GitHub में सीक्रेट्स पुश हो रहे हैं...";
+            resBox.style.display = "none";
+
+            try {
+                const res = await fetch('/api/github/sync_secrets', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ token: token || null })
+                });
+
+                const data = await res.json();
+                resBox.style.display = "block";
+
+                if (res.ok && data.success) {
+                    resBox.style.background = "rgba(16, 185, 129, 0.15)";
+                    resBox.style.border = "1px solid rgba(16, 185, 129, 0.4)";
+                    resBox.style.color = "#a7f3d0";
+                    resBox.innerHTML = `<b>✅ सफलता!</b> ${data.message}`;
+                    showToast("सारे टोकन सीधे GitHub Secrets में पुश हो गए! 🚀");
+                    setTimeout(() => {
+                        closeModal('githubModal');
+                    }, 2500);
+                } else {
+                    resBox.style.background = "rgba(239, 68, 68, 0.15)";
+                    resBox.style.border = "1px solid rgba(239, 68, 68, 0.4)";
+                    resBox.style.color = "#fca5a5";
+                    resBox.innerHTML = `<b>⚠️ त्रुटि:</b> ${data.message || "पुश विफल रहा।"}`;
+                }
+            } catch (err) {
+                resBox.style.display = "block";
+                resBox.style.background = "rgba(239, 68, 68, 0.15)";
+                resBox.style.border = "1px solid rgba(239, 68, 68, 0.4)";
+                resBox.style.color = "#fca5a5";
+                resBox.innerHTML = `<b>⚠️ कनेक्शन एरर:</b> ${err.message}`;
+            } finally {
+                btn.disabled = false;
+                btn.innerText = "⚡ अभी GitHub Secrets में पुश करें";
+            }
+        }
+
+        async function copyAllSecrets() {
+            try {
+                const res = await fetch('/api/github/manual_secrets');
+                const data = await res.json();
+                const secrets = data.secrets || {};
+                let text = Object.entries(secrets).map(([k, v]) => `${k}=${v}`).join('\n');
+                if (!text) {
+                    alert("कोई टोकन नहीं मिला! पहले चैनल लॉगिन करें।");
+                    return;
+                }
+                navigator.clipboard.writeText(text);
+                showToast("सभी सीक्रेट्स (Key=Value) क्लिपबोर्ड पर कॉपी हो गए! 📋");
+            } catch (err) {
+                console.error("Copy secrets failed:", err);
+            }
+        }
+
+        function copyText(val, keyName = "") {
+            if (!val || val.includes("Not generated")) {
+                alert("कृपया पहले लॉगिन करें!");
                 return;
             }
-            navigator.clipboard.writeText(token);
-            showToast(`${keyName} क्लिपबोर्ड पर कॉपी हो गया!`);
+            navigator.clipboard.writeText(val);
+            showToast(`${keyName || 'टेक्स्ट'} कॉपी हो गया!`);
+        }
+
+        function copyTextFromId(id) {
+            const el = document.getElementById(id);
+            if (el) copyText(el.innerText);
         }
 
         // Initialize on load
         fetchStatus();
+        // Periodically refresh countdowns every 30 seconds
+        setInterval(() => fetchStatus(false), 30000);
     </script>
 </body>
 </html>

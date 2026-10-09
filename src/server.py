@@ -1,13 +1,17 @@
 # -*- coding: utf-8 -*-
 """
 Music-Automat Local Account & Management Server
-Allows connecting multiple YouTube channels dynamically via OAuth 2.0.
-Saves credentials, manages custom channel profiles, instructions, and test runs.
+- Live Google OAuth 2.0 Token Health Verification (Detects expired tokens instantly)
+- 7-Day Countdown Timer for Testing Mode
+- 1-Click Sync to GitHub Repository Secrets (PyNaCl libsodium encryption)
+- Cloudflare Tunnel & Mobile Remote Access Integration
 """
 
 import os
 import sys
 import json
+import time
+import socket
 import logging
 import threading
 import subprocess
@@ -15,11 +19,20 @@ from pathlib import Path
 from typing import Dict, Any, List, Optional
 from pydantic import BaseModel
 
+import requests
 from fastapi import FastAPI, Request, Query, Body, HTTPException
 from fastapi.responses import HTMLResponse, RedirectResponse, JSONResponse
 from google_auth_oauthlib.flow import Flow
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
+
+from src.github_sync import (
+    sync_all_secrets_to_github,
+    get_stored_github_token,
+    save_github_token,
+    get_repo_owner_name,
+    get_manual_secrets_dump
+)
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 logger = logging.getLogger("Server")
@@ -35,6 +48,8 @@ CONFIG_DIR = BASE_DIR / "config"
 CONFIG_DIR.mkdir(parents=True, exist_ok=True)
 FRONTEND_DIR = BASE_DIR / "frontend"
 PROFILES_META_FILE = CONFIG_DIR / "profiles_meta.json"
+TOOLS_DIR = BASE_DIR / "tools"
+CLOUDFLARED_EXE = TOOLS_DIR / "cloudflared.exe"
 
 SCOPES = [
     "https://www.googleapis.com/auth/youtube.upload",
@@ -43,8 +58,13 @@ SCOPES = [
 
 app = FastAPI(title="Music-Automat Multi-Channel Hub")
 
-# Persistent file-based oauth pending states to survive server restarts/reloads
+# Global state for tunnel and token verification caching
+PUBLIC_TUNNEL_URL: Optional[str] = None
+TOKEN_HEALTH_CACHE: Dict[str, Dict[str, Any]] = {}
+CACHE_TTL_SECONDS = 45  # Re-verify with Google every 45s unless forced
+
 OAUTH_STATES_FILE = TOKENS_DIR / "oauth_pending_states.json"
+
 
 def get_oauth_states() -> Dict[str, Any]:
     if OAUTH_STATES_FILE.exists():
@@ -53,6 +73,7 @@ def get_oauth_states() -> Dict[str, Any]:
         except Exception:
             return {}
     return {}
+
 
 def save_oauth_states(states: Dict[str, Any]):
     try:
@@ -63,6 +84,176 @@ def save_oauth_states(states: Dict[str, Any]):
 
 def get_token_file(profile: str) -> Path:
     return TOKENS_DIR / f"token_{profile.lower().strip()}.json"
+
+
+def get_local_lan_ip() -> str:
+    """Find local network IP address."""
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    try:
+        s.connect(('8.8.8.8', 80))
+        return s.getsockname()[0]
+    except Exception:
+        return "127.0.0.1"
+    finally:
+        s.close()
+
+
+def start_tunnel_background():
+    """Launch Cloudflare Quick Tunnel in background if binary exists."""
+    global PUBLIC_TUNNEL_URL
+    if not CLOUDFLARED_EXE.exists():
+        logger.info("Cloudflared binary not found; skipping automatic tunnel.")
+        return
+
+    def _worker():
+        global PUBLIC_TUNNEL_URL
+        import re
+        cmd = [str(CLOUDFLARED_EXE), "tunnel", "--url", "http://127.0.0.1:8000"]
+        logger.info("Starting Cloudflare Quick Tunnel...")
+        try:
+            proc = subprocess.Popen(cmd, stderr=subprocess.PIPE, stdout=subprocess.PIPE, text=True, bufsize=1)
+            for line in proc.stderr:
+                match = re.search(r"https://[a-zA-Z0-9\-]+\.trycloudflare\.com", line)
+                if match:
+                    PUBLIC_TUNNEL_URL = match.group(0)
+                    logger.info("=" * 65)
+                    logger.info(f"🌍 CLOUDFLARE PUBLIC TUNNEL ACTIVE: {PUBLIC_TUNNEL_URL}")
+                    logger.info(f"📱 MOBILE ACCESS URL: {PUBLIC_TUNNEL_URL}")
+                    logger.info("=" * 65)
+                    break
+        except Exception as e:
+            logger.warning(f"Cloudflare tunnel error: {e}")
+
+    t = threading.Thread(target=_worker, daemon=True)
+    t.start()
+
+
+# Launch tunnel upon startup
+start_tunnel_background()
+
+
+def check_token_health(profile: str, data: Dict[str, Any], file_mtime: float, force: bool = False) -> Dict[str, Any]:
+    """
+    Real-time Google OAuth Token Verification & 7-Day Countdown Engine.
+    Queries Google OAuth endpoint to guarantee the refresh token is truly alive.
+    """
+    now = time.time()
+    cache_key = profile.lower().strip()
+
+    if not force and cache_key in TOKEN_HEALTH_CACHE:
+        cached = TOKEN_HEALTH_CACHE[cache_key]
+        if now - cached.get("checked_at", 0) < CACHE_TTL_SECONDS:
+            # Recompute countdown based on current time
+            connected_at = cached.get("connected_at", file_mtime)
+            age_sec = max(0, now - connected_at)
+            SEVEN_DAYS = 7 * 24 * 3600
+            seconds_left = max(0, SEVEN_DAYS - age_sec)
+            cached["seconds_left"] = int(seconds_left)
+            cached["days_left"] = int(seconds_left // 86400)
+            cached["hours_left"] = int((seconds_left % 86400) // 3600)
+            cached["mins_left"] = int((seconds_left % 3600) // 60)
+            return cached
+
+    connected_at = data.get("connected_at", file_mtime)
+    age_sec = max(0, now - connected_at)
+    SEVEN_DAYS = 7 * 24 * 3600
+    seconds_left = max(0, SEVEN_DAYS - age_sec)
+    days_left = int(seconds_left // 86400)
+    hours_left = int((seconds_left % 86400) // 3600)
+    mins_left = int((seconds_left % 3600) // 60)
+
+    token_uri = data.get("token_uri", "https://oauth2.googleapis.com/token")
+    client_id = data.get("client_id", "")
+    client_secret = data.get("client_secret", "")
+    refresh_token = data.get("refresh_token", "")
+
+    if not (client_id and client_secret and refresh_token):
+        res = {
+            "is_valid": False,
+            "mode": "invalid",
+            "badge": "❌ टोकन डेटा अधूरा",
+            "seconds_left": 0,
+            "days_left": 0,
+            "hours_left": 0,
+            "mins_left": 0,
+            "connected_at": connected_at,
+            "error_msg": "Missing client credentials or refresh token",
+            "checked_at": now
+        }
+        TOKEN_HEALTH_CACHE[cache_key] = res
+        return res
+
+    # Live verification ping with Google OAuth API
+    try:
+        resp = requests.post(token_uri, data={
+            "client_id": client_id,
+            "client_secret": client_secret,
+            "refresh_token": refresh_token,
+            "grant_type": "refresh_token"
+        }, timeout=6)
+
+        if resp.status_code == 200:
+            # Token is 100% active and working
+            if age_sec > SEVEN_DAYS:
+                # Survived 7 days -> Application is Published / In Production!
+                badge = "👑 परमानेंट एक्टिव (No 7-Day Limit)"
+                mode = "production"
+            else:
+                badge = f"⏳ {days_left} दिन {hours_left} घंटे बाकी"
+                mode = "testing"
+
+            res = {
+                "is_valid": True,
+                "mode": mode,
+                "badge": badge,
+                "seconds_left": int(seconds_left),
+                "days_left": days_left,
+                "hours_left": hours_left,
+                "mins_left": mins_left,
+                "connected_at": connected_at,
+                "error_msg": None,
+                "checked_at": now
+            }
+        else:
+            # Token revoked or expired by Google!
+            err_json = {}
+            try:
+                err_json = resp.json()
+            except Exception:
+                pass
+            err_desc = err_json.get("error_description", resp.text)
+            logger.warning(f"Token expired for {profile}: {err_desc}")
+            res = {
+                "is_valid": False,
+                "mode": "expired",
+                "badge": "⚠️ टोकन एक्सपायर (7-दिन पूरे)",
+                "seconds_left": 0,
+                "days_left": 0,
+                "hours_left": 0,
+                "mins_left": 0,
+                "connected_at": connected_at,
+                "error_msg": err_desc,
+                "checked_at": now
+            }
+    except Exception as e:
+        # Fallback in case of temporary network timeout
+        logger.warning(f"Network error checking token for {profile}: {e}")
+        is_val = seconds_left > 0
+        res = {
+            "is_valid": is_val,
+            "mode": "testing" if is_val else "expired",
+            "badge": f"⏳ {days_left} दिन {hours_left} घंटे बाकी" if is_val else "⚠️ टोकन एक्सपायर (ऑफलाइन)",
+            "seconds_left": int(seconds_left),
+            "days_left": days_left,
+            "hours_left": hours_left,
+            "mins_left": mins_left,
+            "connected_at": connected_at,
+            "error_msg": f"नेटवर्क चेक विफल: {str(e)}",
+            "checked_at": now
+        }
+
+    TOKEN_HEALTH_CACHE[cache_key] = res
+    return res
 
 
 def load_profiles_meta() -> List[Dict[str, Any]]:
@@ -116,17 +307,42 @@ def save_profiles_meta(profiles: List[Dict[str, Any]]) -> None:
     PROFILES_META_FILE.write_text(json.dumps(profiles, indent=2, ensure_ascii=False), encoding="utf-8")
 
 
-def load_channel_info(profile: str) -> Dict[str, Any]:
+def load_channel_info(profile: str, force_verify: bool = False) -> Dict[str, Any]:
     t_file = get_token_file(profile)
     if not t_file.exists():
-        return {"connected": False}
+        return {
+            "connected": False,
+            "is_expired": False,
+            "health": {
+                "is_valid": False,
+                "badge": "डिसकनेक्टेड",
+                "mode": "disconnected",
+                "seconds_left": 0
+            }
+        }
     try:
         data = json.loads(t_file.read_text(encoding="utf-8"))
-        data["connected"] = True
+        mtime = os.path.getmtime(t_file)
+        health = check_token_health(profile, data, mtime, force=force_verify)
+
+        # Real connection state: only connected if Google says valid!
+        is_really_connected = health.get("is_valid", False)
+        data["connected"] = is_really_connected
+        data["is_expired"] = not is_really_connected and health.get("mode") == "expired"
+        data["health"] = health
         return data
     except Exception as e:
         logger.warning(f"Failed to read token for {profile}: {e}")
-        return {"connected": False}
+        return {
+            "connected": False,
+            "is_expired": False,
+            "health": {
+                "is_valid": False,
+                "badge": "रीड एरर",
+                "mode": "error",
+                "seconds_left": 0
+            }
+        }
 
 
 @app.get("/", response_class=HTMLResponse)
@@ -138,16 +354,20 @@ async def serve_index():
 
 
 @app.get("/api/status")
-async def get_status():
+async def get_status(force: bool = False):
     profiles = load_profiles_meta()
     enriched_profiles = []
     connected_count = 0
+    expired_count = 0
 
     for p in profiles:
         pid = p["id"]
-        t_info = load_channel_info(pid)
+        t_info = load_channel_info(pid, force_verify=force)
         item = dict(p)
         item["connected"] = t_info.get("connected", False)
+        item["is_expired"] = t_info.get("is_expired", False)
+        item["health"] = t_info.get("health", {})
+
         if item["connected"]:
             connected_count += 1
             item["channel_title"] = t_info.get("channel_title", item.get("name"))
@@ -158,20 +378,78 @@ async def get_status():
             item["video_count"] = t_info.get("video_count", "0")
             item["refresh_token"] = t_info.get("refresh_token", "")
         else:
-            item["channel_title"] = item.get("name")
-            item["custom_url"] = f"@{pid}_channel"
-            item["channel_id"] = ""
-            item["thumbnail"] = ""
-            item["subscriber_count"] = "-"
-            item["video_count"] = "-"
+            if item["is_expired"]:
+                expired_count += 1
+            item["channel_title"] = t_info.get("channel_title") or item.get("name")
+            item["custom_url"] = t_info.get("custom_url") or f"@{pid}_channel"
+            item["channel_id"] = t_info.get("channel_id", "")
+            item["thumbnail"] = t_info.get("thumbnail", "")
+            item["subscriber_count"] = t_info.get("subscriber_count", "-")
+            item["video_count"] = t_info.get("video_count", "-")
             item["refresh_token"] = ""
         enriched_profiles.append(item)
+
+    owner, repo = get_repo_owner_name()
+    gh_token = get_stored_github_token()
 
     return {
         "profiles": enriched_profiles,
         "total_channels": len(enriched_profiles),
-        "connected_count": connected_count
+        "connected_count": connected_count,
+        "expired_count": expired_count,
+        "network": {
+            "local_url": "http://localhost:8000",
+            "lan_url": f"http://{get_local_lan_ip()}:8000",
+            "tunnel_url": PUBLIC_TUNNEL_URL
+        },
+        "github": {
+            "repo": f"{owner}/{repo}",
+            "has_token": bool(gh_token),
+            "token_masked": f"{gh_token[:4]}...{gh_token[-4:]}" if len(gh_token) > 8 else ""
+        }
     }
+
+
+@app.post("/api/channels/verify_all")
+async def verify_all_tokens():
+    """Force real-time re-verification of all channel tokens."""
+    TOKEN_HEALTH_CACHE.clear()
+    return await get_status(force=True)
+
+
+class SyncGitHubRequest(BaseModel):
+    token: Optional[str] = None
+
+
+@app.post("/api/github/sync_secrets")
+async def api_sync_secrets(req: SyncGitHubRequest = Body(default_factory=SyncGitHubRequest)):
+    """Uploads active channel refresh tokens directly to GitHub Actions Secrets."""
+    res = sync_all_secrets_to_github(gh_token=req.token)
+    if not res.get("success") and res.get("error_type") == "NO_TOKEN":
+        return JSONResponse(status_code=400, content=res)
+    elif not res.get("success"):
+        return JSONResponse(status_code=500, content=res)
+    return res
+
+
+@app.get("/api/github/manual_secrets")
+async def api_manual_secrets():
+    """Provides key-value pairs for 1-click clipboard copying."""
+    dump = get_manual_secrets_dump()
+    return {"secrets": dump}
+
+
+class SaveGitHubTokenRequest(BaseModel):
+    token: str
+
+
+@app.post("/api/github/save_token")
+async def api_save_github_token(req: SaveGitHubTokenRequest):
+    if not req.token.strip():
+        raise HTTPException(status_code=400, detail="Token cannot be empty")
+    save_github_token(req.token)
+    owner, repo = get_repo_owner_name()
+    return {"status": "success", "repo": f"{owner}/{repo}"}
 
 
 class AddChannelRequest(BaseModel):
@@ -186,7 +464,6 @@ class AddChannelRequest(BaseModel):
 
 @app.post("/api/channels/add")
 async def add_channel(req: AddChannelRequest):
-    # Sanitize ID
     clean_id = req.id.lower().strip().replace(" ", "_")
     clean_id = "".join([c for c in clean_id if c.isalnum() or c == "_"])
     if not clean_id:
@@ -212,7 +489,6 @@ async def add_channel(req: AddChannelRequest):
     profiles.append(new_profile)
     save_profiles_meta(profiles)
 
-    # Initialize empty list in config/channels.json if needed
     channels_json_path = CONFIG_DIR / "channels.json"
     if channels_json_path.exists():
         try:
@@ -264,10 +540,10 @@ async def delete_channel(profile: str = Query(...)):
 
     save_profiles_meta(updated)
 
-    # Remove token file if present
     t_file = get_token_file(clean_id)
     if t_file.exists():
         t_file.unlink()
+    TOKEN_HEALTH_CACHE.pop(clean_id, None)
 
     logger.info(f"Deleted profile: {clean_id}")
     return {"status": "success", "deleted_profile": clean_id}
@@ -278,7 +554,7 @@ async def auth_login(profile: str = Query("nagpuri"), request: Request = None):
     if not CLIENT_SECRETS_FILE.exists():
         return JSONResponse({"error": "client_secrets.json missing in project root"}, status_code=500)
 
-    # Use exact callback URL matching client_secrets.json
+    # Use standard localhost redirect URI
     redirect_uri = "http://localhost:8000/api/channels/oauth2callback"
 
     flow = Flow.from_client_secrets_file(
@@ -298,7 +574,7 @@ async def auth_login(profile: str = Query("nagpuri"), request: Request = None):
         "verifier": getattr(flow, "code_verifier", None)
     }
     save_oauth_states(states)
-    logger.info(f"Initiated OAuth for profile '{profile}' with state '{state}' and verifier: {bool(getattr(flow, 'code_verifier', None))}")
+    logger.info(f"Initiated OAuth for profile '{profile}' with state '{state}'")
 
     return RedirectResponse(auth_url)
 
@@ -344,31 +620,16 @@ async def oauth2_callback(request: Request, code: str = Query(None), state: str 
             flow.code_verifier = code_verifier
             flow.fetch_token(code=code, code_verifier=code_verifier)
         else:
-            logger.warning(f"No code_verifier found for state {state}. Session may have expired or server restarted.")
-            # Session expired screen with instant retry button
+            logger.warning(f"No code_verifier found for state {state}.")
             return HTMLResponse(f"""
             <!DOCTYPE html>
             <html>
-            <head>
-                <meta charset="utf-8">
-                <title>Session Expired - Music Automat</title>
-                <style>
-                    body {{ background: #07090e; color: #fff; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }}
-                    .box {{ background: #131926; border: 1px solid rgba(255,255,255,0.12); border-radius: 18px; padding: 36px; max-width: 480px; text-align: center; box-shadow: 0 15px 40px rgba(0,0,0,0.6); }}
-                    h2 {{ color: #00e5ff; font-size: 22px; margin-bottom: 12px; }}
-                    p {{ color: #94a3b8; font-size: 14px; line-height: 1.6; margin-bottom: 24px; }}
-                    .btn {{ background: linear-gradient(135deg, #00e5ff 0%, #a855f7 50%, #ff2a85 100%); color: #fff; text-decoration: none; padding: 13px 28px; border-radius: 10px; font-weight: bold; display: inline-block; box-shadow: 0 4px 15px rgba(0,229,255,0.3); transition: transform 0.2s; }}
-                    .btn:hover {{ transform: translateY(-2px); }}
-                    .home-link {{ display: block; margin-top: 18px; color: #64748b; text-decoration: none; font-size: 13px; }}
-                    .home-link:hover {{ color: #cbd5e1; }}
-                </style>
-            </head>
-            <body>
-                <div class="box">
-                    <h2>⚠️ लॉगिन सत्र समाप्त (Session Expired)</h2>
-                    <p>सर्वर अपडेट होने के कारण पिछला ऑथेंटिकेशन टोकन एक्सपायर हो गया था। कृपया नीचे दिए बटन पर क्लिक करके दोबारा लॉगिन करें (यह 5 सेकंड में हो जाएगा):</p>
-                    <a href="/api/auth/login?profile={profile}" class="btn">🔄 दोबारा लॉगिन करें (Retry Login)</a>
-                    <a href="/" class="home-link">होम पेज पर वापस जाएँ</a>
+            <head><meta charset="utf-8"><title>Session Expired</title></head>
+            <body style="background:#07090e;color:#fff;font-family:sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;">
+                <div style="background:#131926;border:1px solid #00e5ff;border-radius:16px;padding:32px;max-width:480px;text-align:center;">
+                    <h2 style="color:#00e5ff;">🔄 सेशन रीसेट</h2>
+                    <p style="color:#94a3b8;font-size:14px;">कृपया नीचे क्लिक करके दोबारा लॉगिन करें:</p>
+                    <a href="/api/auth/login?profile={profile}" style="background:#00e5ff;color:#000;text-decoration:none;padding:12px 24px;border-radius:8px;font-weight:bold;display:inline-block;margin-top:16px;">दोबारा लॉगिन करें</a>
                 </div>
             </body>
             </html>
@@ -389,8 +650,8 @@ async def oauth2_callback(request: Request, code: str = Query(None), state: str 
             <body style="background:#07090e;color:#fff;font-family:sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;">
                 <div style="background:#131926;border:1px solid #ff4b4b;border-radius:16px;padding:32px;max-width:480px;text-align:center;">
                     <h2 style="color:#ff5e5e;">⚠️ कोई यूट्यूब चैनल नहीं मिला</h2>
-                    <p style="color:#94a3b8;font-size:14px;line-height:1.6;">जिस गूगल अकाउंट से आपने लॉगिन किया है, उस पर कोई YouTube चैनल नहीं बना हुआ है। कृपया वह गूगल अकाउंट चुनें जिस पर आपका चैनल है।</p>
-                    <a href="/api/auth/login?profile=""" + profile + """" style="background:#00e5ff;color:#000;text-decoration:none;padding:12px 24px;border-radius:8px;font-weight:bold;display:inline-block;margin-top:16px;">दोबारा सही अकाउंट से लॉगिन करें</a>
+                    <p style="color:#94a3b8;font-size:14px;">इस अकाउंट पर YouTube चैनल नहीं मिला।</p>
+                    <a href="/" style="background:#00e5ff;color:#000;text-decoration:none;padding:12px 24px;border-radius:8px;font-weight:bold;display:inline-block;margin-top:16px;">होम पेज</a>
                 </div>
             </body>
             </html>
@@ -414,12 +675,14 @@ async def oauth2_callback(request: Request, code: str = Query(None), state: str 
             "token_uri": creds.token_uri,
             "client_id": creds.client_id,
             "client_secret": creds.client_secret,
-            "scopes": creds.scopes
+            "scopes": creds.scopes,
+            "connected_at": time.time()  # Track exact authorization timestamp for countdown
         }
 
         t_file = get_token_file(profile)
         t_file.write_text(json.dumps(token_payload, indent=2, ensure_ascii=False), encoding="utf-8")
-        logger.info(f"Successfully connected {profile} channel: {snippet.get('title')} ({ch_id})")
+        TOKEN_HEALTH_CACHE.pop(profile, None)
+        logger.info(f"Connected {profile} channel: {snippet.get('title')} ({ch_id})")
 
         return RedirectResponse(url="/")
     except Exception as e:
@@ -427,26 +690,12 @@ async def oauth2_callback(request: Request, code: str = Query(None), state: str 
         return HTMLResponse(f"""
         <!DOCTYPE html>
         <html>
-        <head>
-            <meta charset="utf-8">
-            <title>Authentication Error</title>
-            <style>
-                body {{ background: #07090e; color: #fff; font-family: sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }}
-                .box {{ background: #131926; border: 1px solid rgba(255,100,100,0.3); border-radius: 16px; padding: 32px; max-width: 500px; text-align: center; }}
-                h2 {{ color: #ff5e5e; margin-bottom: 12px; }}
-                p {{ color: #94a3b8; font-size: 14px; line-height: 1.6; margin-bottom: 20px; }}
-                .err {{ background: rgba(0,0,0,0.5); padding: 10px; border-radius: 8px; font-family: monospace; font-size: 12px; color: #ff9999; margin-bottom: 20px; word-break: break-all; }}
-                a {{ background: #00e5ff; color: #000; text-decoration: none; padding: 12px 24px; border-radius: 8px; font-weight: bold; display: inline-block; }}
-            </style>
-        </head>
-        <body>
-            <div class="box">
-                <h2>⚠️ लॉगिन प्रमाणीकरण में त्रुटि</h2>
-                <p>गूगल से टोकन प्राप्त करते समय निम्नलिखित समस्या आई:</p>
-                <div class="err">{str(e)}</div>
-                <a href="/api/auth/login?profile={profile}">🔄 दोबारा लॉगिन करें</a>
-                <br><br>
-                <a href="/" style="background:transparent;border:1px solid #475569;color:#cbd5e1;font-size:13px;padding:8px 16px;">होम पेज</a>
+        <head><meta charset="utf-8"><title>Auth Error</title></head>
+        <body style="background:#07090e;color:#fff;font-family:sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;">
+            <div style="background:#131926;border:1px solid #ff4b4b;border-radius:16px;padding:32px;max-width:500px;text-align:center;">
+                <h2 style="color:#ff5e5e;">⚠️ लॉगिन में त्रुटि</h2>
+                <p style="color:#94a3b8;font-size:14px;">{str(e)}</p>
+                <a href="/api/auth/login?profile={profile}" style="background:#00e5ff;color:#000;text-decoration:none;padding:12px 24px;border-radius:8px;font-weight:bold;display:inline-block;margin-top:16px;">दोबारा कोशिश करें</a>
             </div>
         </body>
         </html>
@@ -455,11 +704,13 @@ async def oauth2_callback(request: Request, code: str = Query(None), state: str 
 
 @app.post("/api/auth/disconnect")
 async def disconnect_channel(profile: str = Query("nagpuri")):
-    t_file = get_token_file(profile.lower().strip())
+    clean_id = profile.lower().strip()
+    t_file = get_token_file(clean_id)
     if t_file.exists():
         t_file.unlink()
-        logger.info(f"Disconnected channel profile: {profile}")
-    return {"status": "success", "profile": profile}
+    TOKEN_HEALTH_CACHE.pop(clean_id, None)
+    logger.info(f"Disconnected channel profile: {clean_id}")
+    return {"status": "success", "profile": clean_id}
 
 
 @app.post("/api/run_mix")
@@ -475,4 +726,4 @@ async def trigger_run(profile: str = Query("nagpuri")):
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("src.server:app", host="127.0.0.1", port=8000, reload=True)
+    uvicorn.run("src.server:app", host="0.0.0.0", port=8000, reload=True)

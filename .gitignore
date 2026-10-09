@@ -19,13 +19,15 @@ temp/
 !assets/
 !assets/*
 
-# API credentials
+# API credentials & Secrets
 kaggle.json
 client_secrets.json
 tokens/
 *.token
- 
+config/github_token.txt
+
 kaggle_logs/
 pulled_kernel/
 pulled_meta/
 temp_deploy/
+tools/
