@@ -1171,6 +1171,51 @@
         </div>
     </div>
 
+    <!-- ─── MODAL 4: MOBILE GOOGLE LOGIN HELPER ─── -->
+    <div class="modal-overlay" id="mobileLoginModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>📱 मोबाइल गूगल लॉगिन (Mobile Login)</h2>
+                <button class="btn-close-modal" onclick="closeModal('mobileLoginModal')">&times;</button>
+            </div>
+
+            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px;">
+                चैनल: <b id="mobileModalChannelTitle" style="color: var(--neon-cyan);">Channel</b>
+            </p>
+
+            <div style="background: rgba(0, 229, 255, 0.06); border: 1px solid rgba(0, 229, 255, 0.2); border-radius: 12px; padding: 14px; margin-bottom: 16px;">
+                <div style="font-size: 12px; font-weight: 700; color: #fff; margin-bottom: 6px;">
+                    📌 2 आसान स्टेप्स में मोबाइल से कनेक्ट करें:
+                </div>
+                <div style="font-size: 12px; color: #94a3b8; line-height: 1.6;">
+                    <b>स्टेप 1:</b> नीचे दिए बटन पर टैप करके Google लॉगिन करें और 'Allow' दबाएँ।<br>
+                    <b>स्टेप 2:</b> Google लॉगिन के बाद स्क्रीन पर <i>'Site can't be reached (localhost:8000)'</i> दिखेगा। घबराएँ नहीं! बस उस पेज के <b>एड्रेस बार से पूरा लिंक कॉपी करें</b> और नीचे पेस्ट करके 'कनेक्ट करें' दबा दें।
+                </div>
+            </div>
+
+            <div style="margin-bottom: 18px;">
+                <button type="button" class="btn-connect btn-google" id="btnOpenGoogleAuth" onclick="openGoogleAuthTab()" style="box-shadow: 0 4px 15px rgba(255, 255, 255, 0.25);">
+                    <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.8-2.4 3.67v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.16z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.26v3.15C3.25 21.36 7.31 24 12 24z"/><path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.26C.46 8.16 0 9.99 0 12s.46 3.84 1.26 5.42l4.02-3.15z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.25 2.64 1.26 6.58l4.02 3.15c.95-2.83 3.6-4.93 6.72-4.93z"/></svg>
+                    <span>1️⃣ गूगल लॉगिन पेज खोलें (Google Login)</span>
+                </button>
+            </div>
+
+            <div class="form-group">
+                <label for="mobileCallbackInput">2️⃣ एरर पेज का लिंक या कोड यहाँ पेस्ट करें:</label>
+                <input type="text" id="mobileCallbackInput" class="form-control" placeholder="http://localhost:8000/... या 4/0A..." />
+            </div>
+
+            <div id="mobileSyncResultBox" style="display:none; padding:12px; border-radius:8px; font-size:12px; margin-bottom:14px;"></div>
+
+            <div class="modal-actions">
+                <button type="button" class="btn-modal-primary" id="btnSubmitMobileAuth" onclick="submitMobileAuth()">
+                    ⚡ चैनल कनेक्ट करें (Connect Channel)
+                </button>
+                <button type="button" class="btn-modal-secondary" onclick="closeModal('mobileLoginModal')">बंद करें</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Toast Notification -->
     <div class="toast" id="toast">
         <span id="toastIcon">✅</span>
@@ -1211,6 +1256,88 @@
         function openAddModal() { openModal('addChannelModal'); }
         function openGitHubModal() { openModal('githubModal'); }
         function openRemoteModal() { openModal('remoteModal'); }
+
+        let activeMobileAuthProfile = "nagpuri";
+
+        function handleLoginClick(profileId, channelTitle) {
+            const isLocal = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+            if (isLocal) {
+                // PC localhost: Direct 1-click login!
+                window.location.href = `/api/auth/login?profile=${profileId}`;
+            } else {
+                // Mobile or Remote tunnel: Open Mobile OAuth Helper Modal!
+                openMobileLoginModal(profileId, channelTitle);
+            }
+        }
+
+        function openMobileLoginModal(profileId, channelTitle) {
+            activeMobileAuthProfile = profileId;
+            document.getElementById('mobileModalChannelTitle').innerText = channelTitle || profileId;
+            document.getElementById('mobileCallbackInput').value = '';
+            document.getElementById('mobileSyncResultBox').style.display = 'none';
+            openModal('mobileLoginModal');
+        }
+
+        function openGoogleAuthTab() {
+            const loginUrl = `/api/auth/login?profile=${activeMobileAuthProfile}`;
+            window.open(loginUrl, '_blank');
+        }
+
+        async function submitMobileAuth() {
+            const input = document.getElementById('mobileCallbackInput');
+            const resBox = document.getElementById('mobileSyncResultBox');
+            const btn = document.getElementById('btnSubmitMobileAuth');
+            const val = input.value.trim();
+
+            if (!val) {
+                alert("कृपया Google लॉगिन के बाद वाला लिंक या कोड यहाँ पेस्ट करें!");
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerText = "⏳ टोकन वेरिफ़ाई हो रहा है...";
+            resBox.style.display = "none";
+
+            try {
+                const res = await fetch('/api/channels/submit_callback', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        callback_data: val,
+                        profile: activeMobileAuthProfile
+                    })
+                });
+
+                const data = await res.json();
+                resBox.style.display = "block";
+
+                if (res.ok && data.status === "success") {
+                    resBox.style.background = "rgba(16, 185, 129, 0.15)";
+                    resBox.style.border = "1px solid rgba(16, 185, 129, 0.4)";
+                    resBox.style.color = "#a7f3d0";
+                    resBox.innerHTML = `<b>🎉 सफलता!</b> चैनल <b>${data.channel_title || data.profile}</b> सफलतापूर्वक कनेक्ट हो गया!`;
+                    showToast(`'${data.channel_title || data.profile}' सफलतापूर्वक कनेक्ट हो गया! 🎉`);
+                    setTimeout(() => {
+                        closeModal('mobileLoginModal');
+                        fetchStatus(true);
+                    }, 2000);
+                } else {
+                    resBox.style.background = "rgba(239, 68, 68, 0.15)";
+                    resBox.style.border = "1px solid rgba(239, 68, 68, 0.4)";
+                    resBox.style.color = "#fca5a5";
+                    resBox.innerHTML = `<b>⚠️ एरर:</b> ${data.detail || "टोकन एक्सचेंज विफल रहा।"}`;
+                }
+            } catch (err) {
+                resBox.style.display = "block";
+                resBox.style.background = "rgba(239, 68, 68, 0.15)";
+                resBox.style.border = "1px solid rgba(239, 68, 68, 0.4)";
+                resBox.style.color = "#fca5a5";
+                resBox.innerHTML = `<b>⚠️ कनेक्शन एरर:</b> ${err.message}`;
+            } finally {
+                btn.disabled = false;
+                btn.innerText = "⚡ चैनल कनेक्ट करें (Connect Channel)";
+            }
+        }
 
         // Close modal on Esc or outside click
         window.addEventListener('keydown', (e) => {
@@ -1409,9 +1536,9 @@
 
                     <div class="card-actions">
                         ${isExpired ? `
-                            <a href="/api/auth/login?profile=${p.id}" class="btn-connect btn-reconnect">
+                            <button onclick="handleLoginClick('${p.id}', '${(p.channel_title || p.name).replace(/'/g, "\\'")}')" class="btn-connect btn-reconnect">
                                 🔄 दोबारा लॉगिन करें (Reconnect)
-                            </a>
+                            </button>
                             <div class="btn-row">
                                 <button class="btn-test btn-disconnect" onclick="disconnect('${p.id}')">हटाएँ</button>
                                 ${!isDefault ? `
@@ -1433,10 +1560,10 @@
                                 ` : ''}
                             </div>
                         ` : `
-                            <a href="/api/auth/login?profile=${p.id}" class="btn-connect btn-google">
+                            <button onclick="handleLoginClick('${p.id}', '${(p.channel_title || p.name).replace(/'/g, "\\'")}')" class="btn-connect btn-google">
                                 <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.8-2.4 3.67v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.16z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.26v3.15C3.25 21.36 7.31 24 12 24z"/><path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.26C.46 8.16 0 9.99 0 12s.46 3.84 1.26 5.42l4.02-3.15z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.25 2.64 1.26 6.58l4.02 3.15c.95-2.83 3.6-4.93 6.72-4.93z"/></svg>
-                                Login With Google
-                            </a>
+                                <span>Login With Google</span>
+                            </button>
                             ${!isDefault ? `
                                 <div class="btn-row">
                                     <button class="btn-test" onclick="triggerTest('${p.id}')">

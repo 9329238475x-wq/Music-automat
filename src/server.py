@@ -20,6 +20,7 @@ from typing import Dict, Any, List, Optional
 from pydantic import BaseModel
 
 import requests
+from urllib.parse import urlparse, parse_qs
 from fastapi import FastAPI, Request, Query, Body, HTTPException
 from fastapi.responses import HTMLResponse, RedirectResponse, JSONResponse
 from google_auth_oauthlib.flow import Flow
@@ -578,6 +579,115 @@ async def auth_login(profile: str = Query("nagpuri"), request: Request = None):
     return RedirectResponse(auth_url)
 
 
+def process_token_exchange(code: str, state: Optional[str] = None, profile_override: Optional[str] = None) -> Dict[str, Any]:
+    """
+    Exchanges authorization code for YouTube refresh token and channel metadata.
+    Supports both automated browser callback and manual mobile code submission.
+    """
+    states = get_oauth_states()
+    state_data = states.pop(state, {}) if state else {}
+    save_oauth_states(states)
+
+    profile = profile_override or state_data.get("profile", "nagpuri")
+    code_verifier = state_data.get("verifier")
+    redirect_uri = "http://localhost:8000/api/channels/oauth2callback"
+
+    flow = Flow.from_client_secrets_file(
+        str(CLIENT_SECRETS_FILE),
+        scopes=SCOPES,
+        redirect_uri=redirect_uri,
+        state=state
+    )
+
+    if code_verifier:
+        flow.code_verifier = code_verifier
+        flow.fetch_token(code=code, code_verifier=code_verifier)
+    else:
+        # Fallback if verifier wasn't preserved across restarts
+        try:
+            flow.fetch_token(code=code)
+        except Exception:
+            flow.fetch_token(code=code, code_verifier=code_verifier)
+
+    creds = flow.credentials
+    youtube = build("youtube", "v3", credentials=creds)
+    resp = youtube.channels().list(part="snippet,statistics", mine=True).execute()
+
+    items = resp.get("items", [])
+    if not items:
+        raise ValueError("इस गूगल अकाउंट पर कोई YouTube चैनल नहीं मिला।")
+
+    ch = items[0]
+    ch_id = ch["id"]
+    snippet = ch.get("snippet", {})
+    stats = ch.get("statistics", {})
+
+    token_payload = {
+        "profile": profile,
+        "channel_id": ch_id,
+        "channel_title": snippet.get("title", ""),
+        "custom_url": snippet.get("customUrl", ""),
+        "thumbnail": snippet.get("thumbnails", {}).get("default", {}).get("url", ""),
+        "subscriber_count": stats.get("subscriberCount", "0"),
+        "video_count": stats.get("videoCount", "0"),
+        "token": creds.token,
+        "refresh_token": creds.refresh_token,
+        "token_uri": creds.token_uri,
+        "client_id": creds.client_id,
+        "client_secret": creds.client_secret,
+        "scopes": creds.scopes,
+        "connected_at": time.time()
+    }
+
+    t_file = get_token_file(profile)
+    t_file.write_text(json.dumps(token_payload, indent=2, ensure_ascii=False), encoding="utf-8")
+    TOKEN_HEALTH_CACHE.pop(profile, None)
+    logger.info(f"Connected {profile} channel: {snippet.get('title')} ({ch_id})")
+    return token_payload
+
+
+class SubmitCallbackRequest(BaseModel):
+    callback_data: str
+    profile: Optional[str] = None
+
+
+@app.post("/api/channels/submit_callback")
+async def api_submit_callback(req: SubmitCallbackRequest):
+    """
+    Mobile OAuth Helper: Allows pasting the redirect URL or code from phone
+    to seamlessly connect channels when Google redirects to localhost.
+    """
+    raw = req.callback_data.strip()
+    code = None
+    state = None
+
+    if "code=" in raw:
+        query_part = raw.split("?", 1)[1] if "?" in raw else raw
+        params = parse_qs(query_part)
+        code = params.get("code", [None])[0]
+        state = params.get("state", [None])[0]
+    elif "&" in raw:
+        params = parse_qs(raw)
+        code = params.get("code", [None])[0]
+        state = params.get("state", [None])[0]
+    else:
+        code = raw
+
+    if not code:
+        raise HTTPException(status_code=400, detail="दिए गए टेक्स्ट या लिंक में 'code' नहीं मिला।")
+
+    try:
+        payload = process_token_exchange(code=code, state=state, profile_override=req.profile)
+        return {
+            "status": "success",
+            "profile": payload.get("profile"),
+            "channel_title": payload.get("channel_title")
+        }
+    except Exception as e:
+        logger.error(f"Mobile callback exchange failed: {e}", exc_info=True)
+        raise HTTPException(status_code=400, detail=f"कनेक्ट विफल: {str(e)}")
+
+
 @app.get("/api/channels/oauth2callback")
 async def oauth2_callback(request: Request, code: str = Query(None), state: str = Query(None), error: str = Query(None)):
     if error:
@@ -599,90 +709,8 @@ async def oauth2_callback(request: Request, code: str = Query(None), state: str 
     if not code:
         return HTMLResponse("<h3>Authorization error: No code received</h3>", status_code=400)
 
-    states = get_oauth_states()
-    state_data = states.pop(state, {}) if state else {}
-    save_oauth_states(states)
-
-    profile = state_data.get("profile", "nagpuri")
-    code_verifier = state_data.get("verifier")
-
-    redirect_uri = "http://localhost:8000/api/channels/oauth2callback"
-
     try:
-        flow = Flow.from_client_secrets_file(
-            str(CLIENT_SECRETS_FILE),
-            scopes=SCOPES,
-            redirect_uri=redirect_uri,
-            state=state
-        )
-        if code_verifier:
-            flow.code_verifier = code_verifier
-            flow.fetch_token(code=code, code_verifier=code_verifier)
-        else:
-            logger.warning(f"No code_verifier found for state {state}.")
-            return HTMLResponse(f"""
-            <!DOCTYPE html>
-            <html>
-            <head><meta charset="utf-8"><title>Session Expired</title></head>
-            <body style="background:#07090e;color:#fff;font-family:sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;">
-                <div style="background:#131926;border:1px solid #00e5ff;border-radius:16px;padding:32px;max-width:480px;text-align:center;">
-                    <h2 style="color:#00e5ff;">🔄 सेशन रीसेट</h2>
-                    <p style="color:#94a3b8;font-size:14px;">कृपया नीचे क्लिक करके दोबारा लॉगिन करें:</p>
-                    <a href="/api/auth/login?profile={profile}" style="background:#00e5ff;color:#000;text-decoration:none;padding:12px 24px;border-radius:8px;font-weight:bold;display:inline-block;margin-top:16px;">दोबारा लॉगिन करें</a>
-                </div>
-            </body>
-            </html>
-            """)
-
-        creds = flow.credentials
-
-        # Query YouTube for channel identity
-        youtube = build("youtube", "v3", credentials=creds)
-        resp = youtube.channels().list(part="snippet,statistics", mine=True).execute()
-
-        items = resp.get("items", [])
-        if not items:
-            return HTMLResponse("""
-            <!DOCTYPE html>
-            <html>
-            <head><meta charset="utf-8"><title>No Channel Found</title></head>
-            <body style="background:#07090e;color:#fff;font-family:sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;">
-                <div style="background:#131926;border:1px solid #ff4b4b;border-radius:16px;padding:32px;max-width:480px;text-align:center;">
-                    <h2 style="color:#ff5e5e;">⚠️ कोई यूट्यूब चैनल नहीं मिला</h2>
-                    <p style="color:#94a3b8;font-size:14px;">इस अकाउंट पर YouTube चैनल नहीं मिला।</p>
-                    <a href="/" style="background:#00e5ff;color:#000;text-decoration:none;padding:12px 24px;border-radius:8px;font-weight:bold;display:inline-block;margin-top:16px;">होम पेज</a>
-                </div>
-            </body>
-            </html>
-            """, status_code=400)
-
-        ch = items[0]
-        ch_id = ch["id"]
-        snippet = ch.get("snippet", {})
-        stats = ch.get("statistics", {})
-
-        token_payload = {
-            "profile": profile,
-            "channel_id": ch_id,
-            "channel_title": snippet.get("title", ""),
-            "custom_url": snippet.get("customUrl", ""),
-            "thumbnail": snippet.get("thumbnails", {}).get("default", {}).get("url", ""),
-            "subscriber_count": stats.get("subscriberCount", "0"),
-            "video_count": stats.get("videoCount", "0"),
-            "token": creds.token,
-            "refresh_token": creds.refresh_token,
-            "token_uri": creds.token_uri,
-            "client_id": creds.client_id,
-            "client_secret": creds.client_secret,
-            "scopes": creds.scopes,
-            "connected_at": time.time()  # Track exact authorization timestamp for countdown
-        }
-
-        t_file = get_token_file(profile)
-        t_file.write_text(json.dumps(token_payload, indent=2, ensure_ascii=False), encoding="utf-8")
-        TOKEN_HEALTH_CACHE.pop(profile, None)
-        logger.info(f"Connected {profile} channel: {snippet.get('title')} ({ch_id})")
-
+        process_token_exchange(code=code, state=state)
         return RedirectResponse(url="/")
     except Exception as e:
         logger.error(f"Error during OAuth callback: {e}", exc_info=True)
@@ -694,7 +722,7 @@ async def oauth2_callback(request: Request, code: str = Query(None), state: str 
             <div style="background:#131926;border:1px solid #ff4b4b;border-radius:16px;padding:32px;max-width:500px;text-align:center;">
                 <h2 style="color:#ff5e5e;">⚠️ लॉगिन में त्रुटि</h2>
                 <p style="color:#94a3b8;font-size:14px;">{str(e)}</p>
-                <a href="/api/auth/login?profile={profile}" style="background:#00e5ff;color:#000;text-decoration:none;padding:12px 24px;border-radius:8px;font-weight:bold;display:inline-block;margin-top:16px;">दोबारा कोशिश करें</a>
+                <a href="/" style="background:#00e5ff;color:#000;text-decoration:none;padding:12px 24px;border-radius:8px;font-weight:bold;display:inline-block;margin-top:16px;">होम पेज</a>
             </div>
         </body>
         </html>
