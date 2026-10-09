@@ -237,8 +237,8 @@ Automated production report by Music-Automat 24/7 Autonomous Studio Engine.
             <td style="padding: 12px 20px; border-bottom: 1px solid rgba(255, 255, 255, 0.04); font-size: 13px; color: #ffffff; font-weight: 700; text-align: right;">1080p Avee Player 360° Spectrum</td>
           </tr>
           <tr>
-            <td style="padding: 12px 20px; border-bottom: 1px solid rgba(255, 255, 255, 0.04); font-size: 13px; color: #94a3b8; font-weight: 500;">Sub-Bass Calibration</td>
-            <td style="padding: 12px 20px; border-bottom: 1px solid rgba(255, 255, 255, 0.04); font-size: 13px; color: {accent_color}; font-weight: 700; text-align: right;">Sub-Bass Boosted +2.5dB</td>
+            <td style="padding: 12px 20px; border-bottom: 1px solid rgba(255, 255, 255, 0.04); font-size: 13px; color: #94a3b8; font-weight: 500;">Audio Mastering Spec</td>
+            <td style="padding: 12px 20px; border-bottom: 1px solid rgba(255, 255, 255, 0.04); font-size: 13px; color: {accent_color}; font-weight: 700; text-align: right;">Pure Bass + 10% 3D Stereo + 5% Reverb</td>
           </tr>
           <tr>
             <td style="padding: 12px 20px; border-bottom: 1px solid rgba(255, 255, 255, 0.04); font-size: 13px; color: #94a3b8; font-weight: 500;">YouTube Video ID</td>
@@ -247,6 +247,39 @@ Automated production report by Music-Automat 24/7 Autonomous Studio Engine.
           <tr>
             <td style="padding: 12px 20px; font-size: 13px; color: #94a3b8; font-weight: 500;">Published Timestamp</td>
             <td style="padding: 12px 20px; font-size: 13px; color: #ffffff; font-weight: 700; text-align: right;">{now_ist} (IST)</td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+
+    <!-- 1-Click Viral Community Post Box -->
+    <tr>
+      <td style="padding: 0 32px 24px;">
+        <table width="100%" border="0" cellpadding="0" cellspacing="0" style="background: #111827; border: 1px solid rgba(255, 215, 0, 0.35); border-radius: 14px; overflow: hidden; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6);">
+          <tr>
+            <td style="padding: 14px 18px; background: rgba(255, 215, 0, 0.1); border-bottom: 1px solid rgba(255, 215, 0, 0.2);">
+              <span style="font-size: 12px; font-weight: 800; color: #ffd700; letter-spacing: 0.08em; text-transform: uppercase;">
+                📱 1-CLICK YOUTUBE COMMUNITY POST (4X ALGORITHM BOOST)
+              </span>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding: 18px; font-size: 13px; color: #e2e8f0; line-height: 1.6; font-family: monospace; white-space: pre-wrap; background: #0c101c;">🔥 NEW 2026 {genre_badge} NONSTOP IS LIVE! 🎧💃
+
+हर DJ सेटअप पर तहलका मचाने वाला नया नॉनस्टॉप आ चुका है! ❤️🔥
+
+👉 अभी पूरा नॉनस्टॉप सुनें (Full HD Video):
+{watch_url}
+
+🎧 100% Heavy Bass & Crystal Clear 320 Kbps HD Sound!
+❓ इस मिक्स में आपका सबसे पसंदीदा DJ Track कौन सा लगा? नीचे कमेंट करके बताएं! 👇
+
+#NonstopDJ #{p_lower} #DJRemix #DanceMix #PartyMix #Roadshow2026</td>
+          </tr>
+          <tr>
+            <td style="padding: 10px 18px; background: rgba(255, 255, 255, 0.03); font-size: 11px; color: #94a3b8; text-align: center;">
+              💡 <em>Tip: YouTube Studio ऐप में जाकर 'Create Post' पर यह टेक्स्ट 2 सेकंड में पेस्ट करें!</em>
+            </td>
           </tr>
         </table>
       </td>

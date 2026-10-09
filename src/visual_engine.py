@@ -130,6 +130,136 @@ class DJVisualEngine:
         logger.info(f"Thumbnail wall saved at {out_path}")
         return out_path
 
+    def _get_bold_font(self, size: int):
+        """Loads bold high-CTR thumbnail font (Impact or Arial Bold with Ubuntu/Windows fallbacks)."""
+        font_candidates = [
+            "C:/Windows/Fonts/impact.ttf",
+            "C:/Windows/Fonts/arialbd.ttf",
+            "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
+            "/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf",
+            "/usr/share/fonts/truetype/freefont/FreeSansBold.ttf",
+        ]
+        for f in font_candidates:
+            if os.path.exists(f):
+                try:
+                    return ImageFont.truetype(f, size)
+                except Exception:
+                    pass
+        return ImageFont.load_default()
+
+    def create_high_ctr_thumbnail(
+        self,
+        bg_wall_path: str,
+        out_path: Optional[str] = None
+    ) -> str:
+        """
+        Creates a viral, ultra-high-CTR 1920x1080 YouTube Thumbnail Poster:
+        - Bold, pure white typography with deep black drop-shadow & solid black outline
+          guarantees 100% readability on all mobile screens and dark/light YouTube feeds.
+        - Automatically tailored per channel profile:
+            * nagpuri: "NONSTOP THETH NAGPURI", "DJ DANCE MIX 2026", "320 KBPS HD MASTER | FULL ROADSHOW VIBRATION"
+            * vibration: "HARD BASS VIBRATION", "CG & TAPORI DJ MIX 2026", "320 KBPS HD SOUND | 100% WOOFER KILLER BLAST"
+            * edm: "BHOJPURI EDM DROP", "DANCE PARTY MIX 2026", "320 KBPS ULTRA HD | HIGH VOLTAGE DROP"
+            * dj_nan_say_karwan: "DJ NAN SAY KARWAN", "SUPERHIT NONSTOP 2026", "320 KBPS HD MASTER | FULL ROADSHOW MIX"
+        - Includes the channel's glowing circular logo emblem for instant brand recognition!
+        """
+        if out_path is None:
+            out_path = os.path.join(self.output_dir, f"{self.profile}_youtube_thumbnail.jpg")
+
+        width, height = 1920, 1080
+        cx, cy = width // 2, height // 2
+
+        if os.path.exists(bg_wall_path):
+            base = Image.open(bg_wall_path).convert("RGBA")
+            if base.size != (width, height):
+                base = ImageOps.fit(base, (width, height))
+        else:
+            base = Image.new("RGBA", (width, height), (12, 14, 22, 255))
+
+        # Soft translucent dark plate across the center to ensure 100% text contrast
+        plate = Image.new("RGBA", (width, height), (0, 0, 0, 0))
+        p_draw = ImageDraw.Draw(plate)
+        p_draw.rectangle([100, 170, width - 100, height - 170], fill=(0, 0, 0, 155))
+        base = Image.alpha_composite(base, plate)
+
+        draw = ImageDraw.Draw(base)
+
+        # Profile-specific text & badges
+        p = self.profile.lower()
+        if p == "nagpuri":
+            tag_text = "🔥 2026 THETH NAGPURI SPECIAL 🔥"
+            main_title = "NONSTOP DJ DANCE MIX"
+            sub_text = "🎧 320 KBPS HD MASTER | FULL ROADSHOW VIBRATION"
+        elif p == "vibration":
+            tag_text = "💥 HARD BASS VIBRATION 2026 💥"
+            main_title = "CG & TAPORI DJ MIX"
+            sub_text = "🎧 320 KBPS HD SOUND | 100% WOOFER KILLER BLAST"
+        elif p == "edm":
+            tag_text = "⚡ BHOJPURI EDM DROP 2026 ⚡"
+            main_title = "DANCE PARTY MIX"
+            sub_text = "🎧 320 KBPS ULTRA HD | HIGH VOLTAGE DROP"
+        elif p == "dj_nan_say_karwan":
+            tag_text = "🔥 DJ NAN SAY KARWAN 🔥"
+            main_title = "SUPERHIT NONSTOP 2026"
+            sub_text = "🎧 320 KBPS HD MASTER | FULL COMPETITION MIX"
+        else:
+            clean_name = p.replace("_", " ").upper()
+            tag_text = f"🔥 {clean_name} SPECIAL 🔥"
+            main_title = "NONSTOP DJ DANCE MIX 2026"
+            sub_text = "🎧 320 KBPS ULTRA HD MASTER | FULL BASS"
+
+        # Load fonts (Impact / Arial Bold with platform fallbacks)
+        font_tag = self._get_bold_font(48)
+        font_main = self._get_bold_font(125)
+        font_sub = self._get_bold_font(44)
+
+        # Place Channel Logo Emblem at top center if available
+        logo_y_offset = 205
+        if self.logo_path and os.path.exists(self.logo_path):
+            try:
+                logo_img = Image.open(self.logo_path).convert("RGBA")
+                logo_dim = 160
+                logo_img = logo_img.resize((logo_dim, logo_dim), Image.Resampling.LANCZOS)
+                
+                # Draw circular white & black emblem border
+                border_img = Image.new("RGBA", (logo_dim + 16, logo_dim + 16), (0, 0, 0, 0))
+                b_draw = ImageDraw.Draw(border_img)
+                b_draw.ellipse([0, 0, logo_dim + 15, logo_dim + 15], fill=(0, 0, 0, 230), outline=(255, 255, 255, 255), width=4)
+                
+                logo_x = cx - logo_dim // 2
+                logo_y = logo_y_offset
+                base.paste(border_img, (logo_x - 8, logo_y - 8), border_img)
+                base.paste(logo_img, (logo_x, logo_y), logo_img)
+                text_start_y = logo_y + logo_dim + 30
+            except Exception as e:
+                logger.warning(f"Failed to place logo on thumbnail: {e}")
+                text_start_y = 330
+        else:
+            text_start_y = 330
+
+        # Helper to draw centered pure white text with solid black stroke and black drop shadow
+        def draw_centered_white_text(text: str, y: int, font, stroke_w: int = 8, shadow_offset: int = 8):
+            bbox = draw.textbbox((0, 0), text, font=font)
+            tw = bbox[2] - bbox[0]
+            tx = cx - tw // 2
+            # 1. Deep Black Drop Shadow
+            draw.text((tx + shadow_offset, y + shadow_offset), text, font=font, fill=(0, 0, 0, 255), stroke_width=stroke_w, stroke_fill=(0, 0, 0, 255))
+            # 2. Pure White Text with Solid Black Stroke
+            draw.text((tx, y), text, font=font, fill=(255, 255, 255, 255), stroke_width=stroke_w, stroke_fill=(0, 0, 0, 255))
+
+        # Render 3 high-impact lines:
+        # Line 1: Header Tag
+        draw_centered_white_text(tag_text, text_start_y, font_tag, stroke_w=6, shadow_offset=6)
+        # Line 2: Giant Main Title
+        draw_centered_white_text(main_title, text_start_y + 80, font_main, stroke_w=10, shadow_offset=10)
+        # Line 3: Bottom Soundmark Badge
+        draw_centered_white_text(sub_text, text_start_y + 245, font_sub, stroke_w=6, shadow_offset=6)
+
+        final_rgb = base.convert("RGB")
+        final_rgb.save(out_path, quality=98)
+        logger.info(f"✅ High-CTR YouTube Thumbnail Poster created at {out_path}")
+        return out_path
+
     def _extract_audio_fft(
         self,
         audio_path: str,
@@ -386,6 +516,17 @@ class DJVisualEngine:
                         outline=(*neon_primary, sw_alpha),
                         width=3
                     )
+
+            # 4b. Floating Stardust Particles / Disco Sparks (expands rhythmically with beats!)
+            stardust_count = 32
+            for s_idx in range(stardust_count):
+                s_angle = (2 * math.pi / stardust_count) * s_idx + (s_idx * 0.42)
+                s_dist = cur_r + 115 + int(math.sin(s_idx * 1.8) * 35) + int(28 * b_val)
+                sx = cx + int(s_dist * math.cos(s_angle))
+                sy = cy + int(s_dist * math.sin(s_angle))
+                s_size = 2 if (s_idx % 2 == 0) else 3
+                s_alpha = int((110 + 145 * b_val) * (0.6 + 0.4 * abs(math.sin(s_idx * 2.1))))
+                draw.ellipse([sx - s_size, sy - s_size, sx + s_size, sy + s_size], fill=(255, 255, 255, s_alpha))
 
             # 5. Glowing Double Halo Rings
             halo_width = int(6 + 4 * b_val)

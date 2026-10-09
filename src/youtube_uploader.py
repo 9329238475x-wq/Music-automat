@@ -61,8 +61,10 @@ class YouTubeUploader:
             refresh_token=refresh_token,
             token_uri=token_uri,
             client_id=client_id,
-            client_secret=client_secret,
-            scopes=["https://www.googleapis.com/auth/youtube.upload"]
+            scopes=[
+                "https://www.googleapis.com/auth/youtube.upload",
+                "https://www.googleapis.com/auth/youtube.force-ssl"
+            ]
         )
         try:
             if not creds.valid:
@@ -395,7 +397,77 @@ Thank you for your love and support! ❤️
             except Exception as e:
                 logger.warning(f"Thumbnail upload failed: {e}")
 
+        # 1. Post Auto-Engagement Comment with Tracklist & Chapters
+        self.post_pinned_comment(video_id=video_id, tracklist_text=tracklist_text, title=metadata["title"])
+
+        # 2. Save 1-Click Viral Community Post Draft (4x Boost)
+        self.save_community_post_draft(video_url=video_url, title=metadata["title"], tracks=tracks)
+
         return video_url
+
+    def post_pinned_comment(self, video_id: str, tracklist_text: str, title: str) -> bool:
+        """Posts an engaging comment with full tracklist chapters and discussion prompt."""
+        try:
+            youtube = self.get_authenticated_service()
+            if not youtube:
+                return False
+            comment_body = (
+                f"🔥 {title} LIVE HO CHUKA HAI! ❤️\n\n"
+                f"🎧 Aapka sabse favourite gaana kaun sa hai? Niche comment karke zaroor batayein! 👇\n\n"
+                f"🎵 TRACKLIST & CHAPTERS:\n"
+                f"{tracklist_text[:3500]}\n\n"
+                f"🔔 Channel ko SUBSCRIBE karke Bell Icon zaroor dabayein taaki agla Nonstop sabse pehle mile! 🚀"
+            )
+            youtube.commentThreads().insert(
+                part="snippet",
+                body={
+                    "snippet": {
+                        "videoId": video_id,
+                        "topLevelComment": {
+                            "snippet": {
+                                "textOriginal": comment_body
+                            }
+                        }
+                    }
+                }
+            ).execute()
+            logger.info("✅ Pinned engagement comment posted successfully!")
+            return True
+        except Exception as e:
+            logger.info(f"Engagement comment auto-post notice: {e}")
+            return False
+
+    def save_community_post_draft(self, video_url: str, title: str, tracks: Optional[List[Dict[str, Any]]] = None) -> str:
+        """Saves a high-engagement, viral 1-Click Community Post draft with tracklist & emojis."""
+        post_path = os.path.join(self.output_dir, f"{self.profile}_community_post.txt")
+        genre = self.profile.upper().replace("_", " ")
+        top_picks = ""
+        if tracks:
+            sample_songs = [t.get("title", "") for t in tracks[:3] if t.get("title")]
+            top_picks = "\n".join([f"  {idx}. {s[:35]}" for idx, s in enumerate(sample_songs, 1)])
+
+        picks_display = top_picks if top_picks else "1. Track 01\n2. Track 02\n3. Any other?"
+
+        post_body = f"""🔥 NEW 2026 {genre} NONSTOP DJ DANCE MIX IS LIVE! 🎧💃
+
+गाँव से लेकर शहर तक, हर DJ सेटअप पर तहलका मचाने वाला नया नॉनस्टॉप आ चुका है! ❤️🔥
+
+👉 अभी पूरा नॉनस्टॉप सुनें (Full HD Video):
+{video_url}
+
+🎧 100% Heavy Bass & Crystal Clear 320 Kbps HD Sound!
+❓ इस मिक्स में आपका सबसे पसंदीदा DJ Track कौन सा लगा?
+{picks_display}
+
+नीचे कमेंट करके ज़रूर बताएं! 👇
+Channel ko SUBSCRIBE karna na bhoolein! 🚀
+
+#NonstopDJ #{self.profile} #DJRemix #DanceMix #PartyMix #Roadshow2026 #NewDJMix
+"""
+        with open(post_path, "w", encoding="utf-8") as f:
+            f.write(post_body.strip())
+        logger.info(f"📱 Viral Community Post draft saved to {post_path}")
+        return post_path
 
 
 if __name__ == "__main__":

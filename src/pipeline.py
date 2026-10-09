@@ -76,6 +76,10 @@ class DJProductionPipeline:
         bg_wall_path = os.path.join(self.output_dir, f"{self.profile}_thumbnail_wall.jpg")
         self.visual_engine.create_thumbnail_wall(thumb_paths, out_path=bg_wall_path, darkness=0.25)
 
+        # High-CTR YouTube Thumbnail Poster (Pure White Bold Text + Black Drop Shadow + Channel Logo)
+        yt_thumb_path = os.path.join(self.output_dir, f"{self.profile}_youtube_thumbnail.jpg")
+        self.visual_engine.create_high_ctr_thumbnail(bg_wall_path=bg_wall_path, out_path=yt_thumb_path)
+
         video_out_name = f"{self.profile}_nonstop_mix.mp4"
         final_video_path = os.path.join(self.output_dir, video_out_name)
         self.visual_engine.render_visualizer_video(
@@ -97,7 +101,7 @@ class DJProductionPipeline:
             video_url = self.uploader.upload_video(
                 video_path=final_video_path,
                 tracklist_path=tracklist_path,
-                thumbnail_path=bg_wall_path,
+                thumbnail_path=yt_thumb_path,
                 tracks=tracks
             )
             if video_url:
