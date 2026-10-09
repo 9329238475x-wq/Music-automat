@@ -31,5 +31,16 @@
     "instructions": "EDM ड्रॉप मिक्स, इलेक्ट्रो डांस, क्लब मैशअप, भोजपुरी ईडीएम, ट्रान्स डांस मिक्स (41 सोर्स चैनल्स) - सेंटर में 'My EDM LOGO.png' एनीमेशन।",
     "logo_file": "assets/My EDM LOGO.png",
     "is_default": true
+  },
+  {
+    "id": "dj_nan_say_karwan",
+    "name": "Nagpuri Studio Remix",
+    "tag": "Studio Beat Nagpuri",
+    "schedule": "06:30 PM IST",
+    "color": "pink",
+    "accent_hex": "#ff2a85",
+    "instructions": "Studio Beat Nagpuri - 19 सोर्स चैनल्स से ताज़ा ट्रैक लेकर 320 kbps HD मिक्स बनाना। सेंटर में 'nansaykarwan.png' लोगो विज़ुअलाइज़र।",
+    "logo_file": "assets/nansaykarwan.png",
+    "is_default": false
   }
 ]

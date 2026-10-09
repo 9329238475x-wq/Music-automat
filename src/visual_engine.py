@@ -27,15 +27,47 @@ class DJVisualEngine:
         self.output_dir = os.path.join(self.base_dir, "output")
         os.makedirs(self.output_dir, exist_ok=True)
 
-        if self.profile == "edm":
-            self.logo_path = os.path.join(self.assets_dir, "My EDM LOGO.png")
-            if not os.path.exists(self.logo_path):
-                self.logo_path = os.path.join(self.assets_dir, "logo_edm.png")
-        else:
-            logo_name = f"logo_{self.profile}.png"
-            self.logo_path = os.path.join(self.assets_dir, logo_name)
-            if not os.path.exists(self.logo_path):
-                self.logo_path = os.path.join(self.assets_dir, "logo_nagpuri.png")
+        # Resolve logo path from settings.json or profiles_meta.json
+        self.logo_path = None
+        settings_path = os.path.join(self.base_dir, "config", "settings.json")
+        if os.path.exists(settings_path):
+            try:
+                import json
+                with open(settings_path, "r", encoding="utf-8") as f:
+                    s_data = json.load(f)
+                custom_logo = s_data.get("profiles", {}).get(self.profile, {}).get("logo_file")
+                if custom_logo and os.path.exists(os.path.join(self.base_dir, custom_logo)):
+                    self.logo_path = os.path.join(self.base_dir, custom_logo)
+            except Exception:
+                pass
+
+        if not self.logo_path:
+            meta_path = os.path.join(self.base_dir, "config", "profiles_meta.json")
+            if os.path.exists(meta_path):
+                try:
+                    import json
+                    with open(meta_path, "r", encoding="utf-8") as f:
+                        m_data = json.load(f)
+                    for item in m_data:
+                        if item.get("id") == self.profile:
+                            custom_logo = item.get("logo_file")
+                            if custom_logo and os.path.exists(os.path.join(self.base_dir, custom_logo)):
+                                self.logo_path = os.path.join(self.base_dir, custom_logo)
+                                break
+                except Exception:
+                    pass
+
+        if not self.logo_path:
+            if self.profile == "edm":
+                self.logo_path = os.path.join(self.assets_dir, "My EDM LOGO.png")
+                if not os.path.exists(self.logo_path):
+                    self.logo_path = os.path.join(self.assets_dir, "logo_edm.png")
+            else:
+                logo_name = f"logo_{self.profile}.png"
+                self.logo_path = os.path.join(self.assets_dir, logo_name)
+                if not os.path.exists(self.logo_path):
+                    self.logo_path = os.path.join(self.assets_dir, "logo_nagpuri.png")
+        logger.info(f"Visual Engine loaded logo for profile '{self.profile}': {self.logo_path}")
 
     def create_thumbnail_wall(
         self,

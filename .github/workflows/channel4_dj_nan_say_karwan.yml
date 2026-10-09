@@ -1,0 +1,50 @@
+name: "📻 Channel 4 - Nagpuri Studio Remix (Studio Beat Daily 06:30 PM)"
+
+on:
+  workflow_dispatch:
+    inputs:
+      target_tracks:
+        description: 'Number of Tracks'
+        required: false
+        default: '40'
+      skip_upload:
+        description: 'Skip YouTube Upload (Test Only)'
+        required: false
+        default: false
+        type: boolean
+
+jobs:
+  launch-studio-beat:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Dependencies
+        run: |
+          pip install --upgrade kaggle requests
+
+      - name: Configure Kaggle API
+        run: |
+          mkdir -p ~/.kaggle
+          echo '{"username":"${{ secrets.KAGGLE_USERNAME }}","key":"${{ secrets.KAGGLE_KEY }}"}' > ~/.kaggle/kaggle.json
+          chmod 600 ~/.kaggle/kaggle.json
+
+      - name: Deploy & Trigger Studio Beat Production
+        env:
+          KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
+          KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN_DJ_NAN_SAY_KARWAN: ${{ secrets.YOUTUBE_REFRESH_TOKEN_DJ_NAN_SAY_KARWAN }}
+          ALERT_GMAIL_APP_PASS: ${{ secrets.ALERT_GMAIL_APP_PASS }}
+          DJ_PROFILE: dj_nan_say_karwan
+          DJ_TARGET_TRACKS: ${{ inputs.target_tracks || '40' }}
+          DJ_SKIP_UPLOAD: ${{ inputs.skip_upload }}
+        run: |
+          python push_to_kaggle.py

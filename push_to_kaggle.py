@@ -45,32 +45,25 @@ if cs_file.exists() and not (client_id and client_secret):
     except Exception:
         pass
 
-tn_file = ROOT / "tokens" / "token_nagpuri.json"
-if tn_file.exists() and not ref_nagpuri:
-    try:
-        with open(tn_file, encoding="utf-8") as f:
-            tn = json.load(f)
-        ref_nagpuri = tn.get("refresh_token", "")
-    except Exception:
-        pass
+# Collect all tokens dynamically from tokens/ directory and environment
+tokens_map = {}
+tokens_dir = ROOT / "tokens"
+if tokens_dir.exists():
+    for f in tokens_dir.glob("token_*.json"):
+        try:
+            with open(f, encoding="utf-8") as tf:
+                t_data = json.load(tf)
+            p_id = t_data.get("profile", f.stem.replace("token_", "")).upper()
+            r_tok = t_data.get("refresh_token")
+            if r_tok:
+                tokens_map[f"YOUTUBE_REFRESH_TOKEN_{p_id}"] = r_tok
+        except Exception:
+            pass
 
-tv_file = ROOT / "tokens" / "token_vibration.json"
-if tv_file.exists() and not ref_vibration:
-    try:
-        with open(tv_file, encoding="utf-8") as f:
-            tv = json.load(f)
-        ref_vibration = tv.get("refresh_token", "")
-    except Exception:
-        pass
-
-te_file = ROOT / "tokens" / "token_edm.json"
-if te_file.exists() and not ref_edm:
-    try:
-        with open(te_file, encoding="utf-8") as f:
-            te = json.load(f)
-        ref_edm = te.get("refresh_token", "")
-    except Exception:
-        pass
+# Also override/augment from environment secrets
+for k, v in os.environ.items():
+    if k.startswith("YOUTUBE_REFRESH_TOKEN_") and v:
+        tokens_map[k] = v
 
 # Optional pipeline overrides
 profile = os.environ.get("DJ_PROFILE", "")
@@ -86,11 +79,10 @@ header = f"""# INJECTED PRIVATE CLOUD SECRETS
 import os
 os.environ.setdefault("YOUTUBE_CLIENT_ID", "{client_id}")
 os.environ.setdefault("YOUTUBE_CLIENT_SECRET", "{client_secret}")
-os.environ.setdefault("YOUTUBE_REFRESH_TOKEN_NAGPURI", "{ref_nagpuri}")
-os.environ.setdefault("YOUTUBE_REFRESH_TOKEN_VIBRATION", "{ref_vibration}")
-os.environ.setdefault("YOUTUBE_REFRESH_TOKEN_EDM", "{ref_edm}")
 os.environ.setdefault("ALERT_GMAIL_APP_PASS", "{gmail_pass}")
 """
+for k, v in tokens_map.items():
+    header += f'os.environ.setdefault("{k}", "{v}")\n'
 
 if profile:
     header += f'os.environ["DJ_PROFILE"] = "{profile}"\n'

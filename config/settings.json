@@ -63,6 +63,27 @@
         "rdx edm drop",
         "sarzen edm mix"
       ]
+    },
+    "dj_nan_say_karwan": {
+      "channel_title": "Nagpuri Studio Remix 2026 - Studio Beat Nonstop Mix",
+      "genre": "Studio Beat Nagpuri & Jharkhandi DJ Remix (No Sound Check)",
+      "min_duration_minutes": 120,
+      "max_duration_minutes": 240,
+      "target_tracks": 40,
+      "logo_file": "assets/nansaykarwan.png",
+      "tags": [
+        "nagpuri studio remix",
+        "studio beat nagpuri",
+        "theth nagpuri dj",
+        "nonstop nagpuri dj",
+        "nagpuri dj remix",
+        "jharkhandi dj song",
+        "nagpuri dance mix",
+        "dj remix 2026",
+        "khortha dj song",
+        "sadri dj song",
+        "new nagpuri dj mix"
+      ]
     }
   },
   "audio": {
