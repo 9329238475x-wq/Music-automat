@@ -437,7 +437,6 @@ class DJVisualEngine:
             *encoder_args,
             "-c:a", "aac",
             "-b:a", "320k",
-            "-fps_mode", "cfr",          # Strict Constant Frame Rate, zero drift
             "-shortest",
             output_mp4
         ]
