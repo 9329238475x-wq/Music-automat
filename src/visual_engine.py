@@ -136,11 +136,17 @@ class DJVisualEngine:
         fps: int = 24
     ) -> Tuple[np.ndarray, float]:
         """
-        Extracts sub-bass transients and kick drum energy with ZERO LATENCY.
-        Uses centered STFT windowing with 20ms attack lead-in so the visualizer
-        hits at the EXACT millisecond the kick drum strikes the ear.
+        Extracts multi-band acoustic energy (bass drops, vocal melodies, snares, claps,
+        and crisp hi-hats) with ZERO LATENCY and snappy synchronization:
+        - 60ms lead-in lookahead: eliminates perceived lag so animation strikes at the exact
+          instant sound arrives at the ear.
+        - Full-Spectrum Multi-Band Analysis:
+            * Low (30Hz - 150Hz): Sub-bass kicks & 808 drops (massive expansion & shockwaves).
+            * Mid (150Hz - 2400Hz): Vocals, melodies, snare hits, claps, flute, dholak/mandar.
+            * High (2400Hz - 5200Hz): Hi-hats, shakers, cymbals, crisp percussion ticks.
+        - Independent onset flux on all bands ensures EVERY small sound pulses the center disc.
         """
-        logger.info("Extracting zero-latency bass kick dynamics & transient onsets...")
+        logger.info("Extracting zero-latency full-spectrum dynamics (bass, vocals, snares, hi-hats)...")
         cmd = [
             "ffmpeg", "-y",
             "-i", audio_path,
@@ -159,17 +165,16 @@ class DJVisualEngine:
         duration_sec = len(audio) / sr
 
         bass_energy = np.zeros(n_frames, dtype=np.float32)
+        mid_energy = np.zeros(n_frames, dtype=np.float32)
+        high_energy = np.zeros(n_frames, dtype=np.float32)
 
-        # 1024 sample FFT window
+        # 1024 sample FFT window (rfft yields 513 bins, ~10.77 Hz per bin)
         n_fft = 1024
         window = np.hanning(n_fft)
 
-        # 20ms lead-in offset: transient attack compensation so visual peak matches ear attack exactly
-        lead_samples = int(0.020 * sr)
-
-        # Pre-calculated frequency weights for kick drum & sub-bass bins (30Hz to 140Hz)
-        # Bins 5-8 correspond to 55Hz - 85Hz (punchiest sub-bass and kick body)
-        bin_weights = np.array([1.0, 1.2, 1.5, 1.8, 1.7, 1.4, 1.2, 1.0, 0.8, 0.6], dtype=np.float32)
+        # 60ms lookahead offset: matches human acoustic-optic latency so visual expansion
+        # coincides with audio transient impact with rock-solid zero perceived lag!
+        lead_samples = int(0.060 * sr)
 
         for i in range(n_frames):
             center = i * hop_length
@@ -185,38 +190,65 @@ class DJVisualEngine:
 
             fft_vals = np.abs(np.fft.rfft(chunk * window))
             
-            # Weighted sub-bass punch (bins 3 to 13)
-            if len(fft_vals) >= 13:
-                bass = np.sum(fft_vals[3:13] * bin_weights)
-            else:
-                bass = 0.0
-            bass_energy[i] = bass
+            # 1. Low Band (30Hz - 150Hz): Bins 3 to 15 (Sub-bass, Kicks)
+            if len(fft_vals) >= 15:
+                bass_energy[i] = np.mean(fft_vals[3:15])
+            
+            # 2. Mid Band (150Hz - 2400Hz): Bins 15 to 225 (Vocals, Snare, Claps, Flute, Melody)
+            if len(fft_vals) >= 225:
+                mid_energy[i] = np.mean(fft_vals[15:225])
 
-        # Kick Drum Transient / Onset Flux (difference from previous frame)
-        # This gives explosive reaction to kick drum attacks and ignores muddy continuous hum
-        onset_flux = np.zeros_like(bass_energy)
-        onset_flux[1:] = np.maximum(0.0, bass_energy[1:] - bass_energy[:-1])
+            # 3. High Band (2400Hz - 5200Hz): Bins 225 to 485 (Hi-hats, Shakers, Bells, Crisp Clicks)
+            if len(fft_vals) >= 485:
+                high_energy[i] = np.mean(fft_vals[225:485])
 
-        # Combine sustained sub-bass + sharp onset transients
-        combined = (0.35 * bass_energy) + (0.65 * onset_flux * 3.0)
+        # Normalize each frequency band independently so soft vocals & hi-hats aren't silenced
+        def _norm_band(arr: np.ndarray, pct: float) -> np.ndarray:
+            p = np.percentile(arr, pct) + 1e-6
+            return np.clip(arr / p, 0.0, 1.0)
 
-        # Normalize with 96th percentile
-        p96 = np.percentile(combined, 96) + 1e-6
-        norm = np.clip(combined / p96, 0.0, 1.0)
+        b_norm = _norm_band(bass_energy, 95)
+        m_norm = _norm_band(mid_energy, 92)
+        h_norm = _norm_band(high_energy, 90)
 
-        # Power curve (1.7x): drops quiet parts to resting state, kicks explode to 1.0
-        norm = np.power(norm, 1.7)
+        # Compute sharp onset flux (transient attacks) for all bands
+        b_onset = np.zeros_like(b_norm)
+        b_onset[1:] = np.maximum(0.0, b_norm[1:] - b_norm[:-1])
+        b_onset_norm = _norm_band(b_onset, 95)
 
-        # Snappy attack and fast spring release (decay 0.62)
-        # Resets within 2-3 frames so every subsequent kick hits with full power
-        smoothed_bass = np.zeros_like(norm)
+        m_onset = np.zeros_like(m_norm)
+        m_onset[1:] = np.maximum(0.0, m_norm[1:] - m_norm[:-1])
+        m_onset_norm = _norm_band(m_onset, 92)
+
+        h_onset = np.zeros_like(h_norm)
+        h_onset[1:] = np.maximum(0.0, h_norm[1:] - h_norm[:-1])
+        h_onset_norm = _norm_band(h_onset, 90)
+
+        # Multi-band Fusion: Every vocal syllable, hi-hat, snare hit, and kick creates visual life!
+        combined = (
+            0.45 * (b_norm + 1.25 * b_onset_norm) +
+            0.35 * (m_norm + 1.10 * m_onset_norm) +
+            0.20 * (h_norm + 0.85 * h_onset_norm)
+        )
+
+        # Final normalization to [0.0, 1.0]
+        p_max = np.percentile(combined, 97) + 1e-6
+        norm = np.clip(combined / p_max, 0.0, 1.0)
+
+        # Responsive power curve (1.15): allows small sounds (vocals, hi-hats) to show clearly
+        # without compressing them into darkness, while heavy kicks push to maximum power!
+        norm = np.power(norm, 1.15)
+
+        # Snappy instant attack with fast spring release (decay 0.58)
+        # Keeps animation tight, lively, and reactive to every consecutive beat
+        smoothed_energy = np.zeros_like(norm)
         cur = 0.0
         for i in range(len(norm)):
             val = norm[i]
-            cur = max(val, cur * 0.62)
-            smoothed_bass[i] = cur
+            cur = max(val, cur * 0.58)
+            smoothed_energy[i] = cur
 
-        return smoothed_bass, duration_sec
+        return smoothed_energy, duration_sec
 
     def render_visualizer_video(
         self,

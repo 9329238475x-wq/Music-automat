@@ -159,7 +159,22 @@ class DJScraper:
                     logger.info(f"[SKIP NONSTOP] {name} ({vid_id}): Nonstop/Jukebox title detected")
                     continue
 
-                # 4. Valid fresh song found within 11 hours!
+                # 6. HARD NICHE VERIFICATION: Title MUST be a legitimate Music/DJ track!
+                # Strictly requires keywords like 'dj', 'song', 'remix', 'mix', 'track', 'geet', 'gana' etc.
+                # If a creator changes their niche or uploads a vlog, gaming video, talk, or lifestyle clip,
+                # it is IMMEDIATELY REJECTED so the nonstop DJ mix is 100% protected!
+                import re
+                NICHE_PATTERNS = [
+                    r"\bdj\b", r"\bd\.j\b", r"\bsong\b", r"\bsongs\b", r"\bremix\b", r"\brmx\b",
+                    r"\bmix\b", r"\btrack\b", r"\bgana\b", r"\bgaana\b", r"\bgeet\b", r"\bdance\b",
+                    r"\bdrop\b", r"\bvibration\b", r"\btheth\b", r"\bbhojpuri\b", r"\bnagpuri\b",
+                    r"डीजे", r"गाना", r"गाने", r"गीत", r"रीमिक्स", r"धमाका", r"नागपुरी", r"भोजपुरी"
+                ]
+                if not any(re.search(pat, title.lower()) for pat in NICHE_PATTERNS):
+                    logger.info(f"[SKIP NICHE MISMATCH] {name} ({vid_id}): Title lacks DJ/Song keywords: '{title[:45]}'")
+                    continue
+
+                # 7. Valid fresh song found within 11 hours!
                 try:
                     view_cnt = int(vc_str) if vc_str and vc_str != "None" else 0
                 except (ValueError, TypeError):
