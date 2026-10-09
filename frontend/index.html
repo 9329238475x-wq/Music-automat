@@ -1107,12 +1107,12 @@
                 यह आपके लोकल एक्टिव यूट्यूब टोकन्स को सीधे GitHub रिपॉजिटरी (<b id="ghRepoName" style="color:#00e5ff;">9329238475x-wq/Music-automat</b>) के Secrets में अपलोड कर देगा ताकि Kaggle और Actions हमेशा ताज़ा टोकन से चलें।
             </p>
 
-            <div class="form-group">
-                <label for="ghTokenInput">GitHub Personal Access Token (PAT)</label>
-                <input type="password" id="ghTokenInput" class="form-control" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
-                <span style="font-size: 11px; color: var(--text-dim); margin-top: 5px; display: block;">
-                    👉 टोकन कैसे बनाएँ: <a href="https://github.com/settings/tokens" target="_blank" style="color:var(--neon-cyan); text-decoration:none;">GitHub Settings > Developer settings > Tokens</a> में जाकर <b>repo</b> या <b>Secrets (Read & Write)</b> परमिशन दें।
-                </span>
+            <div id="ghConnectedBadge" style="background: rgba(0, 255, 136, 0.08); border: 1px solid rgba(0, 255, 136, 0.25); border-radius: 12px; padding: 14px 16px; margin-bottom: 18px; display: flex; align-items: center; gap: 12px;">
+                <span style="font-size: 24px;">🔒</span>
+                <div>
+                    <div style="font-size: 13px; font-weight: 700; color: var(--neon-green);">GitHub API Token सुरक्षित रूप से लिंक है</div>
+                    <div style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">टोकन पूरी तरह छिपा (100% Hidden & Protected) है। स्क्रीन पर कभी शो नहीं होगा।</div>
+                </div>
             </div>
 
             <div id="syncResultBox" style="display:none; padding:12px; border-radius:8px; font-size:12px; margin-bottom:14px;"></div>
@@ -1466,12 +1466,12 @@
             const tokenRows = profiles.map(p => {
                 const envKey = `YOUTUBE_REFRESH_TOKEN_${p.id.toUpperCase()}`;
                 const hasToken = !!p.refresh_token;
-                const tokenVal = p.refresh_token || 'Not generated (Login first)';
+                const tokenVal = hasToken ? '••••••••••••••••••••••••••••••••••••••••' : 'Not generated (Login first)';
 
                 return `
                 <div class="token-row">
                     <span class="token-label">${envKey}</span>
-                    <span class="token-val" id="secret-${p.id}-token">${tokenVal}</span>
+                    <span class="token-val" id="secret-${p.id}-token" style="letter-spacing: 2px; color: ${hasToken ? '#00e5ff' : '#64748b'};">${tokenVal}</span>
                     <button class="btn-copy" onclick="copyText('${p.refresh_token || ''}', '${envKey}')">
                         Copy
                     </button>
@@ -1579,8 +1579,6 @@
         async function executeGithubSync() {
             const btn = document.getElementById('btnExecuteSync');
             const resBox = document.getElementById('syncResultBox');
-            const tokenInput = document.getElementById('ghTokenInput');
-            const token = tokenInput.value.trim();
 
             btn.disabled = true;
             btn.innerText = "⏳ GitHub में सीक्रेट्स पुश हो रहे हैं...";
@@ -1590,7 +1588,7 @@
                 const res = await fetch('/api/github/sync_secrets', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ token: token || null })
+                    body: JSON.stringify({})
                 });
 
                 const data = await res.json();

@@ -404,8 +404,7 @@ async def get_status(force: bool = False):
         },
         "github": {
             "repo": f"{owner}/{repo}",
-            "has_token": bool(gh_token),
-            "token_masked": f"{gh_token[:4]}...{gh_token[-4:]}" if len(gh_token) > 8 else ""
+            "has_token": bool(gh_token)
         }
     }
 
