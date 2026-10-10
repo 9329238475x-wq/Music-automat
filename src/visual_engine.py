@@ -186,13 +186,15 @@ class DJVisualEngine:
         else:
             base = Image.new("RGBA", (width, height), (12, 14, 22, 255))
 
-        # Soft translucent dark plate across the center to ensure 100% text contrast
-        plate = Image.new("RGBA", (width, height), (0, 0, 0, 0))
-        p_draw = ImageDraw.Draw(plate)
-        p_draw.rectangle([100, 170, width - 100, height - 170], fill=(0, 0, 0, 155))
-        base = Image.alpha_composite(base, plate)
+        # Multi-layer Glowing 3D Subtitle Text Renderer (Pure White + Deep Black Glow & Solid Stroke, NO black patti)
+        glow_layer = Image.new("RGBA", (width, height), (0, 0, 0, 0))
+        glow_draw = ImageDraw.Draw(glow_layer)
 
-        draw = ImageDraw.Draw(base)
+        shadow_layer = Image.new("RGBA", (width, height), (0, 0, 0, 0))
+        shadow_draw = ImageDraw.Draw(shadow_layer)
+
+        text_layer = Image.new("RGBA", (width, height), (0, 0, 0, 0))
+        text_draw = ImageDraw.Draw(text_layer)
 
         # Profile-specific text & badges
         p = self.profile.lower()
@@ -231,14 +233,15 @@ class DJVisualEngine:
                 logo_dim = 160
                 logo_img = logo_img.resize((logo_dim, logo_dim), Image.Resampling.LANCZOS)
                 
-                # Draw circular white & black emblem border
-                border_img = Image.new("RGBA", (logo_dim + 16, logo_dim + 16), (0, 0, 0, 0))
+                # Draw circular white & black emblem border with soft black shadow
+                border_img = Image.new("RGBA", (logo_dim + 24, logo_dim + 24), (0, 0, 0, 0))
                 b_draw = ImageDraw.Draw(border_img)
-                b_draw.ellipse([0, 0, logo_dim + 15, logo_dim + 15], fill=(0, 0, 0, 230), outline=(255, 255, 255, 255), width=4)
+                b_draw.ellipse([2, 2, logo_dim + 21, logo_dim + 21], fill=(0, 0, 0, 240), outline=(0, 0, 0, 255), width=6)
+                b_draw.ellipse([5, 5, logo_dim + 18, logo_dim + 18], fill=(0, 0, 0, 240), outline=(255, 255, 255, 255), width=4)
                 
                 logo_x = cx - logo_dim // 2
                 logo_y = logo_y_offset
-                base.paste(border_img, (logo_x - 8, logo_y - 8), border_img)
+                base.paste(border_img, (logo_x - 12, logo_y - 12), border_img)
                 base.paste(logo_img, (logo_x, logo_y), logo_img)
                 text_start_y = logo_y + logo_dim + 30
             except Exception as e:
@@ -247,23 +250,30 @@ class DJVisualEngine:
         else:
             text_start_y = 330
 
-        # Helper to draw centered pure white text with solid black stroke and black drop shadow
-        def draw_centered_white_text(text: str, y: int, font, stroke_w: int = 8, shadow_offset: int = 8):
-            bbox = draw.textbbox((0, 0), text, font=font)
+        # Subtitle-Style Multi-Layer Glowing Text (Pure White + Deep Black Glow & Solid Stroke)
+        def add_centered_subtitle_text(text: str, y: int, font, stroke_w: int = 12, shadow_off: int = 8, glow_w: int = 24):
+            bbox = text_draw.textbbox((0, 0), text, font=font)
             tw = bbox[2] - bbox[0]
             tx = cx - tw // 2
-            # 1. Deep Black Drop Shadow
-            draw.text((tx + shadow_offset, y + shadow_offset), text, font=font, fill=(0, 0, 0, 255), stroke_width=stroke_w, stroke_fill=(0, 0, 0, 255))
-            # 2. Pure White Text with Solid Black Stroke
-            draw.text((tx, y), text, font=font, fill=(255, 255, 255, 255), stroke_width=stroke_w, stroke_fill=(0, 0, 0, 255))
+            # 1. Soft Black Glowing Halo (radiating around text)
+            glow_draw.text((tx, y), text, font=font, fill=(0, 0, 0, 255), stroke_width=glow_w, stroke_fill=(0, 0, 0, 255))
+            # 2. Deep 3D Drop Shadow
+            shadow_draw.text((tx + shadow_off, y + shadow_off + 2), text, font=font, fill=(0, 0, 0, 230), stroke_width=stroke_w + 2, stroke_fill=(0, 0, 0, 230))
+            # 3. Solid Sharp Black Outline + Pure White Text (Classic Subtitle Look)
+            text_draw.text((tx, y), text, font=font, fill=(255, 255, 255, 255), stroke_width=stroke_w, stroke_fill=(0, 0, 0, 255))
 
         # Render 3 high-impact lines:
-        # Line 1: Header Tag
-        draw_centered_white_text(tag_text, text_start_y, font_tag, stroke_w=7, shadow_offset=7)
-        # Line 2: Giant Main Title
-        draw_centered_white_text(main_title, text_start_y + 80, font_main, stroke_w=12, shadow_offset=12)
-        # Line 3: Bottom Soundmark Badge
-        draw_centered_white_text(sub_text, text_start_y + 250, font_sub, stroke_w=7, shadow_offset=7)
+        add_centered_subtitle_text(tag_text, text_start_y, font_tag, stroke_w=8, shadow_off=6, glow_w=20)
+        add_centered_subtitle_text(main_title, text_start_y + 80, font_main, stroke_w=14, shadow_off=10, glow_w=30)
+        add_centered_subtitle_text(sub_text, text_start_y + 250, font_sub, stroke_w=8, shadow_off=6, glow_w=20)
+
+        # Apply soft blur to ambient black glow layer
+        glow_layer = glow_layer.filter(ImageFilter.GaussianBlur(radius=8))
+
+        # Composite layers directly onto base image (zero black patti box)
+        base = Image.alpha_composite(base, glow_layer)
+        base = Image.alpha_composite(base, shadow_layer)
+        base = Image.alpha_composite(base, text_layer)
 
         final_rgb = base.convert("RGB")
         final_rgb.save(out_path, quality=98)
