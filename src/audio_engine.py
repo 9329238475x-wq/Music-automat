@@ -95,8 +95,8 @@ class DJAudioEngine:
     ) -> bool:
         """
         Processes an individual song for the nonstop DJ mix:
-        - Trims leading 10s to eliminate slow intros / spoken promos.
-        - Trims trailing 15s to eliminate outros / promo announcements.
+        - Track 1 starts from 0s (intro not cut); subsequent tracks trim leading 10s.
+        - Trims trailing 15s to eliminate outros / promo announcements from all tracks.
         - 100% pure, natural, crisp original audio (zero 3D artificial processing, zero echo/gunj).
         - Applies Anti-Fingerprint (+5% pitch & tempo offset) to eliminate YouTube Content ID claims.
         - Normalizes to broadcast standard EBU R128 (-14 LUFS, -1.0 dBTP ceiling).
@@ -107,8 +107,8 @@ class DJAudioEngine:
             start_s = 0.0
             end_s = raw_dur
         else:
-            # Cut intro 10s and outro 15s from every track
-            start_s = cut_intro_sec
+            # Track 1 starts from 0.0s (no intro cut); subsequent tracks skip intro 10s
+            start_s = cut_intro_sec if track_index > 1 else 0.0
             end_s = max(start_s + 15.0, raw_dur - cut_outro_sec)
 
         env_pitch = os.environ.get("DJ_PITCH_FACTOR")
