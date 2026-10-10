@@ -131,11 +131,15 @@ class DJVisualEngine:
         return out_path
 
     def _get_bold_font(self, size: int):
-        """Loads bold high-CTR thumbnail font (Impact or Arial Bold with Ubuntu/Windows fallbacks)."""
+        """Loads bold high-CTR thumbnail font (Impact bundled font first, then system fonts)."""
         font_candidates = [
+            os.path.join(self.assets_dir, "impact.ttf"),
+            os.path.join(self.base_dir, "assets", "impact.ttf"),
             "C:/Windows/Fonts/impact.ttf",
             "C:/Windows/Fonts/arialbd.ttf",
             "C:/Windows/Fonts/arial.ttf",
+            "/usr/share/fonts/truetype/msttcorefonts/Impact.ttf",
+            "/usr/share/fonts/truetype/msttcorefonts/impact.ttf",
             "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
             "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
             "/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf",
@@ -214,10 +218,10 @@ class DJVisualEngine:
             main_title = "NONSTOP DJ DANCE MIX"
             sub_text = "320 KBPS ULTRA HD MASTER | FULL BASS"
 
-        # Load fonts (Impact / Arial Bold with platform fallbacks)
-        font_tag = self._get_bold_font(48)
-        font_main = self._get_bold_font(125)
-        font_sub = self._get_bold_font(44)
+        # Load fonts (Impact bundled font first)
+        font_tag = self._get_bold_font(52)
+        font_main = self._get_bold_font(135)
+        font_sub = self._get_bold_font(46)
 
         # Place Channel Logo Emblem at top center if available
         logo_y_offset = 205
@@ -255,11 +259,11 @@ class DJVisualEngine:
 
         # Render 3 high-impact lines:
         # Line 1: Header Tag
-        draw_centered_white_text(tag_text, text_start_y, font_tag, stroke_w=6, shadow_offset=6)
+        draw_centered_white_text(tag_text, text_start_y, font_tag, stroke_w=7, shadow_offset=7)
         # Line 2: Giant Main Title
-        draw_centered_white_text(main_title, text_start_y + 80, font_main, stroke_w=10, shadow_offset=10)
+        draw_centered_white_text(main_title, text_start_y + 80, font_main, stroke_w=12, shadow_offset=12)
         # Line 3: Bottom Soundmark Badge
-        draw_centered_white_text(sub_text, text_start_y + 245, font_sub, stroke_w=6, shadow_offset=6)
+        draw_centered_white_text(sub_text, text_start_y + 250, font_sub, stroke_w=7, shadow_offset=7)
 
         final_rgb = base.convert("RGB")
         final_rgb.save(out_path, quality=98)
