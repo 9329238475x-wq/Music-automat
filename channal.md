@@ -161,6 +161,11 @@
 | 45 | **AYAN REMIX ** | `` | https://www.youtube.com/channel/UCc6S1E8SqCGqzuQHLmNvHmA |
 | 46 | **DJ Official ** | `` | https://www.youtube.com/channel/UCM1iNKRGQ67TT5d0Z7p1g7w |
 | 47 | **DJ SMK REMIX OFFICIAL ** | `` | https://www.youtube.com/channel/UCx4JcOA4LytUyUl3pAp3bSg |
+| 48 | **R.D.X EDM DROP MIX official** | `@rdxedmdropofficial72` | https://www.youtube.com/@rdxedmdropofficial72 |
+| 49 | **R.D.X EDM DROP MIX official (Backup)** | `@rdxedmdropmixofficial-x1q` | https://www.youtube.com/@rdxedmdropmixofficial-x1q |
+| 50 | **dj nx edm drop mix no.1** | `@djnxedmdropmixno.1` | https://www.youtube.com/@djnxedmdropmixno.1 |
+| 51 | **Dj Khesari Music** | `@DjKhesariMusic` | https://www.youtube.com/@DjKhesariMusic |
+| 52 | **Music In GamePlay** | `@musicingameplay` | https://www.youtube.com/@musicingameplay |
 
 
 ---
