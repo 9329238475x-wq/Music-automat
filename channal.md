@@ -116,8 +116,7 @@
 | क्र. | चैनल का नाम (Channel Name) | यूट्यूब हैंडल (Handle) | यूट्यूब लिंक (YouTube URL) |
 |:---:|:---|:---|:---|
 | 1 | **Dj Anish Ghazipur** | `@djanishghazipur01` | https://www.youtube.com/@djanishghazipur01 |
-| 2 | **EDM_MIX** | `@edmmix555` | https://www.youtube.com/@edmmix555 |
-| 3 | **SMK EDM DROP MIX** | `@smkedmdropmix-no1` | https://www.youtube.com/@smkedmdropmix-no1 |
+| 2 | **SMK EDM DROP MIX** | `@smkedmdropmix-no1` | https://www.youtube.com/@smkedmdropmix-no1 |
 | 4 | **DJ NITIN ROCK** | `@djnitinrock.1` | https://www.youtube.com/@djnitinrock.1 |
 | 5 | **Dj Rahul Khairaha** | `@djrahulkhairaha1` | https://www.youtube.com/@djrahulkhairaha1 |
 | 6 | **KJ REMIX** | `@kj_remix` | https://www.youtube.com/@kj_remix |
