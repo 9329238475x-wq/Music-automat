@@ -1,6 +1,6 @@
 """
 DJ Audio Engine & Seamless Nonstop DJ Transition Module
-1. Cuts unwanted intro (first 10s) and outro (last 10s) of every track to eliminate jingles and channel promos.
+1. Cuts unwanted intro (first 10s) and outro (last 15s) of every track to eliminate jingles and channel promos.
 2. Applies smooth 1.5s fade-in and 1.5s fade-out on every song.
 3. Overlaps songs with seamless crossfade (zero blank gap, zero abrupt cuts, zero artificial sound effects).
 4. Anti-Fingerprint protection: Natural DJ Pitch (+5% / 1.05x), tempo offset, DJ sub-bass boost & EBU R128 loudness.
@@ -89,28 +89,26 @@ class DJAudioEngine:
         out_file: str,
         track_index: int,
         cut_intro_sec: float = 10.0,
-        cut_outro_sec: float = 10.0,
+        cut_outro_sec: float = 15.0,
         fade_sec: float = 1.5,
         pitch_factor: float = 1.05
     ) -> bool:
         """
         Processes an individual song for the nonstop DJ mix:
-        - Trims leading 10s (if track > 1) to eliminate slow intros / spoken promos.
-        - Trims trailing 10s to eliminate outros / promo announcements.
-        - Adds smooth fade-in (1.5s) at the start so the song enters gently.
-        - Adds smooth fade-out (1.5s) at the end so the song exits smoothly.
+        - Trims leading 10s to eliminate slow intros / spoken promos.
+        - Trims trailing 15s to eliminate outros / promo announcements.
         - 100% pure, natural, crisp original audio (zero 3D artificial processing, zero echo/gunj).
         - Applies Anti-Fingerprint (+5% pitch & tempo offset) to eliminate YouTube Content ID claims.
         - Normalizes to broadcast standard EBU R128 (-14 LUFS, -1.0 dBTP ceiling).
         """
         raw_dur = self._get_audio_duration(in_file)
-        if raw_dur < 25.0:
+        if raw_dur < 30.0:
             logger.warning(f"Track too short ({raw_dur:.1f}s), skipping trim: {in_file}")
             start_s = 0.0
             end_s = raw_dur
         else:
-            # Track 1 starts from 0s for a natural mix opener; subsequent tracks skip intro 10s
-            start_s = cut_intro_sec if track_index > 1 else 0.0
+            # Cut intro 10s and outro 15s from every track
+            start_s = cut_intro_sec
             end_s = max(start_s + 15.0, raw_dur - cut_outro_sec)
 
         env_pitch = os.environ.get("DJ_PITCH_FACTOR")
@@ -168,7 +166,7 @@ class DJAudioEngine:
         tracklist_path = os.path.join(self.output_dir, "tracklist.txt")
 
         # Step 1: Process and normalize all tracks in parallel (6 workers)
-        logger.info(f"🚀 Processing & normalizing {len(tracks)} tracks concurrently (cutting intro 10s, outro 10s, adding 1.5s fades)...")
+        logger.info(f"🚀 Processing & normalizing {len(tracks)} tracks concurrently (cutting intro 10s, outro 15s)...")
 
         def _process_item(item):
             i, t = item
@@ -183,7 +181,7 @@ class DJAudioEngine:
                     out_file=norm_audio,
                     track_index=i,
                     cut_intro_sec=10.0,
-                    cut_outro_sec=10.0,
+                    cut_outro_sec=15.0,
                     fade_sec=crossfade_sec
                 )
                 if not ok:
