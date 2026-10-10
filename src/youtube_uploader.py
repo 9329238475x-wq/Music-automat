@@ -26,6 +26,8 @@ class YouTubeUploader:
         self.profile = profile.lower()
         self.base_dir = base_dir or os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
         self.config_dir = os.path.join(self.base_dir, "config")
+        self.output_dir = os.path.join(self.base_dir, "output")
+        os.makedirs(self.output_dir, exist_ok=True)
         self.settings = self._load_settings()
 
     def _load_settings(self) -> Dict[str, Any]:
@@ -44,34 +46,60 @@ class YouTubeUploader:
             or os.environ.get("YOUTUBE_REFRESH_TOKEN")
         )
 
-        token_uri = "https://oauth2.googleapis.com/token"
+        # 1. Fallback: Read client_id & client_secret from client_secrets.json if missing in env
+        cs_path = os.path.join(self.base_dir, "client_secrets.json")
+        if (not client_id or not client_secret) and os.path.exists(cs_path):
+            try:
+                with open(cs_path, "r", encoding="utf-8") as f:
+                    cs_data = json.load(f)
+                    installed = cs_data.get("installed") or cs_data.get("web") or {}
+                    client_id = client_id or installed.get("client_id")
+                    client_secret = client_secret or installed.get("client_secret")
+            except Exception as e:
+                logger.warning(f"Could not load client_secrets.json: {e}")
 
-        if not (client_id and client_secret and refresh_token):
-            # Check local tokens folder
-            token_path = os.path.join(self.base_dir, "tokens", f"token_{self.profile}.json")
-            if os.path.exists(token_path):
+        # 2. Fallback: Read refresh_token, client_id, client_secret from token file
+        token_path = os.path.join(self.base_dir, "tokens", f"token_{self.profile}.json")
+        if os.path.exists(token_path):
+            try:
                 with open(token_path, "r", encoding="utf-8") as f:
                     t_data = json.load(f)
-                    return Credentials.from_authorized_user_info(t_data)
-            logger.warning("YouTube OAuth credentials not fully set in environment or token file.")
+                    refresh_token = refresh_token or t_data.get("refresh_token")
+                    client_id = client_id or t_data.get("client_id")
+                    client_secret = client_secret or t_data.get("client_secret")
+            except Exception as e:
+                logger.warning(f"Could not load {token_path}: {e}")
+
+        if not (client_id and client_secret and refresh_token):
+            logger.error(
+                f"YouTube OAuth credentials incomplete for profile '{self.profile}': "
+                f"client_id={'SET' if client_id else 'MISSING'}, "
+                f"client_secret={'SET' if client_secret else 'MISSING'}, "
+                f"refresh_token={'SET' if refresh_token else 'MISSING'}"
+            )
             return None
+
+        token_uri = "https://oauth2.googleapis.com/token"
 
         creds = Credentials(
             token=None,
             refresh_token=refresh_token,
             token_uri=token_uri,
             client_id=client_id,
+            client_secret=client_secret,
             scopes=[
                 "https://www.googleapis.com/auth/youtube.upload",
                 "https://www.googleapis.com/auth/youtube.force-ssl"
             ]
         )
         try:
-            if not creds.valid:
-                from google.auth.transport.requests import Request
-                creds.refresh(Request())
+            from google.auth.transport.requests import Request
+            creds.refresh(Request())
+            logger.info("✓ YouTube OAuth credentials successfully refreshed and validated!")
         except Exception as e:
-            logger.warning(f"Failed to refresh YouTube credentials: {e}")
+            logger.error(f"Failed to refresh YouTube credentials: {e}")
+            raise e
+
         return build("youtube", "v3", credentials=creds)
 
     def _clean_song_title(self, raw_title: str, remixer: str = "") -> str:
@@ -398,10 +426,10 @@ Thank you for your love and support! ❤️
                 logger.warning(f"Thumbnail upload failed: {e}")
 
         # 1. Post Auto-Engagement Comment with Tracklist & Chapters
-        self.post_pinned_comment(video_id=video_id, tracklist_text=tracklist_text, title=metadata["title"])
+        self.post_pinned_comment(video_id=video_id, tracklist_text=tracklist_text, title=meta["title"])
 
         # 2. Save 1-Click Viral Community Post Draft (4x Boost)
-        self.save_community_post_draft(video_url=video_url, title=metadata["title"], tracks=tracks)
+        self.save_community_post_draft(video_url=video_url, title=meta["title"], tracks=tracks)
 
         return video_url
 
