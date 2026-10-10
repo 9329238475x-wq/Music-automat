@@ -12,7 +12,7 @@ import time
 import logging
 import subprocess
 import numpy as np
-from PIL import Image, ImageDraw, ImageOps, ImageFilter
+from PIL import Image, ImageDraw, ImageOps, ImageFilter, ImageFont
 from typing import List, Dict, Any, Optional, Tuple
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
@@ -135,9 +135,12 @@ class DJVisualEngine:
         font_candidates = [
             "C:/Windows/Fonts/impact.ttf",
             "C:/Windows/Fonts/arialbd.ttf",
+            "C:/Windows/Fonts/arial.ttf",
             "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
+            "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
             "/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf",
             "/usr/share/fonts/truetype/freefont/FreeSansBold.ttf",
+            "/usr/share/fonts/truetype/ubuntu/Ubuntu-B.ttf",
         ]
         for f in font_candidates:
             if os.path.exists(f):
@@ -145,7 +148,10 @@ class DJVisualEngine:
                     return ImageFont.truetype(f, size)
                 except Exception:
                     pass
-        return ImageFont.load_default()
+        try:
+            return ImageFont.load_default(size=size)
+        except TypeError:
+            return ImageFont.load_default()
 
     def create_high_ctr_thumbnail(
         self,
@@ -187,26 +193,26 @@ class DJVisualEngine:
         # Profile-specific text & badges
         p = self.profile.lower()
         if p == "nagpuri":
-            tag_text = "🔥 2026 THETH NAGPURI SPECIAL 🔥"
+            tag_text = "• 2026 THETH NAGPURI SPECIAL •"
             main_title = "NONSTOP DJ DANCE MIX"
-            sub_text = "🎧 320 KBPS HD MASTER | FULL ROADSHOW VIBRATION"
+            sub_text = "320 KBPS HD MASTER | FULL ROADSHOW VIBRATION"
         elif p == "vibration":
-            tag_text = "💥 HARD BASS VIBRATION 2026 💥"
+            tag_text = "• HARD BASS VIBRATION 2026 •"
             main_title = "CG & TAPORI DJ MIX"
-            sub_text = "🎧 320 KBPS HD SOUND | 100% WOOFER KILLER BLAST"
+            sub_text = "320 KBPS HD SOUND | 100% WOOFER KILLER BLAST"
         elif p == "edm":
-            tag_text = "⚡ BHOJPURI EDM DROP 2026 ⚡"
+            tag_text = "• BHOJPURI EDM DROP 2026 •"
             main_title = "DANCE PARTY MIX"
-            sub_text = "🎧 320 KBPS ULTRA HD | HIGH VOLTAGE DROP"
+            sub_text = "320 KBPS ULTRA HD | HIGH VOLTAGE DROP"
         elif p == "dj_nan_say_karwan":
-            tag_text = "🔥 DJ NAN SAY KARWAN 🔥"
+            tag_text = "• DJ NAN SAY KARWAN SPECIAL •"
             main_title = "SUPERHIT NONSTOP 2026"
-            sub_text = "🎧 320 KBPS HD MASTER | FULL COMPETITION MIX"
+            sub_text = "320 KBPS HD MASTER | FULL COMPETITION MIX"
         else:
             clean_name = p.replace("_", " ").upper()
-            tag_text = f"🔥 {clean_name} SPECIAL 🔥"
-            main_title = "NONSTOP DJ DANCE MIX 2026"
-            sub_text = "🎧 320 KBPS ULTRA HD MASTER | FULL BASS"
+            tag_text = f"• {clean_name} SPECIAL 2026 •"
+            main_title = "NONSTOP DJ DANCE MIX"
+            sub_text = "320 KBPS ULTRA HD MASTER | FULL BASS"
 
         # Load fonts (Impact / Arial Bold with platform fallbacks)
         font_tag = self._get_bold_font(48)
