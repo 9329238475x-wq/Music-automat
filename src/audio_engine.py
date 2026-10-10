@@ -22,6 +22,8 @@ logger = logging.getLogger("AudioEngine")
 class DJAudioEngine:
     def __init__(self, base_dir: Optional[str] = None):
         self.base_dir = base_dir or os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+        self.assets_dir = os.path.join(self.base_dir, "assets")
+        self.wooosh_path = os.path.join(self.assets_dir, "wooosh.wav")
         self.output_dir = os.path.join(self.base_dir, "output")
         self.temp_dir = os.path.join(self.output_dir, "temp_audio")
         os.makedirs(self.temp_dir, exist_ok=True)
@@ -111,18 +113,14 @@ class DJAudioEngine:
             start_s = cut_intro_sec if track_index > 1 else 0.0
             end_s = max(start_s + 15.0, raw_dur - cut_outro_sec)
 
-        trimmed_len = end_s - start_s
-        fade_out_start = max(0.0, trimmed_len - fade_sec)
-
         env_pitch = os.environ.get("DJ_PITCH_FACTOR")
         eff_pitch = float(env_pitch) if env_pitch else pitch_factor
 
-        # Pure Original Audio Filter Chain (Original stereo clarity, zero artificial 3D, zero echo/gunj)
+        # Pure Original Audio Filter Chain (100% full volume till the cut, zero fade-out, zero 3D, zero echo/gunj)
         filter_chain = (
             f"atrim=start={start_s:.2f}:end={end_s:.2f},"
             f"asetpts=PTS-STARTPTS,"
-            f"afade=t=in:st=0:d={fade_sec:.2f},"
-            f"afade=t=out:st={fade_out_start:.2f}:d={fade_sec:.2f},"
+            f"afade=t=in:st=0:d=0.05,"
             f"asetrate=44100*{eff_pitch:.4f},"
             f"aresample=44100:resample_cutoff=1.0:precision=28:filter_type=kaiser:dither_method=triangular,"
             f"loudnorm=I=-14:TP=-1.0:LRA=11:linear=true,"
@@ -229,29 +227,46 @@ class DJAudioEngine:
                 "remixer": remixer
             })
 
-            # Next track starts at (current_time + dur - crossfade_sec)
+            # Next track starts right as the current track ends (zero gap, 100% full volume)
             dur = t["exact_duration"]
-            current_time += (dur - crossfade_sec) if idx < len(processed_tracks) - 1 else dur
+            current_time += dur
 
         with open(tracklist_path, "w", encoding="utf-8") as f:
             f.write("\n".join(tracklist_lines))
         logger.info(f"Saved tracklist ({len(chapters)} songs) to {tracklist_path}")
 
-        # Step 3: Run FFmpeg acrossfade concatenation
+        # Step 3: Concat all tracks back-to-back & overlay 'Wooosh' transitions
         inputs = []
         for t in processed_tracks:
             inputs.extend(["-i", t["norm_path"]])
 
-        filter_parts = []
-        prev_label = "0:a"
-        for i in range(1, len(processed_tracks)):
-            next_input = f"{i}:a"
-            out_label = f"m{i}"
-            # Smooth quarter-sine crossfade between outgoing fade-out and incoming fade-in
+        n = len(processed_tracks)
+        concat_inputs = "".join(f"[{i}:a]" for i in range(n))
+        filter_parts = [f"{concat_inputs}concat=n={n}:v=0:a=1[base]"]
+
+        final_audio_label = "base"
+        has_wooosh = os.path.exists(self.wooosh_path) and n > 1
+
+        if has_wooosh:
+            logger.info(f"Adding cinematic 'Wooosh' transition sound ({self.wooosh_path}) at all {len(chapters) - 1} song changes...")
+            wooosh_input_idx = n
+            inputs.extend(["-i", self.wooosh_path])
+
+            wooosh_labels = []
+            for ch_idx, ch in enumerate(chapters[1:], 1):
+                # Trigger wooosh 0.35s before song end to sweep across the transition
+                delay_ms = max(0, int((ch["seconds"] - 0.35) * 1000))
+                w_lbl = f"w{ch_idx}"
+                filter_parts.append(
+                    f"[{wooosh_input_idx}:a]adelay={delay_ms}|{delay_ms},volume=0.90[{w_lbl}]"
+                )
+                wooosh_labels.append(w_lbl)
+
+            mix_inputs = "".join([f"[base]"] + [f"[{w}]" for w in wooosh_labels])
             filter_parts.append(
-                f"[{prev_label}][{next_input}]acrossfade=d={crossfade_sec:.2f}:c1=qsin:c2=qsin[{out_label}]"
+                f"{mix_inputs}amix=inputs={len(wooosh_labels) + 1}:normalize=0:duration=first[final_mix]"
             )
-            prev_label = out_label
+            final_audio_label = "final_mix"
 
         filter_complex = ";".join(filter_parts)
 
@@ -259,7 +274,7 @@ class DJAudioEngine:
             "ffmpeg", "-y",
             *inputs,
             "-filter_complex", filter_complex,
-            "-map", f"[{prev_label}]",
+            "-map", f"[{final_audio_label}]",
             "-c:a", "libmp3lame",
             "-b:a", "320k",
             "-q:a", "0",
