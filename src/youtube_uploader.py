@@ -86,11 +86,7 @@ class YouTubeUploader:
             refresh_token=refresh_token,
             token_uri=token_uri,
             client_id=client_id,
-            client_secret=client_secret,
-            scopes=[
-                "https://www.googleapis.com/auth/youtube.upload",
-                "https://www.googleapis.com/auth/youtube.force-ssl"
-            ]
+            client_secret=client_secret
         )
         try:
             from google.auth.transport.requests import Request
