@@ -170,6 +170,7 @@
 | 54 | **Dj Anish Bhardwaj No1** | `@ANISHBHARDWAJNO.1` | https://www.youtube.com/@ANISHBHARDWAJNO.1 |
 | 55 | **DJ VIKAS UP** | `@DJVIKASUP` | https://www.youtube.com/@DJVIKASUP |
 | 56 | **D,R,X,MUSIC BEATS** | `@Drxmusicbeats85` | https://www.youtube.com/@Drxmusicbeats85 |
+| 57 | **ISHU MUSIC EDM REMIX** | `@ISHUMUSICEDMREMIX` | https://www.youtube.com/@ISHUMUSICEDMREMIX |
 
 
 ---

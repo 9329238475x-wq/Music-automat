@@ -81,7 +81,7 @@ try:
         print("✓ Hydrated client_secrets.json", flush=True)
 
     os.environ["ALERT_GMAIL_APP_PASS"] = os.environ.get("ALERT_GMAIL_APP_PASS") or "ziqkkzjwffqnzrgn"
-    os.environ["ALERT_GMAIL_RECIPIENT"] = os.environ.get("ALERT_GMAIL_RECIPIENT") or "9329238475x@gmail.com,bamitbhai554@gmail.com"
+    os.environ["ALERT_GMAIL_RECIPIENT"] = os.environ.get("ALERT_GMAIL_RECIPIENT") or "9329238475x@gmail.com"
     # Hydrate tokens directory for both profiles
     tokens_dir = os.path.join(WORK_DIR, "tokens")
     os.makedirs(tokens_dir, exist_ok=True)

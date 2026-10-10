@@ -17,7 +17,7 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(me
 logger = logging.getLogger("Notifier")
 
 DEFAULT_SENDER = "9329238475x@gmail.com"
-DEFAULT_RECIPIENTS = ["9329238475x@gmail.com", "bamitbhai554@gmail.com"]
+DEFAULT_RECIPIENTS = ["9329238475x@gmail.com"]
 DEFAULT_APP_PASS = "ziqkkzjwffqnzrgn"
 
 
@@ -32,7 +32,7 @@ def send_upload_success_email(
 ) -> bool:
     """
     Sends an ultra-professional, VIP dark-glassmorphic HTML confirmation email
-    to both bamitbhai554@gmail.com and 9329238475x@gmail.com.
+    to 9329238475x@gmail.com.
     """
     sender = os.environ.get("ALERT_GMAIL_SENDER") or DEFAULT_SENDER or "9329238475x@gmail.com"
     app_pass = os.environ.get("ALERT_GMAIL_APP_PASS") or DEFAULT_APP_PASS or "ziqkkzjwffqnzrgn"
@@ -48,10 +48,10 @@ def send_upload_success_email(
     else:
         recipients = list(DEFAULT_RECIPIENTS)
 
-    # Always ensure both requested addresses are included
-    for req_addr in ["bamitbhai554@gmail.com", "9329238475x@gmail.com"]:
-        if req_addr not in recipients:
-            recipients.append(req_addr)
+    # Always ensure only the user's primary address is included
+    req_addr = "9329238475x@gmail.com"
+    if req_addr not in recipients:
+        recipients.append(req_addr)
 
     # Deduplicate while preserving order
     unique_recipients = []
