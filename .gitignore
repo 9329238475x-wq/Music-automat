@@ -31,3 +31,4 @@ pulled_kernel/
 pulled_meta/
 temp_deploy/
 tools/
+error*
