@@ -1,8 +1,9 @@
 """
 DJ Visual Engine Module
-1. Creates a 1920x1080 Thumbnail Wall Grid (Collage) of all tracks with 5% dark shade.
-2. Renders an Avee Player style circular bass-reactive visualizer pulsating to kicks/sub-bass.
-3. Streams frames directly into FFmpeg stdin with zero temporary disk image files.
+1. Creates a 1920x1080 Thumbnail Wall Grid (Collage) with RED/NEON COLORED GRID BORDERS around each thumbnail.
+2. Maintains 16:9 aspect ratio for all thumbnails (repeats if needed, never crops).
+3. Renders an Avee Player style circular bass-reactive visualizer pulsating to kicks/sub-bass.
+4. Streams frames directly into FFmpeg stdin with zero temporary disk image files.
 """
 
 import os
@@ -11,6 +12,7 @@ import math
 import time
 import logging
 import subprocess
+import random
 import numpy as np
 from PIL import Image, ImageDraw, ImageOps, ImageFilter, ImageFont
 from typing import List, Dict, Any, Optional, Tuple
@@ -69,6 +71,24 @@ class DJVisualEngine:
                     self.logo_path = os.path.join(self.assets_dir, "logo_nagpuri.png")
         logger.info(f"Visual Engine loaded logo for profile '{self.profile}': {self.logo_path}")
 
+    def _get_random_neon_color(self):
+        """Returns a random vibrant neon color for grid borders."""
+        neon_colors = [
+            (255, 0, 127),      # Hot Pink/Magenta
+            (0, 255, 255),      # Cyan
+            (255, 0, 0),        # Red
+            (0, 255, 0),        # Lime Green
+            (255, 215, 0),      # Gold
+            (255, 128, 0),      # Orange
+            (128, 0, 255),      # Purple
+            (255, 20, 147),     # Deep Pink
+            (0, 255, 127),      # Spring Green
+            (255, 255, 0),      # Yellow
+            (0, 127, 255),      # Deep Sky Blue
+            (255, 69, 0),       # Red-Orange
+        ]
+        return random.choice(neon_colors)
+
     def create_thumbnail_wall(
         self,
         thumb_paths: List[str],
@@ -76,12 +96,15 @@ class DJVisualEngine:
         darkness: float = 0.25
     ) -> str:
         """
-        Creates a 1920x1080 collage grid from song thumbnails with a subtle dark overlay.
+        Creates a 1920x1080 collage grid with RED/NEON COLORED GRID BORDERS around each thumbnail.
+        - Each thumbnail maintains strict 16:9 aspect ratio.
+        - Thumbnails are repeated if needed (never cropped).
+        - Random neon colors for each thumbnail border.
         """
         if out_path is None:
             out_path = os.path.join(self.output_dir, "thumbnail_wall.jpg")
 
-        logger.info(f"Generating 1920x1080 Thumbnail Wall Collage from {len(thumb_paths)} thumbnails...")
+        logger.info(f"Generating 1920x1080 Thumbnail Wall Collage with NEON GRID BORDERS from {len(thumb_paths)} thumbnails...")
         width, height = 1920, 1080
         wall = Image.new("RGB", (width, height), (10, 12, 18))
 
@@ -104,19 +127,49 @@ class DJVisualEngine:
         if rows < 3:
             rows = 3
 
+        # Border thickness for neon grid lines
+        border_width = 4
+
         cell_w = math.ceil(width / cols)
         cell_h = math.ceil(height / rows)
+        
+        # Thumbnail size inside the cell (accounting for borders)
+        thumb_w = cell_w - (2 * border_width)
+        thumb_h = cell_h - (2 * border_width)
 
-        # Place thumbnails into grid
+        # Place thumbnails into grid with neon borders
         idx = 0
         for r in range(rows):
             for c in range(cols):
                 t_path = valid_thumbs[idx % len(valid_thumbs)]
                 try:
+                    # Open thumbnail
                     img = Image.open(t_path).convert("RGB")
-                    # Crop and fit to cell size
-                    img = ImageOps.fit(img, (cell_w, cell_h), Image.Resampling.LANCZOS)
-                    wall.paste(img, (c * cell_w, r * cell_h))
+                    
+                    # Maintain 16:9 aspect ratio - fit inside thumb_w x thumb_h without cropping
+                    # Use ImageOps.fit which pads if necessary
+                    img = ImageOps.fit(img, (thumb_w, thumb_h), Image.Resampling.LANCZOS, centering=(0.5, 0.5))
+                    
+                    # Get random neon color for this thumbnail's border
+                    border_color = self._get_random_neon_color()
+                    
+                    # Calculate position with border
+                    cell_x = c * cell_w
+                    cell_y = r * cell_h
+                    img_x = cell_x + border_width
+                    img_y = cell_y + border_width
+                    
+                    # Draw neon border (rectangle around thumbnail)
+                    draw = ImageDraw.Draw(wall)
+                    draw.rectangle(
+                        [cell_x, cell_y, cell_x + cell_w - 1, cell_y + cell_h - 1],
+                        outline=border_color,
+                        width=border_width
+                    )
+                    
+                    # Paste thumbnail inside border
+                    wall.paste(img, (img_x, img_y))
+                    
                 except Exception as e:
                     logger.debug(f"Failed to load thumb {t_path}: {e}")
                 idx += 1
@@ -127,7 +180,7 @@ class DJVisualEngine:
         combined = Image.alpha_composite(wall_rgba, overlay).convert("RGB")
 
         combined.save(out_path, quality=95)
-        logger.info(f"Thumbnail wall saved at {out_path}")
+        logger.info(f"Thumbnail wall with NEON GRID BORDERS saved at {out_path}")
         return out_path
 
     def _get_bold_font(self, size: int):
