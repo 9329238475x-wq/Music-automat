@@ -195,8 +195,18 @@ def check_token_health(profile: str, data: Dict[str, Any], file_mtime: float, fo
 
         if resp.status_code == 200:
             # Token is 100% active and working
-            if age_sec > SEVEN_DAYS:
-                # Survived 7 days -> Application is Published / In Production!
+            # Check if using the In-Production project credentials (pro-gamer-tournament-final)
+            is_prod = False
+            if CLIENT_SECRETS_FILE.exists():
+                try:
+                    cs_data = json.loads(CLIENT_SECRETS_FILE.read_text(encoding="utf-8"))
+                    k = list(cs_data.keys())[0]
+                    if cs_data[k].get("project_id") == "pro-gamer-tournament-final":
+                        is_prod = True
+                except Exception:
+                    pass
+
+            if is_prod or age_sec > SEVEN_DAYS:
                 badge = "👑 परमानेंट एक्टिव (No 7-Day Limit)"
                 mode = "production"
             else:
