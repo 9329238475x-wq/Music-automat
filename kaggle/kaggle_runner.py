@@ -103,12 +103,12 @@ try:
     # Determine profile: check hour or env
     from datetime import datetime, timezone
     utc_hour = datetime.now(timezone.utc).hour
-    # 06:12 AM IST = 00:42 UTC -> utc_hour < 3 -> "edm"
-    # 09:06 AM IST = 03:36 UTC -> utc_hour 3 to 6 -> "nagpuri"
+    # 06:12 AM IST = 00:42 UTC -> utc_hour < 1 -> "edm"
+    # 06:40 AM IST = 01:10 UTC -> utc_hour 1 to 6 -> "nagpuri"
     # 01:00 PM IST = 07:30 UTC -> utc_hour 7+ -> "vibration"
-    if utc_hour < 3:
+    if utc_hour < 1:
         default_profile = "edm"
-    elif utc_hour < 6:
+    elif utc_hour < 7:
         default_profile = "nagpuri"
     else:
         default_profile = "vibration"

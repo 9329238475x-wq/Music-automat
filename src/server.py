@@ -265,7 +265,7 @@ def load_profiles_meta() -> List[Dict[str, Any]]:
                 "id": "nagpuri",
                 "name": "Sumit Rmx 2.0 (Nagpuri)",
                 "tag": "नागपुरी DJ Remix",
-                "schedule": "09:06 AM IST",
+                "schedule": "06:40 AM IST",
                 "color": "cyan",
                 "accent_hex": "#00e5ff",
                 "instructions": "रीजनल नागपुरी, ठेठ DJ, शादी-पार्टी डांस रिमिक्स (नॉर्मल बास) - 20 सोर्स चैनल्स से ताज़ा ट्रैक लेकर 320 kbps HD मिक्स बनाना।",
