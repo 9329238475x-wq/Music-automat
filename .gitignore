@@ -22,6 +22,8 @@ temp/
 # API credentials & Secrets
 kaggle.json
 client_secrets.json
+YT-API-KEY.json
+*API-KEY*.json
 tokens/
 *.token
 config/github_token.txt
