@@ -104,11 +104,11 @@ try:
     from datetime import datetime, timezone
     utc_hour = datetime.now(timezone.utc).hour
     # 06:12 AM IST = 00:42 UTC -> utc_hour < 3 -> "edm"
-    # 09:06 AM IST = 03:36 UTC -> utc_hour 3 to 9 -> "nagpuri"
-    # 07:00 PM IST = 13:30 UTC -> utc_hour 10+ -> "vibration"
+    # 09:06 AM IST = 03:36 UTC -> utc_hour 3 to 6 -> "nagpuri"
+    # 01:00 PM IST = 07:30 UTC -> utc_hour 7+ -> "vibration"
     if utc_hour < 3:
         default_profile = "edm"
-    elif utc_hour < 10:
+    elif utc_hour < 6:
         default_profile = "nagpuri"
     else:
         default_profile = "vibration"

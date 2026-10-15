@@ -276,7 +276,7 @@ def load_profiles_meta() -> List[Dict[str, Any]]:
                 "id": "vibration",
                 "name": "Nagpuri Non-Stop Remix 2.0 (Vibration)",
                 "tag": "हार्ड वाइब्रेशन DJ",
-                "schedule": "07:00 PM IST",
+                "schedule": "01:00 PM IST",
                 "color": "pink",
                 "accent_hex": "#ff2a85",
                 "instructions": "कंपटीशन हार्ड वाइब्रेशन, बास बूस्टेड, छत्तीसगढ़ी / नागपुरी / भोजपुरी डीजे मिक्स (24 सोर्स चैनल्स) - हेवी वूफर और डीजे कंपटीशन लवर्स के लिए।",

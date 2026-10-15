@@ -4,8 +4,8 @@ on:
   schedule:
     # 09:06 AM IST (03:36 UTC) - Daily Morning Nagpuri DJ Mix (sumit rmx 2.0)
     - cron: '36 3 * * *'
-    # 07:00 PM IST (13:30 UTC) - Daily Evening Hard Vibration DJ Mix (nagpuri non-stop remix 2.0)
-    - cron: '30 13 * * *'
+    # 01:00 PM IST (07:30 UTC) - Daily Afternoon Hard Vibration DJ Mix (Sumit RMX 6.0)
+    - cron: '30 7 * * *'
 
   workflow_dispatch:
     inputs:
