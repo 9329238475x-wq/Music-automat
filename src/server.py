@@ -285,12 +285,12 @@ def load_profiles_meta() -> List[Dict[str, Any]]:
             },
             {
                 "id": "edm",
-                "name": "EDM DJ Remix (Mega EDM Collection)",
+                "name": "Mega Music Nonstop (EDM Drop Mix)",
                 "tag": "EDM Drop Mix",
                 "schedule": "06:12 AM IST",
                 "color": "purple",
                 "accent_hex": "#d200ff",
-                "instructions": "EDM ड्रॉप मिक्स, इलेक्ट्रो डांस, क्लब मैशअप, भोजपुरी ईडीएम, ट्रान्स डांस मिक्स (41 सोर्स चैनल्स) - सेंटर में 'My EDM LOGO.png' एनीमेशन।",
+                "instructions": "EDM ड्रॉप मिक्स, इलेक्ट्रो डांस, क्लब मैशअप, भोजपुरी ईडीएम, ट्रान्स डांस मिक्स (47 सोर्स चैनल्स) - सेंटर में 'My EDM LOGO.png' एनीमेशन।",
                 "logo_file": "assets/My EDM LOGO.png",
                 "is_default": True
             }

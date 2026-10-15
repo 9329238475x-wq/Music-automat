@@ -188,7 +188,7 @@ class YouTubeUploader:
 
         # 2. Profile-Specific Trending Logic & SEO Formatting
         if self.profile == "edm":
-            channel_brand = "Sumit Rmx 2.0"
+            channel_brand = "Mega Music Nonstop"
             genre_name = "Bhojpuri EDM Drop"
             templates = [
                 f"⚡ {song1} X {song2} - Nonstop Bhojpuri EDM Drop {year} 🔥 Electro Dance Mix",

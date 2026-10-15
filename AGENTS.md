@@ -5,7 +5,7 @@
 - **Primary Channels / Profiles:**
   - `nagpuri`: Nonstop Theth Nagpuri DJ Dance Mix (21 source channels, 320 kbps HD master)
   - `vibration`: Hard Vibration & CG Tapori DJ Mix (23 hard-bass & vibration source channels)
-  - `edm`: Bhojpuri EDM Drop Special (50 verified EDM drop sources)
+  - `edm`: Mega Music Nonstop - Bhojpuri EDM Drop Special (47 verified EDM drop sources)
   - Custom profiles dynamically added via Studio Hub.
 
 ## 2. Core Architecture

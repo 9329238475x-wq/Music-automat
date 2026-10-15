@@ -106,8 +106,8 @@
 
 ---
 
-## ⚡ चैनल 3: sumit rmx 2.0 - Pure Bhojpuri EDM Drop Special (47 Channels)
-> **यूट्यूब चैनल:** sumit rmx 2.0 (@sumitrmx2.0-m6f) &bull; https://www.youtube.com/@sumitrmx2.0-m6f  
+## ⚡ चैनल 3: Mega Music Nonstop - Pure Bhojpuri EDM Drop Special (47 Channels)
+> **यूट्यूब चैनल:** Mega Music Nonstop (@megamusicnonstop) &bull; https://www.youtube.com/@megamusicnonstop  
 > **कंटेंट टाइप:** 100% शुद्ध भोजपुरी EDM ड्रॉप रीमिक्स (नो हिंदी, नो हरियाणवी, नो साउंड चेक)  
 > **अपलोड समय:** रोज़ाना सुबह 06:12 AM IST (00:42 UTC)  
 > **विशेष नियम:** सभी 47 चैनल्स 100% एक्टिव हैं (केवल पार्टी EDM ड्रॉप, कोई भक्ति या नॉनस्टॉप नहीं) (पिछले 2-3 दिन के अंदर अपलोड किए हुए) और शुद्ध EDM ड्रॉप ट्रैक रीमिक्स करते हैं।
