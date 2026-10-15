@@ -262,13 +262,17 @@ class DJVisualEngine:
                 "SUPERHIT BHOJPURI DANCE MIX",
                 "VIRAL BHOJPURI EDM DROP",
                 "NONSTOP PARTY BLAST",
-                "HARD BASS EDM SPECIAL",
+                "HARD BASS EDM DROP",
                 "HIGH VOLTAGE BHOJPURI MIX",
                 "BHOJPURI ROADSHOW DROP",
                 "DANCE PARTY DHAMAKA",
                 "SUPERHIT CLUB DANCE MIX",
+                "CIRCUIT STYLE EDM DROP",
+                "JBL SOUND HARD BASS DROP",
                 "NONSTOP DANCE PARTY MIX",
-                "ALL TIME BHOJPURI HITS"
+                "ALL BHOJPURI VIRAL SONGS",
+                "SUPERHIT BARAAT DANCE MIX",
+                "HARD BASS EDM SPECIAL"
             ]
             tags = [
                 f"• BHOJPURI EDM DROP {year} •",
@@ -277,6 +281,7 @@ class DJVisualEngine:
                 f"• ROADSHOW COMPETITION {year} •",
                 f"• HIGH VOLTAGE EDM DROP •",
                 f"• SUPERHIT PARTY SPECIAL •",
+                f"• JBL SOUND HARD BASS •",
                 f"• 100% NONSTOP DANCE HITS •"
             ]
             sub_texts = [
@@ -285,6 +290,7 @@ class DJVisualEngine:
                 "320 KBPS HD MASTER | FULL BASS BLAST",
                 "TOP VIRAL TRACKS | SUPERHIT NONSTOP",
                 "ROADSHOW COMPETITION | ULTRA DROP MIX",
+                "JBL SOUND BEATS | 100% HARD HIT",
                 "320 KBPS HD SOUND | ELECTRO DANCE DROP"
             ]
         elif p == "nagpuri":
@@ -298,21 +304,31 @@ class DJVisualEngine:
                 "HARD DANCE THETH NAGPURI",
                 "TOP TRENDING NAGPURI MIX",
                 "DHAMAKA DANCE NONSTOP",
-                "JHARKHANDI SUPERHIT MIX"
+                "JHARKHANDI SADRI DJ REMIX",
+                "TAPA TAP HARD BASS NONSTOP",
+                "SHADI SPECIAL NAGPURI MIX",
+                "ROADSHOW COMPETITION SPECIAL",
+                "PURULIA X THEATH NAGPURI",
+                "KHORTHA X NAGPURI DANCE MIX",
+                "ALL THETH MIXING JUKEBOX"
             ]
             tags = [
                 f"• {year} THETH NAGPURI SPECIAL •",
                 f"• SUPERHIT ROADSHOW DANCE •",
                 f"• VIRAL NAGPURI HITS {year} •",
                 f"• TOP THETH DANCE PICKS •",
+                f"• SHADI MEIN DJ BAJI SPECIAL •",
                 f"• ALL TIME FAVORITE NAGPURI •",
-                f"• JHARKHANDI DHAMAKA {year} •"
+                f"• JHARKHANDI DHAMAKA {year} •",
+                f"• TAPA TAP HARD BASS MIX •"
             ]
             sub_texts = [
                 "320 KBPS HD MASTER | FULL ROADSHOW VIBRATION",
                 "PURE THETH STYLE | NONSTOP DANCE BLAST",
                 "320 KBPS ULTRA HD | WEDDING DANCE SPECIAL",
                 "SUPERHIT DJ TRACKS | 100% CLEAR MASTER",
+                "TAPA TAP BASS BEATS | ROADSHOW MIX",
+                "JHARKHANDI SADRI HITS | 100% DANCE DHAMAKA",
                 "FULL ROADSHOW SPECIAL | NONSTOP DANCE MIX"
             ]
         elif p == "vibration":
@@ -355,20 +371,37 @@ class DJVisualEngine:
             ]
         elif p == "dj_nan_say_karwan":
             main_titles = [
-                f"SUPERHIT NONSTOP {year}",
-                "TRENDING STUDIO REMIX",
-                "VIRAL ROADSHOW DANCE MIX",
-                "TOP TRENDING STUDIO BEAT",
-                "COMPETITION BEAT NONSTOP"
+                "SADRI TRENDING NONSTOP",
+                "TRENDING SADRI NAGPURI MIX",
+                "NONSTOP SADRI DJ DANCE MIX",
+                "SADRI LOVERS REMIX 2026",
+                "SUPERHIT SADRI NAGPURI MIX",
+                "VIRAL SADRI ROADSHOW BLAST",
+                "SADRI DHAMAKA DANCE MIX",
+                "SADRI X NAGPURI SUPERHIT",
+                "OLD IS GOLD SADRI REMIX",
+                "SHADI DANCE SADRI SPECIAL",
+                "JHARKHANDI SADRI NONSTOP",
+                "SADRI COMPETITION DANCE MIX",
+                "NEW TRENDING SADRI DJ SONG",
+                "TAPA TAP SADRI DANCE BLAST"
             ]
             tags = [
-                "• DJ NAN SAY KARWAN SPECIAL •",
-                f"• SUPERHIT ROADSHOW {year} •",
-                "• TOP STUDIO DANCE PICKS •"
+                f"• {year} SADRI NAGPURI SPECIAL •",
+                f"• SUPERHIT SADRI DJ REMIX •",
+                f"• VIRAL SADRI DANCE HITS •",
+                f"• SADRI LOVERS ROADSHOW •",
+                f"• ALL TIME SADRI FAVORITES •",
+                f"• JHARKHANDI SADRI DHAMAKA •",
+                f"• SHADI SPECIAL SADRI DANCE •"
             ]
             sub_texts = [
-                "320 KBPS HD MASTER | FULL COMPETITION MIX",
-                "320 KBPS ULTRA HD | PURE STUDIO MASTER"
+                "320 KBPS HD MASTER | FULL SADRI DANCE BLAST",
+                "PURE SADRI STYLE | NONSTOP ROADSHOW MIX",
+                "320 KBPS ULTRA HD | WEDDING DANCE SPECIAL",
+                "SADRI LOVERS SPECIAL | 100% CLEAR MASTER",
+                "SUPERHIT SADRI TRACKS | COMPETITION BEATS",
+                "JHARKHANDI SADRI HITS | 100% DANCE DHAMAKA"
             ]
         else:
             clean_name = p.replace("_", " ").upper()
