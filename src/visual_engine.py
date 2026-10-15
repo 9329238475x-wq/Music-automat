@@ -213,17 +213,18 @@ class DJVisualEngine:
     def create_high_ctr_thumbnail(
         self,
         bg_wall_path: str,
-        out_path: Optional[str] = None
+        out_path: Optional[str] = None,
+        custom_title: Optional[str] = None,
+        custom_tag: Optional[str] = None,
+        custom_sub: Optional[str] = None
     ) -> str:
         """
         Creates a viral, ultra-high-CTR 1920x1080 YouTube Thumbnail Poster:
         - Bold, pure white typography with deep black drop-shadow & solid black outline
           guarantees 100% readability on all mobile screens and dark/light YouTube feeds.
-        - Automatically tailored per channel profile:
-            * nagpuri: "NONSTOP THETH NAGPURI", "DJ DANCE MIX 2026", "320 KBPS HD MASTER | FULL ROADSHOW VIBRATION"
-            * vibration: "HARD BASS VIBRATION", "CG & TAPORI DJ MIX 2026", "320 KBPS HD SOUND | 100% WOOFER KILLER BLAST"
-            * edm: "BHOJPURI EDM DROP", "DANCE PARTY MIX 2026", "320 KBPS ULTRA HD | HIGH VOLTAGE DROP"
-            * dj_nan_say_karwan: "DJ NAN SAY KARWAN", "SUPERHIT NONSTOP 2026", "320 KBPS HD MASTER | FULL ROADSHOW MIX"
+        - Automatically rotates from high-CTR viral titles & hooks (e.g. 'BHOJPURI TRENDING NONSTOP',
+          'TRENDING BHOJPURI NONSTOP', etc.) so every video gets a unique, click-magnet thumbnail!
+        - Dynamically auto-scales font sizes to fit perfectly without clipping.
         - Includes the channel's glowing circular logo emblem for instant brand recognition!
         """
         if out_path is None:
@@ -249,34 +250,149 @@ class DJVisualEngine:
         text_layer = Image.new("RGBA", (width, height), (0, 0, 0, 0))
         text_draw = ImageDraw.Draw(text_layer)
 
-        # Profile-specific text & badges
+        # Dynamic, auto-rotating high-CTR viral titles & tags pool
+        from datetime import datetime
+        year = datetime.now().year
         p = self.profile.lower()
-        if p == "nagpuri":
-            tag_text = "• 2026 THETH NAGPURI SPECIAL •"
-            main_title = "NONSTOP DJ DANCE MIX"
-            sub_text = "320 KBPS HD MASTER | FULL ROADSHOW VIBRATION"
+
+        if p == "edm":
+            main_titles = [
+                "BHOJPURI TRENDING NONSTOP",
+                "TRENDING BHOJPURI NONSTOP",
+                "SUPERHIT BHOJPURI DANCE MIX",
+                "VIRAL BHOJPURI EDM DROP",
+                "NONSTOP PARTY BLAST",
+                "HARD BASS EDM SPECIAL",
+                "HIGH VOLTAGE BHOJPURI MIX",
+                "BHOJPURI ROADSHOW DROP",
+                "DANCE PARTY DHAMAKA",
+                "SUPERHIT CLUB DANCE MIX",
+                "NONSTOP DANCE PARTY MIX",
+                "ALL TIME BHOJPURI HITS"
+            ]
+            tags = [
+                f"• BHOJPURI EDM DROP {year} •",
+                f"• TOP TRENDING BHOJPURI •",
+                f"• VIRAL DANCE SPECIAL {year} •",
+                f"• ROADSHOW COMPETITION {year} •",
+                f"• HIGH VOLTAGE EDM DROP •",
+                f"• SUPERHIT PARTY SPECIAL •",
+                f"• 100% NONSTOP DANCE HITS •"
+            ]
+            sub_texts = [
+                "320 KBPS ULTRA HD | HIGH VOLTAGE DROP",
+                "NONSTOP DANCE PARTY | 100% HEAVY BASS",
+                "320 KBPS HD MASTER | FULL BASS BLAST",
+                "TOP VIRAL TRACKS | SUPERHIT NONSTOP",
+                "ROADSHOW COMPETITION | ULTRA DROP MIX",
+                "320 KBPS HD SOUND | ELECTRO DANCE DROP"
+            ]
+        elif p == "nagpuri":
+            main_titles = [
+                "THETH NAGPURI TRENDING NONSTOP",
+                "TRENDING NAGPURI DANCE MIX",
+                "NONSTOP THETH NAGPURI",
+                "THETH NAGPURI SUPERHIT MIX",
+                "VIRAL ROADSHOW NAGPURI MIX",
+                "SUPERHIT NAGPURI NONSTOP",
+                "HARD DANCE THETH NAGPURI",
+                "TOP TRENDING NAGPURI MIX",
+                "DHAMAKA DANCE NONSTOP",
+                "JHARKHANDI SUPERHIT MIX"
+            ]
+            tags = [
+                f"• {year} THETH NAGPURI SPECIAL •",
+                f"• SUPERHIT ROADSHOW DANCE •",
+                f"• VIRAL NAGPURI HITS {year} •",
+                f"• TOP THETH DANCE PICKS •",
+                f"• ALL TIME FAVORITE NAGPURI •",
+                f"• JHARKHANDI DHAMAKA {year} •"
+            ]
+            sub_texts = [
+                "320 KBPS HD MASTER | FULL ROADSHOW VIBRATION",
+                "PURE THETH STYLE | NONSTOP DANCE BLAST",
+                "320 KBPS ULTRA HD | WEDDING DANCE SPECIAL",
+                "SUPERHIT DJ TRACKS | 100% CLEAR MASTER",
+                "FULL ROADSHOW SPECIAL | NONSTOP DANCE MIX"
+            ]
         elif p == "vibration":
-            tag_text = "• HARD BASS VIBRATION 2026 •"
-            main_title = "CG & TAPORI DJ MIX"
-            sub_text = "320 KBPS HD SOUND | 100% WOOFER KILLER BLAST"
-        elif p == "edm":
-            tag_text = "• BHOJPURI EDM DROP 2026 •"
-            main_title = "DANCE PARTY MIX"
-            sub_text = "320 KBPS ULTRA HD | HIGH VOLTAGE DROP"
+            main_titles = [
+                "CG & TAPORI HARD BASS",
+                "TRENDING VIBRATION NONSTOP",
+                "100% WOOFER KILLER BLAST",
+                "HARD BASS ROADSHOW MIX",
+                "VIRAL CG TAPORI NONSTOP",
+                "COMPETITION BASS DHAMAKA",
+                "HARD VIBRATION DANCE MIX",
+                "TOP TRENDING CG TAPORI",
+                "FULL SYSTEM SHAKER MIX"
+            ]
+            tags = [
+                f"• HARD BASS VIBRATION {year} •",
+                f"• CG TAPORI ROADSHOW SPECIAL •",
+                f"• 100% WOOFER TESTING BASS •",
+                f"• COMPETITION HEAVY VIBRATION •",
+                f"• VIRAL HARD BASS {year} •"
+            ]
+            sub_texts = [
+                "320 KBPS HD SOUND | 100% WOOFER KILLER BLAST",
+                "HEAVY WOOFER BASS | ROADSHOW COMPETITION",
+                "320 KBPS ULTRA HD | HIGH POWER VIBRATION",
+                "FULL SYSTEM SHAKER | HARD TAPORI BEATS",
+                "EXTREME SUB BASS | 100% DANGER VIBRATION"
+            ]
         elif p == "dj_nan_say_karwan":
-            tag_text = "• DJ NAN SAY KARWAN SPECIAL •"
-            main_title = "SUPERHIT NONSTOP 2026"
-            sub_text = "320 KBPS HD MASTER | FULL COMPETITION MIX"
+            main_titles = [
+                f"SUPERHIT NONSTOP {year}",
+                "TRENDING STUDIO REMIX",
+                "VIRAL ROADSHOW DANCE MIX",
+                "TOP TRENDING STUDIO BEAT",
+                "COMPETITION BEAT NONSTOP"
+            ]
+            tags = [
+                "• DJ NAN SAY KARWAN SPECIAL •",
+                f"• SUPERHIT ROADSHOW {year} •",
+                "• TOP STUDIO DANCE PICKS •"
+            ]
+            sub_texts = [
+                "320 KBPS HD MASTER | FULL COMPETITION MIX",
+                "320 KBPS ULTRA HD | PURE STUDIO MASTER"
+            ]
         else:
             clean_name = p.replace("_", " ").upper()
-            tag_text = f"• {clean_name} SPECIAL 2026 •"
-            main_title = "NONSTOP DJ DANCE MIX"
-            sub_text = "320 KBPS ULTRA HD MASTER | FULL BASS"
+            main_titles = [
+                f"{clean_name} TRENDING NONSTOP",
+                f"TRENDING {clean_name} DANCE MIX",
+                "NONSTOP DJ DANCE MIX",
+                f"SUPERHIT {clean_name} SPECIAL"
+            ]
+            tags = [
+                f"• {clean_name} SPECIAL {year} •",
+                f"• TOP TRENDING {clean_name} •"
+            ]
+            sub_texts = [
+                "320 KBPS ULTRA HD MASTER | FULL BASS",
+                "320 KBPS HD SOUND | NONSTOP DANCE"
+            ]
 
-        # Load fonts (Impact bundled font first)
-        font_tag = self._get_bold_font(52)
-        font_main = self._get_bold_font(135)
-        font_sub = self._get_bold_font(46)
+        tag_text = custom_tag or random.choice(tags)
+        main_title = custom_title or random.choice(main_titles)
+        sub_text = custom_sub or random.choice(sub_texts)
+
+        # Dynamic font scaler: guarantees text NEVER overflows 1920 canvas width
+        def get_fitting_font(text: str, default_size: int, max_w: int):
+            size = default_size
+            font = self._get_bold_font(size)
+            bbox = text_draw.textbbox((0, 0), text, font=font)
+            tw = bbox[2] - bbox[0]
+            if tw > max_w and tw > 0:
+                scaled_size = max(int(default_size * (max_w / tw)), 40)
+                font = self._get_bold_font(scaled_size)
+            return font
+
+        font_tag = get_fitting_font(tag_text, 52, 1550)
+        font_main = get_fitting_font(main_title, 135, 1680)
+        font_sub = get_fitting_font(sub_text, 46, 1650)
 
         # Place Channel Logo Emblem at top center if available
         logo_y_offset = 205
