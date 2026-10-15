@@ -318,28 +318,40 @@ class DJVisualEngine:
         elif p == "vibration":
             main_titles = [
                 "CG & TAPORI HARD BASS",
-                "TRENDING VIBRATION NONSTOP",
+                "CG X NAGPURI NONSTOP",
+                "FULL BASS HARD VIBRATION",
+                "CG NONSTOP VIBRATION MIX",
+                "CG TAPORI STYLE REMIX",
+                "MANDAR X TAPORI REMIX",
+                "CG X BHOJPURI VIBRATION",
+                "SPEAKER PHOD HARD BASS",
+                "CG ROADSHOW COMPETITION MIX",
                 "100% WOOFER KILLER BLAST",
-                "HARD BASS ROADSHOW MIX",
+                "KHATARNAK BASS VIBRATION",
+                "TRENDING CG REMIX NONSTOP",
                 "VIRAL CG TAPORI NONSTOP",
-                "COMPETITION BASS DHAMAKA",
+                "CHHATTISGARHI DHAMAKA MIX",
                 "HARD VIBRATION DANCE MIX",
-                "TOP TRENDING CG TAPORI",
-                "FULL SYSTEM SHAKER MIX"
+                "EXTREME SUB BASS ROADSHOW"
             ]
             tags = [
+                f"• CG X NAGPURI SPECIAL {year} •",
                 f"• HARD BASS VIBRATION {year} •",
-                f"• CG TAPORI ROADSHOW SPECIAL •",
+                f"• CHHATTISGARHI DHAMAKA •",
+                f"• FULL TAPORI VIBRATION •",
+                f"• ROADSHOW COMPETITION SPECIAL •",
                 f"• 100% WOOFER TESTING BASS •",
-                f"• COMPETITION HEAVY VIBRATION •",
+                f"• MANDAR X TAPORI BEATS •",
                 f"• VIRAL HARD BASS {year} •"
             ]
             sub_texts = [
                 "320 KBPS HD SOUND | 100% WOOFER KILLER BLAST",
-                "HEAVY WOOFER BASS | ROADSHOW COMPETITION",
+                "FULL BASS HARD VIBRATION | ROADSHOW COMPETITION",
+                "MANDAR X TAPORI BEAT | EXTREME SUB BASS",
+                "SPEAKER PHOD VIBRATION | 100% DANGER BASS",
                 "320 KBPS ULTRA HD | HIGH POWER VIBRATION",
                 "FULL SYSTEM SHAKER | HARD TAPORI BEATS",
-                "EXTREME SUB BASS | 100% DANGER VIBRATION"
+                "CHHATTISGARHI DHAMAKA | NONSTOP DANCE MIX"
             ]
         elif p == "dj_nan_say_karwan":
             main_titles = [
