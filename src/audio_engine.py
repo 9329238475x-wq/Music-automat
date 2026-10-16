@@ -28,6 +28,17 @@ class DJAudioEngine:
         self.temp_dir = os.path.join(self.output_dir, "temp_audio")
         os.makedirs(self.temp_dir, exist_ok=True)
         os.makedirs(self.output_dir, exist_ok=True)
+        self.settings = self._load_settings()
+
+    def _load_settings(self) -> Dict[str, Any]:
+        path = os.path.join(self.base_dir, "config", "settings.json")
+        if os.path.exists(path):
+            try:
+                with open(path, "r", encoding="utf-8") as f:
+                    return json.load(f)
+            except Exception:
+                pass
+        return {}
 
     def _get_audio_duration(self, file_path: str) -> float:
         """Gets exact audio duration in seconds using ffprobe."""
@@ -114,6 +125,11 @@ class DJAudioEngine:
         env_pitch = os.environ.get("DJ_PITCH_FACTOR")
         eff_pitch = float(env_pitch) if env_pitch else pitch_factor
 
+        # Precision Equalizer: Tames harsh "पैरी" / metallic "छम-छम" high-frequencies (8800 Hz) by 5% (-1.2 dB) without touching bass or vocals
+        pairy_db = float(self.settings.get("audio", {}).get("pairy_damping_db", -1.2))
+        pairy_freq = int(self.settings.get("audio", {}).get("pairy_frequency_hz", 8800))
+        pairy_filter = f"equalizer=f={pairy_freq}:t=q:w=1.4:g={pairy_db:.1f}," if pairy_db != 0 else ""
+
         # Pure Original Audio Filter Chain (100% full volume till the cut, zero fade-out, zero 3D, zero echo/gunj)
         filter_chain = (
             f"atrim=start={start_s:.2f}:end={end_s:.2f},"
@@ -121,6 +137,7 @@ class DJAudioEngine:
             f"afade=t=in:st=0:d=0.05,"
             f"asetrate=44100*{eff_pitch:.4f},"
             f"aresample=44100:resample_cutoff=1.0:precision=28:filter_type=kaiser:dither_method=triangular,"
+            f"{pairy_filter}"
             f"loudnorm=I=-14:TP=-1.0:LRA=11:linear=true,"
             f"aformat=sample_fmts=s16:sample_rates=44100:channel_layouts=stereo"
         )
