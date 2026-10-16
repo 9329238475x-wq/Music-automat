@@ -33,6 +33,18 @@ class DJProductionPipeline:
         self.audio_engine = DJAudioEngine(base_dir=self.base_dir)
         self.visual_engine = DJVisualEngine(profile=self.profile, base_dir=self.base_dir)
         self.uploader = YouTubeUploader(profile=self.profile, base_dir=self.base_dir)
+        self.settings = self._load_settings()
+
+    def _load_settings(self):
+        import json
+        p = os.path.join(self.base_dir, "config", "settings.json")
+        if os.path.exists(p):
+            try:
+                with open(p, "r", encoding="utf-8") as f:
+                    return json.load(f)
+            except Exception:
+                pass
+        return {}
 
     def run(self, target_tracks: int = 0, skip_upload: bool = False) -> bool:
         if not target_tracks or target_tracks <= 0:
@@ -133,9 +145,8 @@ def main():
     parser = argparse.ArgumentParser(description="Autonomous Nonstop DJ Remix Pipeline")
     parser.add_argument(
         "--profile",
-        choices=["nagpuri", "vibration"],
         default="nagpuri",
-        help="Target channel profile: 'nagpuri' or 'vibration'"
+        help="Target channel profile (e.g. 'nagpuri', 'vibration', 'edm', 'dj_nan_say_karwan')"
     )
     parser.add_argument(
         "--target-tracks",
