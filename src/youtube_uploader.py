@@ -429,18 +429,20 @@ Thank you for your love and support! ❤️
 
         return video_url
 
-    def post_pinned_comment(self, video_id: str, tracklist_text: str, title: str) -> bool:
-        """Posts an engaging comment with full tracklist chapters and discussion prompt."""
+    def post_pinned_comment(self, video_id: str, tracklist_text: str = "", title: str = "") -> bool:
+        """Posts a high-engagement, viral comment triggering massive user comments and algorithm push."""
         try:
             youtube = self.get_authenticated_service()
             if not youtube:
                 return False
             comment_body = (
-                f"🔥 {title} LIVE HO CHUKA HAI! ❤️\n\n"
-                f"🎧 Aapka sabse favourite gaana kaun sa hai? Niche comment karke zaroor batayein! 👇\n\n"
-                f"🎵 TRACKLIST & CHAPTERS:\n"
-                f"{tracklist_text[:3500]}\n\n"
-                f"🔔 Channel ko SUBSCRIBE karke Bell Icon zaroor dabayein taaki agla Nonstop sabse pehle mile! 🚀"
+                "🔥 दिल से बताओ, इस नॉनस्टॉप का सबसे BEST गाना आपको कौन सा लगा? ❤️👇\n\n"
+                "1️⃣ पहला गाना 🎧\n"
+                "2️⃣ बीच वाला बास ड्रॉप 🔊\n"
+                "3️⃣ या पूरा का पूरा नॉनस्टॉप ही बवाल है? 💥\n\n"
+                "🎧 Earphone में सुन रहे हो या बड़े DJ वूफर पर? 🔊\n"
+                "अपना ज़िला (City) और पसंदीदा गाना नीचे कमेंट में ज़रूर लिखो! 👇\n\n"
+                "❤️ सबसे प्यारे कमेंट्स को हमारी तरफ से LOVE REACT मिलेगा! 🚀"
             )
             youtube.commentThreads().insert(
                 part="snippet",
@@ -455,7 +457,7 @@ Thank you for your love and support! ❤️
                     }
                 }
             ).execute()
-            logger.info("✅ Pinned engagement comment posted successfully!")
+            logger.info("✅ High-engagement viral comment posted successfully!")
             return True
         except Exception as e:
             logger.info(f"Engagement comment auto-post notice: {e}")
