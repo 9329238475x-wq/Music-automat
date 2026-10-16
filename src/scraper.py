@@ -276,15 +276,22 @@ class DJScraper:
                 seen_channel_urls.add(norm_url)
             unique_candidates.append(c)
 
-        # SORT BY DURATION ASCENDING: Shortest track length at the very top (Track 1, 2, 3...)
-        unique_candidates.sort(key=lambda x: float(x.get("duration") or 999999.0), reverse=False)
+        # RETENTION HOOK: Place highest-viewed viral track at Rank #1 (Track 1) for instant retention hook!
+        if unique_candidates:
+            top_track = max(unique_candidates, key=lambda x: int(x.get("view_count") or 0))
+            remaining = [c for c in unique_candidates if c.get("id") != top_track.get("id")]
+            remaining.sort(key=lambda x: float(x.get("duration") or 999999.0), reverse=False)
+            unique_candidates = [top_track] + remaining
+
         for rank, c in enumerate(unique_candidates, 1):
             dur_mins = int((c.get("duration") or 0) // 60)
             dur_secs = int((c.get("duration") or 0) % 60)
-            logger.info(f"Rank #{rank:02d} | Length: {dur_mins:02d}:{dur_secs:02d} ({c.get('duration', 0):.0f}s) | ({c['remixer']}): {c['title'][:40]}")
+            vc = int(c.get("view_count") or 0)
+            hook_tag = "👑 [VIRAL HOOK #1] " if rank == 1 else ""
+            logger.info(f"Rank #{rank:02d} | {hook_tag}Views: {vc:,} | Length: {dur_mins:02d}:{dur_secs:02d} ({c.get('duration', 0):.0f}s) | ({c['remixer']}): {c['title'][:35]}")
 
         logger.info(
-            f"✅ Found {len(unique_candidates)} unique fresh tracks sorted by shortest track length first from {len(unique_candidates)} channels!"
+            f"✅ Found {len(unique_candidates)} unique fresh tracks! Track #1 set to highest-viewed viral hit."
         )
         return unique_candidates
 

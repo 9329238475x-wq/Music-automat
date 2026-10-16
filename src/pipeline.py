@@ -104,6 +104,26 @@ class DJProductionPipeline:
         logger.info(f"Step 3 Complete: Full video rendered ({final_video_path}).")
 
         # -----------------------------------------------------------------
+        # STEP 3B: Render 9:16 Vertical Viral YouTube Short from Top Track!
+        # -----------------------------------------------------------------
+        top_track = max(tracks, key=lambda x: int(x.get("view_count") or 0)) if tracks else tracks[0]
+        short_video_path = None
+        try:
+            logger.info(f"Rendering 9:16 Vertical Short for top viral hit: {top_track.get('title', '')[:35]}...")
+            short_out_name = f"{self.profile}_viral_short.mp4"
+            target_short_path = os.path.join(self.output_dir, short_out_name)
+            short_video_path = self.visual_engine.render_shorts_video(
+                top_track=top_track,
+                out_mp4=target_short_path,
+                clip_duration_sec=35.0,
+                fps=24
+            )
+            if short_video_path and os.path.exists(short_video_path):
+                logger.info(f"✓ Viral Short rendered successfully ({short_video_path})!")
+        except Exception as e:
+            logger.warning(f"Short rendering notice (non-fatal): {e}")
+
+        # -----------------------------------------------------------------
         # STEP 4: YouTube Data API Auto-Upload
         # -----------------------------------------------------------------
         if skip_upload:
@@ -118,6 +138,22 @@ class DJProductionPipeline:
             )
             if video_url:
                 logger.info(f"🎉 Pipeline Succeeded! Video live at: {video_url}")
+
+                # Upload Viral YouTube Short with direct link to full video
+                short_url = None
+                if short_video_path and os.path.exists(short_video_path):
+                    try:
+                        logger.info("🚀 Uploading 9:16 Viral YouTube Short...")
+                        top_song_title = top_track.get("title", f"{self.profile.upper()} DJ Drop")
+                        short_url = self.uploader.upload_short(
+                            video_path=short_video_path,
+                            full_video_url=video_url,
+                            song_title=top_song_title,
+                            tracks=tracks
+                        )
+                    except Exception as e:
+                        logger.warning(f"Short upload notice (non-fatal): {e}")
+
                 # Send email notification
                 final_video_title = getattr(self.uploader, "last_title", f"NONSTOP {self.profile.upper()} DJ REMIX")
                 send_upload_success_email(
@@ -126,7 +162,8 @@ class DJProductionPipeline:
                     profile=self.profile,
                     channel_name=f"{self.profile.capitalize()} DJ Channel",
                     duration_str="2-4 Hours Nonstop",
-                    track_count=len(tracks)
+                    track_count=len(tracks),
+                    short_url=short_url
                 )
             else:
                 logger.warning("Upload step did not return video URL (check credentials).")

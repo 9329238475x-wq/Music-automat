@@ -28,11 +28,12 @@ def send_upload_success_email(
     channel_name: str = "",
     duration_str: str = "2:30:00",
     track_count: int = 25,
-    recipient_email: Optional[Any] = None
+    recipient_email: Optional[Any] = None,
+    short_url: Optional[str] = None
 ) -> bool:
     """
     Sends an ultra-professional, VIP dark-glassmorphic HTML confirmation email
-    to 9329238475x@gmail.com.
+    to 9329238475x@gmail.com with links to both full video and viral Short.
     """
     sender = os.environ.get("ALERT_GMAIL_SENDER") or DEFAULT_SENDER or "9329238475x@gmail.com"
     app_pass = os.environ.get("ALERT_GMAIL_APP_PASS") or DEFAULT_APP_PASS or "ziqkkzjwffqnzrgn"
@@ -93,6 +94,17 @@ def send_upload_success_email(
     watch_url = f"https://youtu.be/{video_id}"
     thumb_url = f"https://img.youtube.com/vi/{video_id}/hqdefault.jpg"
 
+    short_line = f"VIRAL SHORT  : {short_url}\n" if short_url else ""
+    short_btn_html = f"""
+                <tr>
+                  <td align="center" style="padding-top: 12px;">
+                    <a href="{short_url}" target="_blank" style="display: block; background: #ff0050; color: #ffffff !important; text-decoration: none; font-size: 14px; font-weight: 800; text-align: center; padding: 13px 24px; border-radius: 12px; box-shadow: 0 4px 16px rgba(255, 0, 80, 0.4); letter-spacing: 0.02em;">
+                      ⚡&nbsp;&nbsp;WATCH VIRAL YOUTUBE SHORT (9:16)
+                    </a>
+                  </td>
+                </tr>
+    """ if short_url else ""
+
     subject = f"⚡ [PUBLISHED] {channel_display} | New Video Live on YouTube! 🎧"
 
     # Plain Text Fallback
@@ -106,7 +118,7 @@ CHANNEL      : {channel_display}
 PROFILE      : {genre_badge}
 VIDEO TITLE  : {video_title}
 WATCH URL    : {watch_url}
-VIDEO ID     : {video_id}
+{short_line}VIDEO ID     : {video_id}
 TOTAL TRACKS : {track_count} Songs (Seamless Nonstop Assembly)
 TOTAL RUNTIME: {duration_str}
 AUDIO MASTER : 320 kbps HD MP3 | EBU R128 (-14.0 LUFS) | Bass Boost +2.5dB
@@ -200,6 +212,7 @@ Automated production report by Music-Automat 24/7 Autonomous Studio Engine.
                     </a>
                   </td>
                 </tr>
+                {short_btn_html}
               </table>
             </td>
           </tr>

@@ -424,7 +424,10 @@ Thank you for your love and support! ❤️
         # 1. Post Auto-Engagement Comment with Tracklist & Chapters
         self.post_pinned_comment(video_id=video_id, tracklist_text=tracklist_text, title=meta["title"])
 
-        # 2. Save 1-Click Viral Community Post Draft (4x Boost)
+        # 2. Add to Official Channel Playlist (Auto-Playlist SEO Boost)
+        self.add_to_official_playlist(video_id=video_id)
+
+        # 3. Save 1-Click Viral Community Post Draft (4x Boost)
         self.save_community_post_draft(video_url=video_url, title=meta["title"], tracks=tracks)
 
         return video_url
@@ -462,6 +465,175 @@ Thank you for your love and support! ❤️
         except Exception as e:
             logger.info(f"Engagement comment auto-post notice: {e}")
             return False
+
+    def add_to_official_playlist(self, video_id: str, title: Optional[str] = None) -> Optional[str]:
+        """
+        Adds the newly uploaded video to the official playlist of this profile.
+        If the playlist doesn't exist on the channel, creates it automatically.
+        Enables seamless 24/7 autoplay loop and massive YouTube search ranking boost!
+        """
+        try:
+            youtube = self.get_authenticated_service()
+            if not youtube:
+                return None
+
+            playlist_names = {
+                "edm": "⚡ Mega Music Nonstop - Bhojpuri EDM Drop 2026 (Official Mixes)",
+                "nagpuri": "🔥 Nonstop Theth Nagpuri DJ Dance Mix 2026 (Official Series)",
+                "vibration": "🔊 Hard Vibration & CG Tapori DJ Mix 2026 (Official Series)",
+                "dj_nan_say_karwan": "🎧 Nagpuri Studio Beat DJ Remix 2026 (Official Series)"
+            }
+            target_title = playlist_names.get(self.profile, f"🔥 Nonstop {self.profile.upper()} DJ Mix (Official Series)")
+
+            # Check if playlist already exists on the channel
+            playlist_id = None
+            req = youtube.playlists().list(part="snippet", mine=True, maxResults=50)
+            while req:
+                resp = req.execute()
+                for item in resp.get("items", []):
+                    if item.get("snippet", {}).get("title", "").strip().lower() == target_title.strip().lower():
+                        playlist_id = item.get("id")
+                        break
+                if playlist_id:
+                    break
+                req = youtube.playlists().list_next(req, resp)
+
+            # If not found, create new official playlist
+            if not playlist_id:
+                logger.info(f"Creating new official playlist: '{target_title}'...")
+                create_resp = youtube.playlists().insert(
+                    part="snippet,status",
+                    body={
+                        "snippet": {
+                            "title": target_title,
+                            "description": f"Official Nonstop DJ Dance Mixes compiled in 320 kbps HD sound for {self.profile.upper()}."
+                        },
+                        "status": {
+                            "privacyStatus": "public"
+                        }
+                    }
+                ).execute()
+                playlist_id = create_resp.get("id")
+                logger.info(f"✅ Official playlist created: {playlist_id}")
+
+            # Insert video into playlist
+            if playlist_id:
+                youtube.playlistItems().insert(
+                    part="snippet",
+                    body={
+                        "snippet": {
+                            "playlistId": playlist_id,
+                            "resourceId": {
+                                "kind": "youtube#video",
+                                "videoId": video_id
+                            }
+                        }
+                    }
+                ).execute()
+                logger.info(f"✅ Video {video_id} added to official playlist '{target_title}'!")
+                return playlist_id
+
+        except Exception as e:
+            logger.warning(f"Official playlist auto-add notice: {e}")
+            return None
+
+    def upload_short(
+        self,
+        video_path: str,
+        full_video_url: str,
+        song_title: str,
+        tracks: Optional[List[Dict[str, Any]]] = None
+    ) -> Optional[str]:
+        """
+        Uploads the 9:16 vertical video to YouTube as a viral YouTube Short:
+        - Includes #Shorts in title and tags to automatically trigger YouTube Shorts shelf.
+        - Backlinks directly to the Full Nonstop Mix in the description.
+        - Automatically posts and pins an engagement comment linking to the full mix!
+        """
+        youtube = self.get_authenticated_service()
+        if not youtube:
+            logger.error("Cannot upload Short: YouTube service authentication failed.")
+            return None
+
+        clean_song = self._clean_song_title(song_title)
+        genre = self.profile.upper().replace("_", " ")
+
+        short_title = f"⚡ {clean_song} - Nonstop {genre} Drop 🔥 #Shorts #DJRemix"
+        if len(short_title) > 95:
+            short_title = f"🔥 {clean_song[:25]} - {genre} Drop #Shorts #DJRemix"
+
+        description = f"""🔥 NEW 2026 {genre} NONSTOP DJ DANCE MIX IS LIVE! 🎧💃
+
+👉 पूरा नॉनस्टॉप यहाँ सुनें (WATCH FULL NONSTOP HERE):
+{full_video_url}
+
+🎵 Featured Track: {song_title}
+🔊 Audio: 320 kbps Ultra HD Master Sound
+⚡ Visualizer: 360° Circular Avee Player Bass Drop
+
+🔔 चैनल को सब्सक्राइब ज़रूर करें और पूरा नॉनस्टॉप मिक्स एंजॉय करें! 🚀
+
+#Shorts #DJRemix #NonstopDJ #{self.profile} #ViralDJ #BhojpuriEDM #NagpuriDJ #HardBass
+"""
+
+        body = {
+            "snippet": {
+                "title": short_title[:100],
+                "description": description[:4500],
+                "tags": ["shorts", "short", "dj remix", "nonstop dj", self.profile, clean_song.lower()][:25],
+                "categoryId": "10"
+            },
+            "status": {
+                "privacyStatus": "public",
+                "selfDeclaredMadeForKids": False
+            }
+        }
+
+        logger.info(f"Initiating YouTube Short upload: {short_title}...")
+        media = MediaFileUpload(video_path, chunksize=1024 * 1024 * 8, resumable=True)
+
+        req = youtube.videos().insert(
+            part="snippet,status",
+            body=body,
+            media_body=media
+        )
+
+        response = None
+        while response is None:
+            status, response = req.next_chunk()
+            if status:
+                pct = int(status.progress() * 100)
+                logger.info(f"Short upload progress: {pct}%")
+
+        short_id = response.get("id")
+        short_url = f"https://youtube.com/shorts/{short_id}"
+        logger.info(f"🎉 YouTube Short Live! URL: {short_url}")
+
+        # Post direct backlink comment on the Short
+        try:
+            short_comment = (
+                f"🔥 पूरा नॉनस्टॉप DJ डांस मिक्स सुनने के लिए यहाँ क्लिक करें! 👇\n\n"
+                f"🎧 फुल वीडियो लिंक: {full_video_url}\n\n"
+                f"❤️ 320 kbps HD Sound & Nonstop Dance Dhamaka! 🚀"
+            )
+            youtube.commentThreads().insert(
+                part="snippet",
+                body={
+                    "snippet": {
+                        "videoId": short_id,
+                        "topLevelComment": {
+                            "snippet": {
+                                "textOriginal": short_comment
+                            }
+                        }
+                    }
+                }
+            ).execute()
+            logger.info("✅ Pinned backlink comment posted on Short!")
+        except Exception as e:
+            logger.info(f"Short comment notice: {e}")
+
+        return short_url
 
     def save_community_post_draft(self, video_url: str, title: str, tracks: Optional[List[Dict[str, Any]]] = None) -> str:
         """Saves a high-engagement, viral 1-Click Community Post draft with tracklist & emojis."""

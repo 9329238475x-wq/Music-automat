@@ -909,3 +909,217 @@ class DJVisualEngine:
             raise e
 
         return output_mp4
+
+    def render_shorts_video(
+        self,
+        top_track: Dict[str, Any],
+        out_mp4: Optional[str] = None,
+        clip_duration_sec: float = 35.0,
+        fps: int = 24
+    ) -> Optional[str]:
+        """
+        Renders an ultra-fast, viral 9:16 (1080x1920) Vertical YouTube Short:
+        - Generated from the #1 highest-viewed viral track of the batch!
+        - Extracts a 35s high-energy drop/chorus segment.
+        - Avee Player 360° circular bass visualizer pulsing at 1080x1920 vertical center.
+        - Eye-catching viral CTA banners ('FULL NONSTOP IS LIVE! LINK IN COMMENTS').
+        - Streams directly to FFmpeg stdin (renders in ~5-8 seconds on CPU).
+        """
+        if out_mp4 is None:
+            out_mp4 = os.path.join(self.output_dir, f"{self.profile}_viral_short.mp4")
+
+        # Use the original downloaded audio directly from 0.0s (NO intro cut / zero trim)
+        src_audio = top_track.get("audio_path") or top_track.get("norm_path")
+        if not src_audio or not os.path.exists(src_audio):
+            src_audio = top_track.get("norm_path")
+
+        if not src_audio or not os.path.exists(src_audio):
+            logger.warning("Shorts generation skipped: Top track audio file not found.")
+            return None
+
+        logger.info(f"🎬 Generating 35-Second 9:16 Short (Original track from 0:00, zero cuts): {top_track.get('title', '')[:35]}...")
+
+        # 1. Play strictly from the start (0.0s) for exactly 35.0 seconds
+        temp_short_audio = os.path.join(self.output_dir, f"temp_{self.profile}_short.wav")
+        cut_cmd = [
+            "ffmpeg", "-y",
+            "-ss", "0.00",
+            "-t", f"{clip_duration_sec:.2f}",
+            "-i", src_audio,
+            "-af", f"afade=t=in:st=0:d=0.05,afade=t=out:st={clip_duration_sec - 1.0:.1f}:d=1.0,loudnorm=I=-14:TP=-1.0",
+            "-ar", "44100",
+            "-ac", "2",
+            temp_short_audio
+        ]
+        subprocess.run(cut_cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+
+        if not os.path.exists(temp_short_audio) or os.path.getsize(temp_short_audio) < 1000:
+            logger.warning("Shorts audio cut failed, using full track as fallback.")
+            temp_short_audio = src_audio
+
+        # 2. Extract dynamics for 35s snippet
+        try:
+            norm, duration_sec = self._extract_zero_latency_dynamics(temp_short_audio, fps=fps)
+            total_frames = int(duration_sec * fps)
+        except Exception as e:
+            logger.warning(f"Dynamics extraction failed for Short: {e}")
+            return None
+
+        # 3. Build Vertical 1080x1920 Static Background Frame
+        width, height = 1080, 1920
+        cx, cy = width // 2, height // 2
+
+        thumb_path = top_track.get("thumb_path")
+        if thumb_path and os.path.exists(thumb_path):
+            try:
+                base_img = Image.open(thumb_path).convert("RGBA")
+                # Scale up to fill vertical 1080x1920 with atmospheric blur
+                base_img = ImageOps.fit(base_img, (width, height), Image.Resampling.LANCZOS)
+                base_img = base_img.filter(ImageFilter.GaussianBlur(radius=20))
+                # Darken by 40%
+                dark_overlay = Image.new("RGBA", (width, height), (8, 10, 16, 120))
+                base_img = Image.alpha_composite(base_img, dark_overlay)
+            except Exception:
+                base_img = Image.new("RGBA", (width, height), (12, 14, 22, 255))
+        else:
+            base_img = Image.new("RGBA", (width, height), (12, 14, 22, 255))
+
+        # Add Neon Border around the 9:16 vertical frame
+        border_draw = ImageDraw.Draw(base_img)
+        neon_c = self._get_random_neon_color()
+        border_draw.rectangle([6, 6, width - 6, height - 6], outline=(*neon_c, 240), width=6)
+
+        # Clean title for display
+        import re
+        raw_t = top_track.get("title", "DJ Remix")
+        c_title = re.sub(r"\[.*?\]|\(.*?\)", " ", raw_t)
+        c_title = re.sub(r"[|\-_~:!@#$%^&*+=<>?/\\]", " ", c_title).strip()
+        c_title = re.sub(r"\s+", " ", c_title).title()[:26]
+
+        font_title = self._get_font(46)
+        font_sub = self._get_font(30)
+        font_cta = self._get_font(40)
+        font_cta_sub = self._get_font(26)
+
+        # Top Text Overlay
+        top_layer = Image.new("RGBA", (width, height), (0, 0, 0, 0))
+        t_draw = ImageDraw.Draw(top_layer)
+
+        # Top Pill Badge
+        badge_text = f"🔥 {c_title} DJ DROP ⚡"
+        t_draw.rounded_rectangle([60, 160, width - 60, 260], radius=24, fill=(15, 20, 32, 230), outline=(*neon_c, 240), width=3)
+        t_draw.text((cx, 210), badge_text, fill=(255, 255, 255, 255), font=font_title, anchor="mm")
+
+        # Top Subtitle
+        t_draw.text((cx, 305), f"• 2026 {self.profile.upper().replace('_', ' ')} VIRAL HIT •", fill=(*neon_c, 230), font=font_sub, anchor="mm")
+
+        # Bottom Call to Action Card
+        t_draw.rounded_rectangle([60, height - 380, width - 60, height - 160], radius=28, fill=(10, 12, 18, 245), outline=(255, 255, 255, 200), width=3)
+        t_draw.text((cx, height - 325), "🎧 FULL NONSTOP MIX IS LIVE! 🔥", fill=(255, 255, 255, 255), font=font_cta, anchor="mm")
+        t_draw.text((cx, height - 265), "👇 LINK IN PINNED COMMENT & DESC 👇", fill=(*neon_c, 255), font=font_cta_sub, anchor="mm")
+        t_draw.text((cx, height - 210), "⭐ 320 KBPS HD MASTER • 100% HEAVY BASS ⭐", fill=(200, 210, 230, 220), font=font_cta_sub, anchor="mm")
+
+        base_frame = Image.alpha_composite(base_img, top_layer)
+
+        # Load Logo for center disc
+        logo = None
+        if self.logo_path and os.path.exists(self.logo_path):
+            try:
+                logo = Image.open(self.logo_path).convert("RGBA")
+            except Exception:
+                logo = None
+
+        # 4. Pre-render 32 Vertical Avee Player Frames
+        logger.info("Pre-rendering 32 Vertical Avee Player animation frames for Short...")
+        cached_frames_bytes = []
+        base_radius = 210
+        max_expansion = 50
+        num_bars = 64
+
+        for level in range(32):
+            b_val = level / 31.0
+            frame = base_frame.copy()
+            glow = Image.new("RGBA", (width, height), (0, 0, 0, 0))
+            draw = ImageDraw.Draw(glow)
+
+            cur_r = int(base_radius + max_expansion * b_val)
+
+            # Circular Spectrum Bars
+            for idx in range(num_bars):
+                angle = (2 * math.pi / num_bars) * idx
+                bar_len = int(12 + 65 * b_val * (0.65 + 0.35 * math.sin(idx * 0.75)))
+                x1 = cx + int(cur_r * math.cos(angle))
+                y1 = cy + int(cur_r * math.sin(angle))
+                x2 = cx + int((cur_r + bar_len) * math.cos(angle))
+                y2 = cy + int((cur_r + bar_len) * math.sin(angle))
+                alpha = int(140 + 115 * b_val)
+                draw.line([(x1, y1), (x2, y2)], fill=(*neon_c, alpha), width=5)
+
+            # Shockwave Burst
+            if b_val > 0.4:
+                sw_r = cur_r + int((b_val - 0.4) * 90)
+                draw.ellipse([cx - sw_r, cy - sw_r, cx + sw_r, cy + sw_r], outline=(*neon_c, int(180 * (1.0 - (b_val - 0.4)))), width=4)
+
+            # Center Double Ring & Disc
+            draw.ellipse([cx - cur_r - 8, cy - cur_r - 8, cx + cur_r + 8, cy + cur_r + 8], outline=(*neon_c, 240), width=6)
+            draw.ellipse([cx - cur_r - 2, cy - cur_r - 2, cx + cur_r + 2, cy + cur_r + 2], outline=(255, 255, 255, 255), width=3)
+            draw.ellipse([cx - cur_r, cy - cur_r, cx + cur_r, cy + cur_r], fill=(12, 14, 22, 245))
+
+            # Center Channel Logo
+            if logo is not None:
+                dim = int(cur_r * 1.5)
+                res_logo = logo.resize((dim, dim), Image.Resampling.LANCZOS)
+                glow.paste(res_logo, (cx - dim // 2, cy - dim // 2), res_logo)
+
+            comp = Image.alpha_composite(frame, glow)
+            cached_frames_bytes.append(comp.tobytes())
+
+        # 5. Fast FFmpeg Encode
+        cmd = [
+            "ffmpeg", "-y",
+            "-loglevel", "error",
+            "-f", "rawvideo",
+            "-framerate", str(fps),
+            "-pix_fmt", "rgba",
+            "-s", f"{width}x{height}",
+            "-i", "-",
+            "-i", temp_short_audio,
+            "-c:v", "libx264",
+            "-preset", "ultrafast",
+            "-crf", "22",
+            "-pix_fmt", "yuv420p",
+            "-c:a", "aac",
+            "-b:a", "192k",
+            "-shortest",
+            out_mp4
+        ]
+
+        logger.info(f"Encoding 9:16 Vertical Short video ({total_frames} frames)...")
+        proc = subprocess.Popen(cmd, stdin=subprocess.PIPE, stderr=subprocess.DEVNULL)
+        try:
+            for f_idx in range(total_frames):
+                val = norm[f_idx]
+                c_idx = min(31, max(0, int(val * 31)))
+                proc.stdin.write(cached_frames_bytes[c_idx])
+            proc.stdin.close()
+            proc.wait()
+        except Exception as e:
+            if proc.poll() is None:
+                proc.kill()
+            logger.error(f"FFmpeg Short encoding error: {e}")
+            return None
+
+        # Clean temp audio
+        if os.path.exists(temp_short_audio) and temp_short_audio != src_audio:
+            try:
+                os.remove(temp_short_audio)
+            except Exception:
+                pass
+
+        if os.path.exists(out_mp4) and os.path.getsize(out_mp4) > 10000:
+            mb = os.path.getsize(out_mp4) / (1024 * 1024)
+            logger.info(f"🎉 9:16 Vertical Short ready: {out_mp4} ({mb:.1f} MB)!")
+            return out_mp4
+
+        return None
+
