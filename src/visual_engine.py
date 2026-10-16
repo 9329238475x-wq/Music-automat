@@ -1084,6 +1084,8 @@ class DJVisualEngine:
             "-s", f"{width}x{height}",
             "-i", "-",
             "-i", temp_short_audio,
+            "-map", "0:v:0",
+            "-map", "1:a:0",
             "-c:v", "libx264",
             "-preset", "ultrafast",
             "-crf", "22",
