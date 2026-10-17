@@ -90,7 +90,7 @@ class DJScraper:
             "--extractor-args", "youtube:player_client=android",
             "--ignore-errors",
             "--print", "%(id)s\t%(duration)s\t%(view_count)s\t%(timestamp)s\t%(title)s",
-            "--playlist-end", "3",
+            "--playlist-end", "6",
             "--no-warnings",
             "--quiet",
             videos_url
@@ -236,10 +236,12 @@ class DJScraper:
         Inspects all channels concurrently with strict 1-song-per-channel enforcement
         AND eliminates duplicate songs (same song remixed by different DJs).
         """
-        logger.info(f"Scanning {len(self.channels)} channels for {self.profile} profile (Parallel Scanner)...")
+        num_channels = len(self.channels)
+        workers = min(16, max(8, num_channels // 6)) if num_channels > 0 else 8
+        logger.info(f"Scanning ALL {num_channels} channels for {self.profile} profile (Parallel Scanner with {workers} threads)...")
         candidates = []
 
-        with ThreadPoolExecutor(max_workers=8) as executor:
+        with ThreadPoolExecutor(max_workers=workers) as executor:
             future_to_ch = {executor.submit(self._scan_single_channel, ch): ch for ch in self.channels}
             for future in as_completed(future_to_ch):
                 res = future.result()
