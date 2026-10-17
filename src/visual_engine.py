@@ -210,6 +210,9 @@ class DJVisualEngine:
         except TypeError:
             return ImageFont.load_default()
 
+    # Alias for convenience
+    _get_font = _get_bold_font
+
     def create_high_ctr_thumbnail(
         self,
         bg_wall_path: str,
@@ -614,6 +617,9 @@ class DJVisualEngine:
 
         return smoothed_energy, duration_sec
 
+    # Alias for backwards compatibility
+    _extract_zero_latency_dynamics = _extract_audio_fft
+
     def render_visualizer_video(
         self,
         audio_path: str,
@@ -959,7 +965,7 @@ class DJVisualEngine:
 
         # 2. Extract dynamics for 35s snippet
         try:
-            norm, duration_sec = self._extract_zero_latency_dynamics(temp_short_audio, fps=fps)
+            norm, duration_sec = self._extract_audio_fft(temp_short_audio, fps=fps)
             total_frames = int(duration_sec * fps)
         except Exception as e:
             logger.warning(f"Dynamics extraction failed for Short: {e}")
