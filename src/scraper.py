@@ -66,12 +66,12 @@ class DJScraper:
         with open(self.history_file, "w", encoding="utf-8") as f:
             json.dump(self.history[-1000:], f, indent=2)
 
-    def _scan_single_channel(self, ch: Dict[str, str]) -> Optional[Dict[str, Any]]:
+    def _scan_single_channel(self, ch: Dict[str, str], max_age_hours: Optional[float] = None) -> Optional[Dict[str, Any]]:
         """
         Scans a single channel for its newest valid video using fast yt-dlp metadata.
         STRICT RULES:
         1. At most 1 song from this channel.
-        2. STRICT 24-HOUR RULE: If no video was uploaded within the last 24 hours, SKIP channel entirely!
+        2. STRICT AGE RULE: Must be within specified max_age_hours.
         3. Skips shorts (<100s) and long nonstop mixes (>840s / 14 mins).
         4. Skips previously used songs in history.
         5. Skips any song containing Sound Check / Frequency test keywords.
@@ -82,12 +82,11 @@ class DJScraper:
             url = f"https://www.youtube.com/{ch['handle']}"
         videos_url = f"{url.rstrip('/')}/videos"
 
-        # Configurable max age rule (STRICT 11 HOURS DEFAULT)
-        max_age_hours = float(self.settings.get("scraper", {}).get("max_track_age_hours", 24.0))
+        if max_age_hours is None:
+            max_age_hours = float(self.settings.get("scraper", {}).get("max_track_age_hours", 24.0))
 
         cmd = [
             "yt-dlp",
-            "--extractor-args", "youtube:player_client=android",
             "--ignore-errors",
             "--print", "%(id)s\t%(duration)s\t%(view_count)s\t%(timestamp)s\t%(title)s",
             "--playlist-end", "6",
@@ -97,7 +96,7 @@ class DJScraper:
         ]
 
         try:
-            proc = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, timeout=25)
+            proc = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, timeout=20)
             if not proc.stdout or not proc.stdout.strip():
                 logger.info(f"[SKIP] {name}: Could not fetch recent videos.")
                 return None
@@ -239,14 +238,40 @@ class DJScraper:
         num_channels = len(self.channels)
         workers = min(16, max(8, num_channels // 6)) if num_channels > 0 else 8
         logger.info(f"Scanning ALL {num_channels} channels for {self.profile} profile (Parallel Scanner with {workers} threads)...")
-        candidates = []
 
-        with ThreadPoolExecutor(max_workers=workers) as executor:
-            future_to_ch = {executor.submit(self._scan_single_channel, ch): ch for ch in self.channels}
-            for future in as_completed(future_to_ch):
-                res = future.result()
-                if res is not None:
-                    candidates.append(res)
+        def _run_scan_pass(ch_list: List[Dict[str, str]], max_age: float) -> List[Dict[str, Any]]:
+            pass_res = []
+            with ThreadPoolExecutor(max_workers=workers) as executor:
+                future_to_ch = {executor.submit(self._scan_single_channel, ch, max_age): ch for ch in ch_list}
+                for future in as_completed(future_to_ch):
+                    try:
+                        res = future.result()
+                        if res is not None:
+                            pass_res.append(res)
+                    except Exception as exc:
+                        logger.debug(f"Scan future error: {exc}")
+            return pass_res
+
+        base_age = float(self.settings.get("scraper", {}).get("max_track_age_hours", 24.0))
+        candidates = _run_scan_pass(self.channels, base_age)
+
+        # SMART AGE FALLBACK: If 24h yields fewer than 6 tracks, auto-expand to 48h and 72h
+        # to ensure nonstop mix is ALWAYS fully populated and never fails!
+        if len(candidates) < 6 and num_channels > 0:
+            found_urls = {c.get("channel_url", "").lower().rstrip("/") for c in candidates}
+            remaining_channels = [ch for ch in self.channels if ch.get("url", "").lower().rstrip("/") not in found_urls]
+            if remaining_channels:
+                logger.info(f"Found {len(candidates)} tracks within {base_age}h. Smart fallback: scanning remaining {len(remaining_channels)} channels up to 48h...")
+                more_tracks = _run_scan_pass(remaining_channels, 48.0)
+                candidates.extend(more_tracks)
+
+        if len(candidates) < 4 and num_channels > 0:
+            found_urls = {c.get("channel_url", "").lower().rstrip("/") for c in candidates}
+            remaining_channels = [ch for ch in self.channels if ch.get("url", "").lower().rstrip("/") not in found_urls]
+            if remaining_channels:
+                logger.info(f"Found {len(candidates)} tracks. Smart fallback: scanning remaining {len(remaining_channels)} channels up to 72h...")
+                more_tracks = _run_scan_pass(remaining_channels, 72.0)
+                candidates.extend(more_tracks)
 
         # STRICT GUARANTEE: Exactly 1 song per channel AND 0 duplicate songs in mix!
         seen_remixers = set()
