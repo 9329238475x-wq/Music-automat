@@ -89,7 +89,7 @@ class DJScraper:
             "yt-dlp",
             "--ignore-errors",
             "--print", "%(id)s\t%(duration)s\t%(view_count)s\t%(timestamp)s\t%(title)s",
-            "--playlist-end", "6",
+            "--playlist-end", "2",
             "--no-warnings",
             "--quiet",
             videos_url
