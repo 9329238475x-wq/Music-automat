@@ -758,7 +758,26 @@ class DJVisualEngine:
         tracks: Optional[List[Dict[str, Any]]],
         total_duration: float
     ) -> None:
-        """Generates ASS subtitle file for smooth TV news sliding ticker across songs (NO remixer name)."""
+        """
+        Generates ASS subtitle file for an unbroken, continuous train of glowing white song titles
+        with a deep black glow/shadow, perfectly clipped inside the sleek 1160px HUD capsule bar (X=385 to 1535).
+        - Pure white crisp typography (&H00FFFFFF).
+        - Deep black glow and shadow (&H00000000) for maximum pop and readability on any background.
+        - Continuous queue (कतार) with ZERO empty space or waiting.
+        - Zero brackets [][][][] or ugly notches.
+        - Seamless mathematical loop matching cycle width.
+        """
+        from PIL import ImageFont
+
+        # Measure unit text width for seamless infinite looping
+        try:
+            f_cand = os.path.join(self.base_dir, 'assets', 'impact.ttf')
+            if not os.path.exists(f_cand):
+                f_cand = 'C:/Windows/Fonts/arial.ttf'
+            calc_font = ImageFont.truetype(f_cand, 28)
+        except Exception:
+            calc_font = None
+
         header = """[Script Info]
 ScriptType: v4.00+
 PlayResX: 1920
@@ -766,13 +785,17 @@ PlayResY: 1080
 
 [V4+ Styles]
 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
-Style: Ticker,Arial,34,&H00FFFFFF,&H000000FF,&H00000000,&H80000000,-1,0,0,0,100,100,2,0,1,2,1,4,10,10,10,1
+Style: BlackGlow,Arial,28,&H00000000,&H00000000,&H00000000,&H00000000,-1,0,0,0,100,100,1,0,1,6,0,5,10,10,10,1
+Style: WhiteText,Arial,28,&H00FFFFFF,&H00FFFFFF,&H00000000,&H80000000,-1,0,0,0,100,100,1,0,1,2,2,5,10,10,10,1
 
 [Events]
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 """
         events = []
         slash = chr(92)
+        speed = 85.0  # px per second (smooth, comfortable reading speed)
+        x_start = 960  # Center inside capsule box
+
         if tracks and len(tracks) > 0:
             for idx, tr in enumerate(tracks):
                 start_s = float(tr.get("seconds", 0.0))
@@ -787,38 +810,65 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
                 clean_title = self._clean_ticker_title(tr.get("title", f"Track {idx + 1}"), tr.get("remixer", ""))
                 if idx + 1 < len(tracks):
                     next_clean = self._clean_ticker_title(tracks[idx + 1].get("title", ""), tracks[idx + 1].get("remixer", ""))
-                    line_text = f"[ 🎵 NOW PLAYING ]  :  {clean_title}    •    ⚡ NEXT  :  {next_clean}"
+                    unit = f"🎵 {clean_title}   ✦   ⚡ NEXT : {next_clean}   ✦   "
                 else:
-                    line_text = f"[ 🎵 NOW PLAYING ]  :  {clean_title}    •    🔥 NONSTOP 2026 DANCE MIX"
+                    unit = f"🎵 {clean_title}   ✦   🔥 NONSTOP DANCE MIX   ✦   "
 
-                # Repeat ticker slide every 16 seconds
-                pass_duration = 16.0
+                # Calculate cycle metrics
+                if calc_font:
+                    try:
+                        bbox = calc_font.getbbox(unit)
+                        w_unit = max(400, bbox[2] - bbox[0])
+                    except Exception:
+                        w_unit = len(unit) * 15
+                else:
+                    w_unit = len(unit) * 15
+
+                cycle_time = max(4.0, round(w_unit / speed, 2))
+                train = unit * 6  # Unbroken queue: always fills the capsule
+
                 t_cur = start_s
                 while t_cur < end_s:
-                    t_next = min(t_cur + pass_duration, end_s)
-                    if t_next - t_cur < 1.0:
+                    t_next = min(t_cur + cycle_time, end_s)
+                    dur = t_next - t_cur
+                    if dur < 0.2:
                         break
+                    frac = dur / cycle_time
+                    cur_x_end = int(x_start - w_unit * frac)
+
                     t1_str = self._format_ass_timestamp(t_cur)
                     t2_str = self._format_ass_timestamp(t_next)
-                    move_tag = "{" + slash + "move(1920,920,-1300,920)}"
-                    events.append(
-                        f"Dialogue: 0,{t1_str},{t2_str},Ticker,,0,0,0,,{move_tag}{line_text}"
-                    )
+
+                    tag_bg = "{" + slash + f"q2{slash}clip(385,892,1535,944){slash}move({x_start},918,{cur_x_end},918){slash}blur5" + "}"
+                    tag_fg = "{" + slash + f"q2{slash}clip(385,892,1535,944){slash}move({x_start},918,{cur_x_end},918){slash}blur1" + "}"
+
+                    events.append(f"Dialogue: 0,{t1_str},{t2_str},BlackGlow,,0,0,0,,{tag_bg}{train}")
+                    events.append(f"Dialogue: 1,{t1_str},{t2_str},WhiteText,,0,0,0,,{tag_fg}{train}")
                     t_cur = t_next
         else:
-            # Fallback ticker
-            pass_duration = 16.0
-            t_cur = 0.0
             brand = self.profile.upper().replace("_", " ")
-            line_text = f"[ 🎵 NOW PLAYING ]  :  {brand} NONSTOP DJ REMIX 2026    •    🔥 320 KBPS HD MASTER"
+            unit = f"🎵 {brand} NONSTOP REMIX   ✦   🔥 320 KBPS HD MASTER   ✦   "
+            w_unit = len(unit) * 15
+            cycle_time = max(4.0, round(w_unit / speed, 2))
+            train = unit * 6
+
+            t_cur = 0.0
             while t_cur < total_duration:
-                t_next = min(t_cur + pass_duration, total_duration)
+                t_next = min(t_cur + cycle_time, total_duration)
+                dur = t_next - t_cur
+                if dur < 0.2:
+                    break
+                frac = dur / cycle_time
+                cur_x_end = int(x_start - w_unit * frac)
+
                 t1_str = self._format_ass_timestamp(t_cur)
                 t2_str = self._format_ass_timestamp(t_next)
-                move_tag = "{" + slash + "move(1920,920,-1300,920)}"
-                events.append(
-                    f"Dialogue: 0,{t1_str},{t2_str},Ticker,,0,0,0,,{move_tag}{line_text}"
-                )
+
+                tag_bg = "{" + slash + f"q2{slash}clip(385,892,1535,944){slash}move({x_start},918,{cur_x_end},918){slash}blur5" + "}"
+                tag_fg = "{" + slash + f"q2{slash}clip(385,892,1535,944){slash}move({x_start},918,{cur_x_end},918){slash}blur1" + "}"
+
+                events.append(f"Dialogue: 0,{t1_str},{t2_str},BlackGlow,,0,0,0,,{tag_bg}{train}")
+                events.append(f"Dialogue: 1,{t1_str},{t2_str},WhiteText,,0,0,0,,{tag_fg}{train}")
                 t_cur = t_next
 
         with open(ass_path, "w", encoding="utf-8") as f:
@@ -836,8 +886,8 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
         Ultra-Fast CPU-Optimized High-Aesthetic Vinyl Record Visualizer:
         1. 50% Blurred Background Wallpaper (rich, atmospheric, zero clutter).
         2. Seamless 360-Degree Spinning Vinyl Record (480px diameter) with channel logo emblem.
-        3. Dynamic TV News Sliding Ticker displaying clean song title (zero DJ remixer tags).
-        4. Smooth real-time running progress bar & ticking match timer (00:00 to mix end).
+        3. Clean Sleek HUD Capsule Bar (1160px width) with continuous white glowing song titles & black shadow.
+        4. Smooth real-time running progress bar (1360px width) & ticking match timer (00:00 to mix end).
         5. 100% Native FFmpeg C-engine execution: runs at 150-250+ FPS on CPU (Zero memory bottleneck)!
         """
         import shutil
@@ -881,8 +931,8 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
         disc_dir = os.path.join(self.output_dir, f"temp_{self.profile}_disc")
         self._generate_spinning_vinyl_frames(disc_dir, num_frames=60, disc_dim=480)
 
-        # Step 4: Generate News Sliding Ticker (.ass)
-        logger.info("Building TV news sliding ticker for song titles (excluding DJ remixer tags)...")
+        # Step 4: Generate News Sliding Ticker (.ass) inside sleek capsule
+        logger.info("Building clean TV news ticker for song titles (excluding DJ remixer tags)...")
         ass_path = os.path.join(self.output_dir, f"temp_{self.profile}_ticker.ass")
         self._generate_ticker_ass(ass_path, tracks=tracks, total_duration=duration_sec)
 
@@ -915,16 +965,16 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 
         time_tag = "%{pts" + slash + ":gmtime" + slash + ":0" + slash + ":%M" + slash + slash + slash + ":%S}"
 
+        # Sleek Minimal Capsule (1160px width, X=380 to 1540) & Progress Bar (1360px width, X=280 to 1640)
         filter_chain = (
             f"[0:v][1:v]overlay=x={disc_x}:y={disc_y}:shortest=1[v1];"
             f"[v1]drawtext={font_arg}text='{channel_title}':fontcolor=white:fontsize=34:x=(w-text_w)/2:y=65,"
-            f"drawbox=x=0:y=885:w=1920:h=60:color=black@0.70:t=fill,"
-            f"drawbox=x=0:y=885:w=1920:h=2:color={neon_hex}@0.90:t=fill,"
-            f"drawbox=x=0:y=945:w=1920:h=2:color={neon_hex}@0.50:t=fill,"
-            f"drawbox=x=160:y=990:w=1600:h=12:color=white@0.22:t=fill,"
-            f"drawbox=x=160:y=990:w='min(1600" + slash + f", 1600*t/{duration_sec:.2f})':h=12:color={neon_hex}@0.95:t=fill,"
-            f"drawtext={font_arg}text='{time_tag}':fontcolor=white:fontsize=24:x=160:y=1014,"
-            f"drawtext={font_arg}text='{dur_str}':fontcolor=white@0.75:fontsize=24:x=1700:y=1014,"
+            f"drawbox=x=380:y=892:w=1160:h=52:color=black@0.65:t=fill,"
+            f"drawbox=x=380:y=892:w=1160:h=52:color={neon_hex}@0.70:t=1,"
+            f"drawbox=x=280:y=990:w=1360:h=12:color=white@0.22:t=fill,"
+            f"drawbox=x=280:y=990:w='min(1360" + slash + f", 1360*t/{duration_sec:.2f})':h=12:color={neon_hex}@0.95:t=fill,"
+            f"drawtext={font_arg}text='{time_tag}':fontcolor=white:fontsize=24:x=280:y=1014,"
+            f"drawtext={font_arg}text='{dur_str}':fontcolor=white@0.75:fontsize=24:x=1580:y=1014,"
             f"subtitles='{ass_escaped}'[outv]"
         )
 
