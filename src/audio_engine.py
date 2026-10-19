@@ -145,8 +145,8 @@ class DJAudioEngine:
         env_pitch = os.environ.get("DJ_PITCH_FACTOR")
         eff_pitch = float(env_pitch) if env_pitch else pitch_factor
 
-        # Precision Equalizer: Tames harsh "पैरी" / metallic "छम-छम" high-frequencies (8800 Hz) by 5% (-1.2 dB) without touching bass or vocals
-        pairy_db = float(self.settings.get("audio", {}).get("pairy_damping_db", -1.2))
+        # Precision Equalizer: Tames harsh "पैरी" / metallic "छम-छम" high-frequencies (8800 Hz) by 5% (-1.4 dB) without touching bass or vocals
+        pairy_db = float(self.settings.get("audio", {}).get("pairy_damping_db", -1.4))
         pairy_freq = int(self.settings.get("audio", {}).get("pairy_frequency_hz", 8800))
         pairy_filter = f"equalizer=f={pairy_freq}:t=q:w=1.4:g={pairy_db:.1f}," if pairy_db != 0 else ""
 
@@ -158,20 +158,21 @@ class DJAudioEngine:
         vocal_q = float(self.settings.get("audio", {}).get("vocal_q_width", 1.1))
         vocal_filter = f"equalizer=f={vocal_freq}:t=q:w={vocal_q:.2f}:g={vocal_db:.1f}," if vocal_db != 0 else ""
 
-        # Sub-Bass punch preservation: guarantees 100% thick heavy bass (<100 Hz):
-        bass_boost_db = float(self.settings.get("audio", {}).get("sub_bass_boost_db", 0.6))
-        bass_filter = f"bass=g={bass_boost_db:.1f}:f=90:w=0.7," if bass_boost_db > 0 else ""
+        # Bass is kept 100% PURE & ORIGINAL (Zero artificial bass boost applied)
 
-        # Pure Original Audio Filter Chain (100% full volume till the cut, zero fade-out, zero 3D, zero echo/gunj)
+        # Smooth Professional Volume Swell: After wooosh.wav transition, new song swells smoothly over 1.5s (1s-2s)
+        fade_in_sec = float(self.settings.get("audio", {}).get("fade_in_duration", 1.5))
+        fade_in_d = fade_in_sec if track_index > 1 else 0.5
+
+        # Pure Audio Filter Chain (Smooth 1.5s swell after wooosh transition, zero artificial gunj, EBU R128 master)
         filter_chain = (
             f"atrim=start={start_s:.2f}:end={end_s:.2f},"
             f"asetpts=PTS-STARTPTS,"
-            f"afade=t=in:st=0:d=0.05,"
+            f"afade=t=in:st=0:d={fade_in_d:.2f},"
             f"asetrate=44100*{eff_pitch:.4f},"
             f"aresample=44100:resample_cutoff=1.0:precision=28:filter_type=kaiser:dither_method=triangular,"
             f"{pairy_filter}"
             f"{vocal_filter}"
-            f"{bass_filter}"
             f"loudnorm=I=-14:TP=-1.0:LRA=11:linear=true,"
             f"aformat=sample_fmts=s16:sample_rates=44100:channel_layouts=stereo"
         )
