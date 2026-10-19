@@ -203,7 +203,6 @@ class DJScraper:
         t = title.lower()
         if remixer:
             t = t.replace(remixer.lower(), " ")
-            # Also strip individual words from remixer name (e.g. 'ram', 'babu', 'beats', 'mix')
             for rw in re.findall(r"[a-z0-9]{3,}", remixer.lower()):
                 t = re.sub(rf"\b{re.escape(rw)}\b", " ", t)
 
@@ -213,32 +212,47 @@ class DJScraper:
             "dj", "remix", "rmx", "song", "songs", "video", "audio", "mp3", "hd", "4k", "hq",
             "official", "original", "fl", "studio", "competition", "roadshow", "vibration",
             "sound", "check", "soundcheck", "test", "bass", "boosted", "dhamaka", "superhit",
-            "hit", "new", "latest", "theth", "dance", "mix", "nonstop", "jukebox", "mashup",
+            "hit", "new", "latest", "theth", "theeth", "dance", "mix", "nonstop", "jukebox", "mashup",
             "2024", "2025", "2026", "2027", "nagpuri", "bhojpuri", "cg", "khortha", "purulia",
             "jharkhandi", "by", "ft", "feat", "prod", "present", "presents", "re", "ho", "se",
             "tapori", "dialogue", "track", "mandar", "style", "funny", "special", "club",
             "beat", "beats", "music", "production", "dholki", "chhattisgarhi", "chhattisgarh",
             "bhojpuriya", "raipur", "bilaspur", "jashpur", "babu", "bhai", "king", "star",
-            "hard", "drop",
+            "hard", "drop", "viral", "instagram", "trending", "full", "status", "reels",
+            "old", "year", "top", "part", "vol", "volume",
             "डीजे", "रीमिक्स", "गाने", "गाना", "नागपुरी", "भोजपुरी", "नया", "धमाका", "सुपरहिट"
         }
-        words = re.findall(r"[\u0900-\u097f]+|[a-z0-9]{3,}", t)
+        words = re.findall(r"[\u0900-\u097f]+|[a-z0-9]{2,}", t)
         keywords = {w for w in words if w not in stop_words}
         return keywords
 
     def _is_duplicate_song(self, title1: str, rmx1: str, title2: str, rmx2: str) -> bool:
-        """Checks if two titles refer to the exact same song using keyword fingerprinting."""
+        """
+        Strict duplicate check: only skips if the song title is 100% identical or has complete containment.
+        NEVER skips if only 1 or 2 words match.
+        """
         kw1 = self._extract_song_keywords(title1, rmx1)
         kw2 = self._extract_song_keywords(title2, rmx2)
-        if not kw1 or not kw2:
+        if len(kw1) < 2 or len(kw2) < 2:
             return False
+
+        # 1. 100% exact set of words match
+        if kw1 == kw2:
+            return True
+
+        # 2. NEVER match if only 1 or 2 words match
         intersection = kw1.intersection(kw2)
+        if len(intersection) < 3:
+            return False
+
+        # 3. Complete containment of at least 3 core words (100% of one title inside the other)
+        if (intersection == kw1 or intersection == kw2) and len(intersection) >= 3:
+            return True
+
+        # 4. Very high Jaccard overlap (>= 75% of all words match)
         union = kw1.union(kw2)
         similarity = len(intersection) / len(union) if union else 0.0
-        min_len = min(len(kw1), len(kw2))
-        is_strong_match = len(intersection) >= 3 and (len(intersection) / min_len >= 0.5)
-        is_subset = len(intersection) >= 2 and (len(intersection) == len(kw1) or len(intersection) == len(kw2))
-        return similarity >= 0.50 or is_strong_match or is_subset
+        return similarity >= 0.75
 
     def discover_fresh_videos(self) -> List[Dict[str, Any]]:
         """
@@ -264,24 +278,6 @@ class DJScraper:
 
         base_age = float(self.settings.get("scraper", {}).get("max_track_age_hours", 24.0))
         candidates = _run_scan_pass(self.channels, base_age)
-
-        # SMART AGE FALLBACK: If 24h yields fewer than 35 tracks, auto-expand to 48h and 72h
-        # to ensure nonstop mix is ALWAYS fully populated with 35-50+ tracks!
-        if len(candidates) < 35 and num_channels > 0:
-            found_urls = {c.get("channel_url", "").lower().rstrip("/") for c in candidates}
-            remaining_channels = [ch for ch in self.channels if ch.get("url", "").lower().rstrip("/") not in found_urls]
-            if remaining_channels:
-                logger.info(f"Found {len(candidates)} tracks within {base_age}h. Smart fallback: scanning remaining {len(remaining_channels)} channels up to 48h...")
-                more_tracks = _run_scan_pass(remaining_channels, 48.0)
-                candidates.extend(more_tracks)
-
-        if len(candidates) < 30 and num_channels > 0:
-            found_urls = {c.get("channel_url", "").lower().rstrip("/") for c in candidates}
-            remaining_channels = [ch for ch in self.channels if ch.get("url", "").lower().rstrip("/") not in found_urls]
-            if remaining_channels:
-                logger.info(f"Found {len(candidates)} tracks. Smart fallback: scanning remaining {len(remaining_channels)} channels up to 72h...")
-                more_tracks = _run_scan_pass(remaining_channels, 72.0)
-                candidates.extend(more_tracks)
 
         # STRICT GUARANTEE: Exactly 1 song per channel AND 0 duplicate songs in mix!
         seen_remixers = set()
