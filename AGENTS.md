@@ -20,7 +20,7 @@
 - **GitHub Sync Engine (`src/github_sync.py`):**
   - Uses `PyNaCl` libsodium encryption to directly push channel refresh tokens to GitHub Repository Secrets (`YOUTUBE_REFRESH_TOKEN_NAGPURI`, `YOUTUBE_REFRESH_TOKEN_VIBRATION`, `YOUTUBE_REFRESH_TOKEN_EDM`, etc.).
 - **Cloud Runner (`push_to_kaggle.py` & `kaggle/kaggle_runner.py`):**
-  - 100% headless execution on Kaggle Dual T4 GPU kernels triggered via GitHub Actions cron or manual dispatch.
+  - 100% headless execution on Kaggle CPU kernels (Zero queue time, unlimited quota) triggered via GitHub Actions cron or manual dispatch.
 
 ## 3. Communication Guidelines
 - Always communicate with the user in **Hindi written in Devanagari script (हिंदी देवनागरी लिपि)**.
