@@ -89,7 +89,7 @@ class DJScraper:
             "yt-dlp",
             "--ignore-errors",
             "--print", "%(id)s\t%(duration)s\t%(view_count)s\t%(timestamp)s\t%(title)s",
-            "--playlist-end", "2",
+            "--playlist-end", "4",
             "--no-warnings",
             "--quiet",
             videos_url
@@ -203,6 +203,10 @@ class DJScraper:
         t = title.lower()
         if remixer:
             t = t.replace(remixer.lower(), " ")
+            # Also strip individual words from remixer name (e.g. 'ram', 'babu', 'beats', 'mix')
+            for rw in re.findall(r"[a-z0-9]{3,}", remixer.lower()):
+                t = re.sub(rf"\b{re.escape(rw)}\b", " ", t)
+
         t = re.sub(r"\[.*?\]|\(.*?\)", " ", t)
         t = re.sub(r"(?:\+?91|mob|contact|no|call)?[-\s:]*[6-9]\d{9}", " ", t)
         stop_words = {
@@ -212,6 +216,10 @@ class DJScraper:
             "hit", "new", "latest", "theth", "dance", "mix", "nonstop", "jukebox", "mashup",
             "2024", "2025", "2026", "2027", "nagpuri", "bhojpuri", "cg", "khortha", "purulia",
             "jharkhandi", "by", "ft", "feat", "prod", "present", "presents", "re", "ho", "se",
+            "tapori", "dialogue", "track", "mandar", "style", "funny", "special", "club",
+            "beat", "beats", "music", "production", "dholki", "chhattisgarhi", "chhattisgarh",
+            "bhojpuriya", "raipur", "bilaspur", "jashpur", "babu", "bhai", "king", "star",
+            "hard", "drop",
             "डीजे", "रीमिक्स", "गाने", "गाना", "नागपुरी", "भोजपुरी", "नया", "धमाका", "सुपरहिट"
         }
         words = re.findall(r"[\u0900-\u097f]+|[a-z0-9]{3,}", t)
@@ -227,8 +235,10 @@ class DJScraper:
         intersection = kw1.intersection(kw2)
         union = kw1.union(kw2)
         similarity = len(intersection) / len(union) if union else 0.0
+        min_len = min(len(kw1), len(kw2))
+        is_strong_match = len(intersection) >= 3 and (len(intersection) / min_len >= 0.5)
         is_subset = len(intersection) >= 2 and (len(intersection) == len(kw1) or len(intersection) == len(kw2))
-        return similarity >= 0.50 or len(intersection) >= 3 or is_subset
+        return similarity >= 0.50 or is_strong_match or is_subset
 
     def discover_fresh_videos(self) -> List[Dict[str, Any]]:
         """
@@ -255,9 +265,9 @@ class DJScraper:
         base_age = float(self.settings.get("scraper", {}).get("max_track_age_hours", 24.0))
         candidates = _run_scan_pass(self.channels, base_age)
 
-        # SMART AGE FALLBACK: If 24h yields fewer than 6 tracks, auto-expand to 48h and 72h
-        # to ensure nonstop mix is ALWAYS fully populated and never fails!
-        if len(candidates) < 6 and num_channels > 0:
+        # SMART AGE FALLBACK: If 24h yields fewer than 35 tracks, auto-expand to 48h and 72h
+        # to ensure nonstop mix is ALWAYS fully populated with 35-50+ tracks!
+        if len(candidates) < 35 and num_channels > 0:
             found_urls = {c.get("channel_url", "").lower().rstrip("/") for c in candidates}
             remaining_channels = [ch for ch in self.channels if ch.get("url", "").lower().rstrip("/") not in found_urls]
             if remaining_channels:
@@ -265,7 +275,7 @@ class DJScraper:
                 more_tracks = _run_scan_pass(remaining_channels, 48.0)
                 candidates.extend(more_tracks)
 
-        if len(candidates) < 4 and num_channels > 0:
+        if len(candidates) < 30 and num_channels > 0:
             found_urls = {c.get("channel_url", "").lower().rstrip("/") for c in candidates}
             remaining_channels = [ch for ch in self.channels if ch.get("url", "").lower().rstrip("/") not in found_urls]
             if remaining_channels:
