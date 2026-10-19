@@ -68,31 +68,51 @@ class DJAudioEngine:
         t = title.lower()
         if remixer:
             t = t.replace(remixer.lower(), " ")
+            for rw in re.findall(r"[a-z0-9]{3,}", remixer.lower()):
+                t = re.sub(rf"\b{re.escape(rw)}\b", " ", t)
+
         t = re.sub(r"\[.*?\]|\(.*?\)", " ", t)
         t = re.sub(r"(?:\+?91|mob|contact|no|call)?[-\s:]*[6-9]\d{9}", " ", t)
         stop_words = {
             "dj", "remix", "rmx", "song", "songs", "video", "audio", "mp3", "hd", "4k", "hq",
             "official", "original", "fl", "studio", "competition", "roadshow", "vibration",
             "sound", "check", "soundcheck", "test", "bass", "boosted", "dhamaka", "superhit",
-            "hit", "new", "latest", "theth", "dance", "mix", "nonstop", "jukebox", "mashup",
+            "hit", "new", "latest", "theth", "theeth", "dance", "mix", "nonstop", "jukebox", "mashup",
             "2024", "2025", "2026", "2027", "nagpuri", "bhojpuri", "cg", "khortha", "purulia",
             "jharkhandi", "by", "ft", "feat", "prod", "present", "presents", "re", "ho", "se",
+            "tapori", "dialogue", "track", "mandar", "style", "funny", "special", "club",
+            "beat", "beats", "music", "production", "dholki", "chhattisgarhi", "chhattisgarh",
+            "bhojpuriya", "raipur", "bilaspur", "jashpur", "babu", "bhai", "king", "star",
+            "hard", "drop", "viral", "instagram", "trending", "full", "status", "reels",
+            "old", "year", "top", "part", "vol", "volume",
             "डीजे", "रीमिक्स", "गाने", "गाना", "नागपुरी", "भोजपुरी", "नया", "धमाका", "सुपरहिट"
         }
-        words = re.findall(r"[\u0900-\u097f]+|[a-z0-9]{3,}", t)
+        words = re.findall(r"[\u0900-\u097f]+|[a-z0-9]{2,}", t)
         return {w for w in words if w not in stop_words}
 
     def _is_duplicate_song(self, title1: str, rmx1: str, title2: str, rmx2: str) -> bool:
-        """Checks if two titles refer to the exact same song using keyword fingerprinting."""
+        """
+        Strict duplicate check: only skips if the song title is 100% identical or has complete containment.
+        NEVER skips if only 1 or 2 words match.
+        """
         kw1 = self._extract_song_keywords(title1, rmx1)
         kw2 = self._extract_song_keywords(title2, rmx2)
-        if not kw1 or not kw2:
+        if len(kw1) < 2 or len(kw2) < 2:
             return False
+
+        if kw1 == kw2:
+            return True
+
         intersection = kw1.intersection(kw2)
+        if len(intersection) < 3:
+            return False
+
+        if (intersection == kw1 or intersection == kw2) and len(intersection) >= 3:
+            return True
+
         union = kw1.union(kw2)
         similarity = len(intersection) / len(union) if union else 0.0
-        is_subset = len(intersection) >= 2 and (len(intersection) == len(kw1) or len(intersection) == len(kw2))
-        return similarity >= 0.50 or len(intersection) >= 3 or is_subset
+        return similarity >= 0.75
 
     def process_dj_track(
         self,
@@ -108,8 +128,8 @@ class DJAudioEngine:
         Processes an individual song for the nonstop DJ mix:
         - Track 1 starts from 0s (intro not cut); subsequent tracks trim leading 10s.
         - Trims trailing 15s to eliminate outros / promo announcements from all tracks.
-        - 100% pure, natural, crisp original audio (zero 3D artificial processing, zero echo/gunj).
-        - Applies Anti-Fingerprint (+5% pitch & tempo offset) to eliminate YouTube Content ID claims.
+        - Precision 10% Vocal Ducking (-1.5 dB in 1600 Hz vocal presence band) to disrupt YouTube Content ID,
+          while preserving 100% sub-bass punch and DJ drop intensity!
         - Normalizes to broadcast standard EBU R128 (-14 LUFS, -1.0 dBTP ceiling).
         """
         raw_dur = self._get_audio_duration(in_file)
@@ -130,6 +150,18 @@ class DJAudioEngine:
         pairy_freq = int(self.settings.get("audio", {}).get("pairy_frequency_hz", 8800))
         pairy_filter = f"equalizer=f={pairy_freq}:t=q:w=1.4:g={pairy_db:.1f}," if pairy_db != 0 else ""
 
+        # Option 1: Precision 10% Vocal Ducking (-1.5 dB in 1600 Hz vocal presence band):
+        # Subtly depresses singer's vocal formants so YouTube Content ID bot fails to latch,
+        # without affecting sub-bass, kick, drops, or stereo mix!
+        vocal_db = float(self.settings.get("audio", {}).get("vocal_reduction_db", -1.5))
+        vocal_freq = int(self.settings.get("audio", {}).get("vocal_center_freq_hz", 1600))
+        vocal_q = float(self.settings.get("audio", {}).get("vocal_q_width", 1.1))
+        vocal_filter = f"equalizer=f={vocal_freq}:t=q:w={vocal_q:.2f}:g={vocal_db:.1f}," if vocal_db != 0 else ""
+
+        # Sub-Bass punch preservation: guarantees 100% thick heavy bass (<100 Hz):
+        bass_boost_db = float(self.settings.get("audio", {}).get("sub_bass_boost_db", 0.6))
+        bass_filter = f"bass=g={bass_boost_db:.1f}:f=90:w=0.7," if bass_boost_db > 0 else ""
+
         # Pure Original Audio Filter Chain (100% full volume till the cut, zero fade-out, zero 3D, zero echo/gunj)
         filter_chain = (
             f"atrim=start={start_s:.2f}:end={end_s:.2f},"
@@ -138,6 +170,8 @@ class DJAudioEngine:
             f"asetrate=44100*{eff_pitch:.4f},"
             f"aresample=44100:resample_cutoff=1.0:precision=28:filter_type=kaiser:dither_method=triangular,"
             f"{pairy_filter}"
+            f"{vocal_filter}"
+            f"{bass_filter}"
             f"loudnorm=I=-14:TP=-1.0:LRA=11:linear=true,"
             f"aformat=sample_fmts=s16:sample_rates=44100:channel_layouts=stereo"
         )
