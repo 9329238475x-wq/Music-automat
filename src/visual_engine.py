@@ -785,8 +785,7 @@ PlayResY: 1080
 
 [V4+ Styles]
 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
-Style: BlackGlow,Arial,28,&H00000000,&H00000000,&H00000000,&H00000000,-1,0,0,0,100,100,1,0,1,6,0,5,10,10,10,1
-Style: WhiteText,Arial,28,&H00FFFFFF,&H00FFFFFF,&H00000000,&H80000000,-1,0,0,0,100,100,1,0,1,2,2,5,10,10,10,1
+Style: WhiteText,Arial,28,&H00FFFFFF,&H00FFFFFF,&H00000000,&H80000000,-1,0,0,0,100,100,1,0,1,3,2,5,10,10,10,1
 
 [Events]
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
@@ -839,11 +838,8 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
                     t1_str = self._format_ass_timestamp(t_cur)
                     t2_str = self._format_ass_timestamp(t_next)
 
-                    tag_bg = "{" + slash + f"q2{slash}clip(385,892,1535,944){slash}move({x_start},918,{cur_x_end},918){slash}blur5" + "}"
-                    tag_fg = "{" + slash + f"q2{slash}clip(385,892,1535,944){slash}move({x_start},918,{cur_x_end},918){slash}blur1" + "}"
-
-                    events.append(f"Dialogue: 0,{t1_str},{t2_str},BlackGlow,,0,0,0,,{tag_bg}{train}")
-                    events.append(f"Dialogue: 1,{t1_str},{t2_str},WhiteText,,0,0,0,,{tag_fg}{train}")
+                    tag = "{" + slash + f"q2{slash}clip(385,892,1535,944){slash}move({x_start},918,{cur_x_end},918)" + "}"
+                    events.append(f"Dialogue: 0,{t1_str},{t2_str},WhiteText,,0,0,0,,{tag}{train}")
                     t_cur = t_next
         else:
             brand = self.profile.upper().replace("_", " ")
@@ -864,11 +860,8 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
                 t1_str = self._format_ass_timestamp(t_cur)
                 t2_str = self._format_ass_timestamp(t_next)
 
-                tag_bg = "{" + slash + f"q2{slash}clip(385,892,1535,944){slash}move({x_start},918,{cur_x_end},918){slash}blur5" + "}"
-                tag_fg = "{" + slash + f"q2{slash}clip(385,892,1535,944){slash}move({x_start},918,{cur_x_end},918){slash}blur1" + "}"
-
-                events.append(f"Dialogue: 0,{t1_str},{t2_str},BlackGlow,,0,0,0,,{tag_bg}{train}")
-                events.append(f"Dialogue: 1,{t1_str},{t2_str},WhiteText,,0,0,0,,{tag_fg}{train}")
+                tag = "{" + slash + f"q2{slash}clip(385,892,1535,944){slash}move({x_start},918,{cur_x_end},918)" + "}"
+                events.append(f"Dialogue: 0,{t1_str},{t2_str},WhiteText,,0,0,0,,{tag}{train}")
                 t_cur = t_next
 
         with open(ass_path, "w", encoding="utf-8") as f:
@@ -884,11 +877,11 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
     ) -> str:
         """
         Ultra-Fast CPU-Optimized High-Aesthetic Vinyl Record Visualizer:
-        1. 50% Blurred Background Wallpaper (rich, atmospheric, zero clutter).
+        1. 50% Blurred Background Wallpaper with pre-baked static HUD (Header, Capsule & Progress Track).
         2. Seamless 360-Degree Spinning Vinyl Record (480px diameter) with channel logo emblem.
         3. Clean Sleek HUD Capsule Bar (1160px width) with continuous white glowing song titles & black shadow.
         4. Smooth real-time running progress bar (1360px width) & ticking match timer (00:00 to mix end).
-        5. 100% Native FFmpeg C-engine execution: runs at 150-250+ FPS on CPU (Zero memory bottleneck)!
+        5. 100% Native FFmpeg C-engine execution with live progress logging to Kaggle/console!
         """
         import shutil
         if output_mp4 is None:
@@ -905,12 +898,25 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 
         dur_min = int(duration_sec // 60)
         dur_sec = int(duration_sec % 60)
-        dur_str = f"{dur_min:02d}" + slash + f":{dur_sec:02d}"
 
         logger.info(f"🚀 [VINYL VISUALIZER] Master Audio Duration: {dur_min:02d}:{dur_sec:02d} ({duration_sec:.1f}s)")
 
-        # Step 2: Build 50% Blurred Background with Dark Overlay
-        logger.info("Generating 50% blurred atmospheric background...")
+        # Theme color hex & Channel Title
+        if self.profile == "edm":
+            neon_hex = "#DC14FF"
+            channel_title = "⚡ MEGA MUSIC NONSTOP • BHOJPURI EDM DROP SPECIAL 2026 ⚡"
+        elif self.profile == "nagpuri":
+            neon_hex = "#FF780A"
+            channel_title = "🔥 NONSTOP THETH NAGPURI DJ DANCE MIX 2026 💃"
+        elif self.profile == "dj_nan_say_karwan":
+            neon_hex = "#FF2A85"
+            channel_title = "🎧 NAGPURI STUDIO REMIX • STUDIO BEAT NONSTOP 🎧"
+        else:
+            neon_hex = "#00E1FF"
+            channel_title = "🔊 CHHATTISGARHIYA & REGIONAL HARD VIBRATION DANCE MIX ⚡"
+
+        # Step 2: Build 50% Blurred Background with Dark Overlay & Pre-Baked Static HUD
+        logger.info("Generating 50% blurred atmospheric background with pre-baked static HUD...")
         blur_bg_path = os.path.join(self.output_dir, f"temp_{self.profile}_bg_blur.jpg")
         try:
             raw_bg = Image.open(background_path).convert("RGBA")
@@ -920,8 +926,31 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
             blurred = raw_bg.filter(ImageFilter.GaussianBlur(radius=25))
             # 40% Dark Vignette Tint
             dark = Image.new("RGBA", (width, height), (10, 12, 18, 140))
-            comp_bg = Image.alpha_composite(blurred, dark).convert("RGB")
-            comp_bg.save(blur_bg_path, "JPEG", quality=90)
+            comp_bg = Image.alpha_composite(blurred, dark)
+
+            # Pre-draw static HUD elements directly onto the background (saves 5 heavy FFmpeg filters per frame!)
+            hud_layer = Image.new("RGBA", (width, height), (0, 0, 0, 0))
+            hud_draw = ImageDraw.Draw(hud_layer)
+
+            # 1. Top Channel Title
+            title_font = self._get_bold_font(34)
+            hud_draw.text((width // 2, 82), channel_title, fill=(255, 255, 255, 255), font=title_font, anchor="mm")
+
+            # 2. Sleek Minimal Capsule (X=380 to 1540, Y=892 to 944)
+            hex_clean = neon_hex.lstrip('#')
+            neon_rgb = tuple(int(hex_clean[i:i+2], 16) for i in (0, 2, 4))
+            hud_draw.rectangle([380, 892, 1540, 944], fill=(0, 0, 0, int(255 * 0.65)), outline=(*neon_rgb, int(255 * 0.70)), width=1)
+
+            # 3. Progress bar track background (X=280 to 1640, Y=990 to 1002)
+            hud_draw.rectangle([280, 990, 1640, 1002], fill=(255, 255, 255, int(255 * 0.22)))
+
+            # 4. Total duration text (e.g. "88:01") at (1580, 1014)
+            dur_font = self._get_bold_font(24)
+            clean_dur_str = f"{dur_min:02d}:{dur_sec:02d}"
+            hud_draw.text((1580, 1014), clean_dur_str, fill=(255, 255, 255, int(255 * 0.75)), font=dur_font)
+
+            final_bg = Image.alpha_composite(comp_bg, hud_layer).convert("RGB")
+            final_bg.save(blur_bg_path, "JPEG", quality=90)
         except Exception as e:
             logger.error(f"Error creating blurred background: {e}")
             blur_bg_path = background_path
@@ -936,20 +965,6 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
         ass_path = os.path.join(self.output_dir, f"temp_{self.profile}_ticker.ass")
         self._generate_ticker_ass(ass_path, tracks=tracks, total_duration=duration_sec)
 
-        # Theme color hex
-        if self.profile == "edm":
-            neon_hex = "#DC14FF"
-            channel_title = "⚡ MEGA MUSIC NONSTOP • BHOJPURI EDM DROP SPECIAL 2026 ⚡"
-        elif self.profile == "nagpuri":
-            neon_hex = "#FF780A"
-            channel_title = "🔥 NONSTOP THETH NAGPURI DJ DANCE MIX 2026 💃"
-        elif self.profile == "dj_nan_say_karwan":
-            neon_hex = "#FF2A85"
-            channel_title = "🎧 NAGPURI STUDIO REMIX • STUDIO BEAT NONSTOP 🎧"
-        else:
-            neon_hex = "#00E1FF"
-            channel_title = "🔊 CHHATTISGARHIYA & REGIONAL HARD VIBRATION DANCE MIX ⚡"
-
         # Safe escaped path for FFmpeg subtitles filter
         ass_escaped = ass_path.replace(slash, "/").replace(":", slash + ":")
         font_path = os.path.join(self.assets_dir, "impact.ttf")
@@ -959,22 +974,17 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
         else:
             font_arg = ""
 
-        # Step 5: Native FFmpeg Filter Complex
+        # Step 5: Native FFmpeg Filter Complex (Streamlined for Ultra-Fast CPU Encoding)
         disc_x = (width - 480) // 2
         disc_y = (height - 480) // 2 - 55
 
         time_tag = "%{pts" + slash + ":gmtime" + slash + ":0" + slash + ":%M" + slash + slash + slash + ":%S}"
 
-        # Sleek Minimal Capsule (1160px width, X=380 to 1540) & Progress Bar (1360px width, X=280 to 1640)
+        # Dynamic elements only: spinning disc + live progress fill + ticking time counter + sliding ticker subtitles
         filter_chain = (
             f"[0:v][1:v]overlay=x={disc_x}:y={disc_y}:shortest=1[v1];"
-            f"[v1]drawtext={font_arg}text='{channel_title}':fontcolor=white:fontsize=34:x=(w-text_w)/2:y=65,"
-            f"drawbox=x=380:y=892:w=1160:h=52:color=black@0.65:t=fill,"
-            f"drawbox=x=380:y=892:w=1160:h=52:color={neon_hex}@0.70:t=1,"
-            f"drawbox=x=280:y=990:w=1360:h=12:color=white@0.22:t=fill,"
-            f"drawbox=x=280:y=990:w='min(1360" + slash + f", 1360*t/{duration_sec:.2f})':h=12:color={neon_hex}@0.95:t=fill,"
+            f"[v1]drawbox=x=280:y=990:w='min(1360" + slash + f", 1360*t/{duration_sec:.2f})':h=12:color={neon_hex}@0.95:t=fill,"
             f"drawtext={font_arg}text='{time_tag}':fontcolor=white:fontsize=24:x=280:y=1014,"
-            f"drawtext={font_arg}text='{dur_str}':fontcolor=white@0.75:fontsize=24:x=1580:y=1014,"
             f"subtitles='{ass_escaped}'[outv]"
         )
 
@@ -990,25 +1000,61 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
             "-map", "2:a:0",
             "-c:v", "libx264",
             "-preset", "ultrafast",
-            "-crf", "22",
+            "-crf", "23",
             "-pix_fmt", "yuv420p",
             "-c:a", "aac",
             "-b:a", "320k",
             "-shortest",
             "-threads", "0",
+            "-progress", "pipe:1",
+            "-nostats",
             output_mp4
         ]
 
         logger.info(f"Starting Ultra-Fast Native FFmpeg Rendering: {output_mp4}...")
         t_start = time.time()
-        res = subprocess.run(cmd, capture_output=True, text=True)
+        total_frames = int(duration_sec * fps)
 
-        if res.returncode != 0 or not (os.path.exists(output_mp4) and os.path.getsize(output_mp4) > 10000):
-            logger.error(f"FFmpeg error: {res.stderr[-1000:] if res.stderr else 'Unknown'}")
-            raise RuntimeError(f"FFmpeg rendering failed: {res.stderr[-400:] if res.stderr else 'Unknown'}")
+        proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1)
+        last_pct = 0
+        all_lines = []
+
+        try:
+            for raw_line in proc.stdout:
+                line = raw_line.strip()
+                if line:
+                    all_lines.append(line)
+                    if len(all_lines) > 50:
+                        all_lines.pop(0)
+
+                if line.startswith("frame="):
+                    try:
+                        cur_frame = int(line.split("=")[1].strip())
+                        pct = int((cur_frame / max(1, total_frames)) * 100)
+                        if pct >= last_pct + 10 or (pct >= 99 and last_pct < 99):
+                            elapsed_sec = time.time() - t_start
+                            cur_fps = cur_frame / max(1.0, elapsed_sec)
+                            remaining_sec = max(0, (total_frames - cur_frame) / max(1.0, cur_fps))
+                            logger.info(
+                                f"⏳ [FFmpeg Render] {pct}% ({cur_frame}/{total_frames} frames | "
+                                f"Speed: {cur_fps:.1f} FPS | Elapsed: {elapsed_sec/60:.1f}m | ETA: {remaining_sec/60:.1f}m)"
+                            )
+                            last_pct = pct
+                    except Exception:
+                        pass
+
+            proc.wait()
+        except Exception as e:
+            if proc.poll() is None:
+                proc.kill()
+            raise RuntimeError(f"FFmpeg process interrupted: {e}")
+
+        if proc.returncode != 0 or not (os.path.exists(output_mp4) and os.path.getsize(output_mp4) > 10000):
+            err_snippet = "\n".join(all_lines[-20:]) if all_lines else "Unknown FFmpeg error"
+            logger.error(f"FFmpeg error: {err_snippet}")
+            raise RuntimeError(f"FFmpeg rendering failed: {err_snippet}")
 
         elapsed = time.time() - t_start
-        total_frames = int(duration_sec * fps)
         avg_fps = total_frames / max(elapsed, 1.0)
         file_mb = os.path.getsize(output_mp4) / (1024 * 1024)
         logger.info(f"🎉 Rendering complete in {elapsed/60:.1f} minutes! Average speed: {avg_fps:.1f} FPS.")
