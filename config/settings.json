@@ -93,7 +93,7 @@
     "true_peak": -1.0,
     "transition_sound": "assets/wooosh.wav",
     "crossfade_duration": 1.5,
-    "pairy_damping_db": -1.4,
+    "pairy_damping_db": -3.5,
     "pairy_frequency_hz": 8800,
     "vocal_reduction_db": -1.5,
     "vocal_center_freq_hz": 1600,
