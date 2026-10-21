@@ -142,35 +142,87 @@ class DJScraper:
                     continue
 
                 # 3. Strictly NO Sound Check in song title
-                if any(b in title.lower() for b in ["sound check", "soundcheck", "sound test", "frequency test", "woofer test"]):
-                    logger.info(f"[SKIP SOUNDCHECK] {name} ({vid_id}): Sound check detected in title")
+                SOUNDCHECK_KEYWORDS = ["sound check", "soundcheck", "sound test", "frequency test", "woofer test", "bass test", "speaker test", "hz test"]
+                if any(b in title.lower() for b in SOUNDCHECK_KEYWORDS):
+                    logger.info(f"[SKIP SOUNDCHECK] {name} ({vid_id}): Sound check detected in title: '{title[:45]}'")
                     continue
 
                 # 4. Strictly NO Bhakti / Devotional tracks (Preserves Party / Dance / EDM vibe)
-                BHAKTI_KEYWORDS = ["bhakti", "bhajan", "navratri", "maiya", "devi geet", "pachra", "aarti", "bol bam", "kanwar", "jiutiya", "durga puja", "chath puja", "chath geet"]
+                BHAKTI_KEYWORDS = [
+                    "bhakti", "bhajan", "navratri", "maiya", "devi geet", "pachra", "aarti",
+                    "bol bam", "kanwar", "jiutiya", "durga puja", "chath puja", "chath geet",
+                    "mata rani", "ram bhajan", "shiv bhajan", "krishna bhajan", "katha", "chalisa"
+                ]
                 if any(b in title.lower() for b in BHAKTI_KEYWORDS):
-                    logger.info(f"[SKIP BHAKTI] {name} ({vid_id}): Bhakti/Devotional title detected")
+                    logger.info(f"[SKIP BHAKTI] {name} ({vid_id}): Bhakti/Devotional title detected: '{title[:45]}'")
                     continue
 
                 # 5. Strictly NO Nonstop / Jukebox in song title
-                NONSTOP_KEYWORDS = ["nonstop", "non stop", "jukebox", "mashup"]
+                NONSTOP_KEYWORDS = ["nonstop", "non stop", "jukebox", "mashup", "full album", "all songs"]
                 if any(b in title.lower() for b in NONSTOP_KEYWORDS):
-                    logger.info(f"[SKIP NONSTOP] {name} ({vid_id}): Nonstop/Jukebox title detected")
+                    logger.info(f"[SKIP NONSTOP] {name} ({vid_id}): Nonstop/Jukebox title detected: '{title[:45]}'")
                     continue
 
-                # 6. HARD NICHE VERIFICATION: Title MUST be a legitimate Music/DJ track!
-                # Strictly requires keywords like 'dj', 'song', 'remix', 'mix', 'track', 'geet', 'gana' etc.
-                # If a creator changes their niche or uploads a vlog, gaming video, talk, or lifestyle clip,
-                # it is IMMEDIATELY REJECTED so the nonstop DJ mix is 100% protected!
+                # 6. IRONCLAD ANTI-JUNK FILTER: Reject Tutorials, AI Song Generation, FLP Downloads, Vlogs, Setups, etc.
                 import re
+                tl = title.lower()
+                JUNK_KEYWORDS = [
+                    # Tutorials & How-To
+                    "kaise banaye", "kaise bnaye", "kaise banayein", "kaise bnayein", "kaise banate", "kaise banaye mobile",
+                    "kaise kare", "kaise karen", "kaise download", "kaise sikhe", "kaise seekhe", "kaise banta",
+                    "how to make", "how to create", "how to mix", "how to edit", "how to download", "how to use",
+                    "tutorial", "tutorials", "guide", "sikhe", "seekhe", "shikhe", "step by step", "full course",
+                    # AI song creation & tools
+                    "suno ai", "sunoai", "suno.com", "ai se song", "ai se gana", "ai song kaise", "ai gana kaise",
+                    "chatgpt", "chat gpt", "udio ai", "udio.com", "ai music generator", "ai tool", "ai tools",
+                    # FLP, FLM, Sample Packs, Projects
+                    "flp", "free flp", "flp download", "flp project", "project file", "flm", "flm project", "flm download",
+                    "no password", "password", "sample pack", "sound pack", "data pack", "voice pack", "vst plugin",
+                    "preset", "presets", "drum kit", "loop pack", "zip file",
+                    # Vlogs, Setup, Tech, Reviews, Unboxing
+                    "vlog", "vlogs", "daily vlog", "mini vlog", "my setup", "dj setup", "sound setup", "cabinet setup",
+                    "light setup", "stage setup", "roadshow setup", "box setup", "speaker cabinet",
+                    "unboxing", "review", "price", "kitna kharcha", "rate", "shop visit", "market visit", "dukan",
+                    # Talks, Drama, News, Interviews, Comedy
+                    "interview", "podcast", "reaction", "roast", "prank", "comedy", "funny video",
+                    "news", "khabar", "update", "lafda", "vivad", "controversy", "matter",
+                    "behind the scene", "behind the scenes", "bts", "live stream", "live video",
+                    # Video editing, Status creator
+                    "status kaise banaye", "avee player template", "avee template", "kinemaster", "editing kaise kare",
+                    "thumbnail kaise banaye", "greenscreen", "green screen"
+                ]
+                JUNK_REGEX = [
+                    r"\bkaise\s+(?:b[a-z]*n|kar|s[a-z]*kh|down|bana)",
+                    r"\bhow\s+to\b",
+                    r"\bfl\s*studio\s*(?:tutorial|course|seekhe|mobile)\b",
+                    r"\b(?:free\s+)?flp\b",
+                    r"\b(?:free\s+)?flm\b",
+                    r"\b(?:vlog|vlogs)\b",
+                    r"\bunboxing\b",
+                    r"\b(?:dj\s+)?setup\b",
+                    r"\breview\b",
+                    r"\binterview\b",
+                    r"\bpodcast\b",
+                    r"\bsuno\s*ai\b",
+                    r"\bai\s+se\s+[a-z]+",
+                    r"\bai\s+(?:song|music|track)\s+kaise\b"
+                ]
+
+                if any(k in tl for k in JUNK_KEYWORDS) or any(re.search(pat, tl) for pat in JUNK_REGEX):
+                    logger.info(f"[SKIP JUNK/TUTORIAL/VLOG] {name} ({vid_id}): Rejected non-song content: '{title[:45]}'")
+                    continue
+
+                # 7. MANDATORY SONG/DJ KEYWORD VERIFICATION: Title MUST be a legitimate Music/DJ track!
+                # Strictly requires explicit musical keywords like 'dj', 'song', 'remix', 'rmx', 'mix', 'dance', 'drop', etc.
                 NICHE_PATTERNS = [
                     r"\bdj\b", r"\bd\.j\b", r"\bsong\b", r"\bsongs\b", r"\bremix\b", r"\brmx\b",
                     r"\bmix\b", r"\btrack\b", r"\bgana\b", r"\bgaana\b", r"\bgeet\b", r"\bdance\b",
                     r"\bdrop\b", r"\bvibration\b", r"\btheth\b", r"\bbhojpuri\b", r"\bnagpuri\b",
+                    r"\btapori\b", r"\belectro\b",
                     r"डीजे", r"गाना", r"गाने", r"गीत", r"रीमिक्स", r"धमाका", r"नागपुरी", r"भोजपुरी"
                 ]
-                if not any(re.search(pat, title.lower()) for pat in NICHE_PATTERNS):
-                    logger.info(f"[SKIP NICHE MISMATCH] {name} ({vid_id}): Title lacks DJ/Song keywords: '{title[:45]}'")
+                if not any(re.search(pat, tl) for pat in NICHE_PATTERNS):
+                    logger.info(f"[SKIP NO SONG KEYWORD] {name} ({vid_id}): Title lacks DJ/Song keywords: '{title[:45]}'")
                     continue
 
                 # 7. Valid fresh song found within 11 hours!
