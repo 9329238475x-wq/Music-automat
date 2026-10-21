@@ -128,8 +128,7 @@ class DJAudioEngine:
         Processes an individual song for the nonstop DJ mix:
         - Track 1 starts from 0s (intro not cut); subsequent tracks trim leading 10s.
         - Trims trailing 15s to eliminate outros / promo announcements from all tracks.
-        - Precision 10% Vocal Ducking (-1.5 dB in 1600 Hz vocal presence band) to disrupt YouTube Content ID,
-          while preserving 100% sub-bass punch and DJ drop intensity!
+        - Vocals and DJ drops are kept 100% PURE & UNTOUCHED (Zero vocal ducking).
         - Normalizes to broadcast standard EBU R128 (-14 LUFS, -1.0 dBTP ceiling).
         """
         raw_dur = self._get_audio_duration(in_file)
@@ -150,10 +149,8 @@ class DJAudioEngine:
         pairy_freq = int(self.settings.get("audio", {}).get("pairy_frequency_hz", 8800))
         pairy_filter = f"equalizer=f={pairy_freq}:t=q:w=1.4:g={pairy_db:.1f}," if pairy_db != 0 else ""
 
-        # Option 1: Precision 10% Vocal Ducking (-1.5 dB in 1600 Hz vocal presence band):
-        # Subtly depresses singer's vocal formants so YouTube Content ID bot fails to latch,
-        # without affecting sub-bass, kick, drops, or stereo mix!
-        vocal_db = float(self.settings.get("audio", {}).get("vocal_reduction_db", -1.5))
+        # Vocals: 100% PURE & UNTOUCHED (Zero vocal reduction / ducking, 0 dB):
+        vocal_db = float(self.settings.get("audio", {}).get("vocal_reduction_db", 0.0))
         vocal_freq = int(self.settings.get("audio", {}).get("vocal_center_freq_hz", 1600))
         vocal_q = float(self.settings.get("audio", {}).get("vocal_q_width", 1.1))
         vocal_filter = f"equalizer=f={vocal_freq}:t=q:w={vocal_q:.2f}:g={vocal_db:.1f}," if vocal_db != 0 else ""
