@@ -145,8 +145,8 @@ class DJAudioEngine:
         env_pitch = os.environ.get("DJ_PITCH_FACTOR")
         eff_pitch = float(env_pitch) if env_pitch else pitch_factor
 
-        # Precision Equalizer: Tames harsh "पैरी" / metallic "छम-छम" high-frequencies (8800 Hz) by -3.5 dB without touching bass or vocals
-        pairy_db = float(self.settings.get("audio", {}).get("pairy_damping_db", -3.5))
+        # Precision Equalizer: Tames harsh "पैरी" / metallic "छम-छम" high-frequencies (8800 Hz) by 10% (-2.0 dB) without touching bass or vocals
+        pairy_db = float(self.settings.get("audio", {}).get("pairy_damping_db", -2.0))
         pairy_freq = int(self.settings.get("audio", {}).get("pairy_frequency_hz", 8800))
         pairy_filter = f"equalizer=f={pairy_freq}:t=q:w=1.4:g={pairy_db:.1f}," if pairy_db != 0 else ""
 
