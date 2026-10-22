@@ -304,14 +304,7 @@ Edition: {month_name.upper()} {year} SPECIAL HD RELEASE
 Channel: {channel_brand}
 
 Welcome to {channel_brand}! Enjoy this nonstop {genre_name} compilation featuring {flavor_text}.
-Every track is handpicked, loudness-mastered, and presented in 720p HD with our 360° Spinning Vinyl Visualizer!
-
-⚡ AUDIO & VISUAL MASTERING SPECIFICATIONS:
-• Master Bitrate: 320 kbps Ultra HD Crystal Sound
-• Loudness Normalization: EBU R128 (-14.0 LUFS, -1.0 dBTP Broadcast Standard)
-• Audio Clarity: 100% Original Pure Bass Punch & Crystal Clear Vocals (Zero Quality Loss)
-• Visual Production: 720p HD 360° Spinning Vinyl Record Edition (Smooth 60-Frame Rotation)
-• Mix Transition: Seamless Nonstop Crossfade (Zero Gaps, Zero Audio Drops)
+Hit Like & Subscribe to stay tuned for more nonstop DJ dance mixes!
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 🎵 TRACKLIST & CHAPTERS (CLICK TIMESTAMPS TO JUMP):
@@ -579,8 +572,6 @@ Thank you for your love and support! ❤️
 {full_video_url}
 
 🎵 Featured Track: {song_title}
-🔊 Audio: 320 kbps Ultra HD Master Sound
-⚡ Visualizer: 360° Circular Spinning Vinyl Drop
 
 🔔 चैनल को सब्सक्राइब ज़रूर करें और पूरा नॉनस्टॉप मिक्स एंजॉय करें! 🚀
 
