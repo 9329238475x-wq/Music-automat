@@ -121,8 +121,8 @@ WATCH URL    : {watch_url}
 {short_line}VIDEO ID     : {video_id}
 TOTAL TRACKS : {track_count} Songs (Seamless Nonstop Assembly)
 TOTAL RUNTIME: {duration_str}
-AUDIO MASTER : 320 kbps HD MP3 | EBU R128 (-14.0 LUFS) | Bass Boost +2.5dB
-VISUALIZER   : 1080p Avee Player 360° Circular Bass Spectrum (Beat-Synced)
+AUDIO MASTER : 320 kbps HD MP3 | EBU R128 (-14.0 LUFS) | Pure Crystal Sound
+VISUALIZER   : 720p HD 360° Spinning Vinyl Record Edition
 PUBLISHED AT : {now_ist} (IST)
 
 WATCH DIRECTLY ON YOUTUBE:
@@ -247,7 +247,7 @@ Automated production report by Music-Automat 24/7 Autonomous Studio Engine.
           </tr>
           <tr>
             <td style="padding: 12px 20px; border-bottom: 1px solid rgba(255, 255, 255, 0.04); font-size: 13px; color: #94a3b8; font-weight: 500;">Visual Engine</td>
-            <td style="padding: 12px 20px; border-bottom: 1px solid rgba(255, 255, 255, 0.04); font-size: 13px; color: #ffffff; font-weight: 700; text-align: right;">1080p Avee Player 360° Spectrum</td>
+            <td style="padding: 12px 20px; border-bottom: 1px solid rgba(255, 255, 255, 0.04); font-size: 13px; color: #ffffff; font-weight: 700; text-align: right;">720p HD 360° Spinning Vinyl Record</td>
           </tr>
           <tr>
             <td style="padding: 12px 20px; border-bottom: 1px solid rgba(255, 255, 255, 0.04); font-size: 13px; color: #94a3b8; font-weight: 500;">Audio Mastering Spec</td>

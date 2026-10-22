@@ -711,15 +711,15 @@ class DJVisualEngine:
         d_base.ellipse([cx - r - 1, cy - r - 1, cx + r + 1, cy + r + 1], outline=(255, 255, 255, 200), width=2)
         # Deep vinyl body
         d_base.ellipse([cx - r, cy - r, cx + r, cy + r], fill=(15, 16, 20, 255))
-        # Concentric audio grooves
-        for gr in range(110, r - 10, 14):
-            d_base.ellipse([cx - gr, cy - gr, cx + gr, cy + gr], outline=(38, 40, 48, 170), width=1)
-
-        # Center label diameter
-        label_r = 85
+        # Center label diameter (scaled proportionally to disc size)
+        label_r = int(disc_dim * 0.19)
         label_img = Image.new("RGBA", (label_r * 2, label_r * 2), (0, 0, 0, 0))
         d_label = ImageDraw.Draw(label_img)
         d_label.ellipse([0, 0, label_r * 2, label_r * 2], fill=(*disc_label_color, 255), outline=(255, 255, 255, 255), width=3)
+
+        # Concentric audio grooves
+        for gr in range(label_r + 20, r - 10, 14):
+            d_base.ellipse([cx - gr, cy - gr, cx + gr, cy + gr], outline=(38, 40, 48, 170), width=1)
 
         # Paste channel logo in center label if available
         if self.logo_path and os.path.exists(self.logo_path):
@@ -938,15 +938,15 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
             logger.error(f"Error creating blurred background: {e}")
             blur_bg_path = background_path
 
-        # Step 3: Pre-render 60 Spinning Vinyl Record Frames (360px scaled for 720p)
-        disc_dim = 360
+        # Step 3: Pre-render 60 Spinning Vinyl Record Frames (500px enlarged for prominent 720p display)
+        disc_dim = 500
         logger.info(f"Pre-rendering 60 smooth 360° spinning vinyl record frames ({disc_dim}px)...")
         disc_dir = os.path.join(self.output_dir, f"temp_{self.profile}_disc")
         self._generate_spinning_vinyl_frames(disc_dir, num_frames=60, disc_dim=disc_dim)
 
         # Step 4: Native FFmpeg Filter Complex (Ultra-Fast 720p CPU: Only Centered Spinning Vinyl Disc Overlay)
         disc_x = (width - disc_dim) // 2
-        disc_y = (height - disc_dim) // 2
+        disc_y = (height - disc_dim) // 2 + 25
 
         filter_chain = f"[0:v][1:v]overlay=x={disc_x}:y={disc_y}:shortest=1[outv]"
 
