@@ -887,7 +887,7 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
         if output_mp4 is None:
             output_mp4 = os.path.join(self.output_dir, f"{self.profile}_nonstop_mix.mp4")
 
-        width, height = 1920, 1080
+        width, height = 1280, 720
         slash = chr(92)
 
         # Step 1: Rapidly detect audio duration
@@ -899,55 +899,38 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
         dur_min = int(duration_sec // 60)
         dur_sec = int(duration_sec % 60)
 
-        logger.info(f"🚀 [VINYL VISUALIZER] Master Audio Duration: {dur_min:02d}:{dur_sec:02d} ({duration_sec:.1f}s)")
+        logger.info(f"🚀 [VINYL VISUALIZER 720p] Master Audio Duration: {dur_min:02d}:{dur_sec:02d} ({duration_sec:.1f}s)")
 
         # Theme color hex & Channel Title
         if self.profile == "edm":
-            neon_hex = "#DC14FF"
             channel_title = "⚡ MEGA MUSIC NONSTOP • BHOJPURI EDM DROP SPECIAL 2026 ⚡"
         elif self.profile == "nagpuri":
-            neon_hex = "#FF780A"
             channel_title = "🔥 NONSTOP THETH NAGPURI DJ DANCE MIX 2026 💃"
         elif self.profile == "dj_nan_say_karwan":
-            neon_hex = "#FF2A85"
             channel_title = "🎧 NAGPURI STUDIO REMIX • STUDIO BEAT NONSTOP 🎧"
         else:
-            neon_hex = "#00E1FF"
             channel_title = "🔊 CHHATTISGARHIYA & REGIONAL HARD VIBRATION DANCE MIX ⚡"
 
-        # Step 2: Build 50% Blurred Background with Dark Overlay & Pre-Baked Static HUD
-        logger.info("Generating 50% blurred atmospheric background with pre-baked static HUD...")
+        # Step 2: Build 720p 50% Blurred Background with Dark Overlay & Top Channel Title
+        logger.info("Generating 720p blurred atmospheric background with top title...")
         blur_bg_path = os.path.join(self.output_dir, f"temp_{self.profile}_bg_blur.jpg")
         try:
             raw_bg = Image.open(background_path).convert("RGBA")
             if raw_bg.size != (width, height):
                 raw_bg = ImageOps.fit(raw_bg, (width, height), Image.Resampling.LANCZOS)
             # 50% Gaussian Blur
-            blurred = raw_bg.filter(ImageFilter.GaussianBlur(radius=25))
+            blurred = raw_bg.filter(ImageFilter.GaussianBlur(radius=18))
             # 40% Dark Vignette Tint
             dark = Image.new("RGBA", (width, height), (10, 12, 18, 140))
             comp_bg = Image.alpha_composite(blurred, dark)
 
-            # Pre-draw static HUD elements directly onto the background (saves 5 heavy FFmpeg filters per frame!)
+            # Pre-draw static top channel title directly onto the background (zero FFmpeg per-frame load)
             hud_layer = Image.new("RGBA", (width, height), (0, 0, 0, 0))
             hud_draw = ImageDraw.Draw(hud_layer)
 
-            # 1. Top Channel Title
-            title_font = self._get_bold_font(34)
-            hud_draw.text((width // 2, 82), channel_title, fill=(255, 255, 255, 255), font=title_font, anchor="mm")
-
-            # 2. Sleek Minimal Capsule (X=380 to 1540, Y=892 to 944)
-            hex_clean = neon_hex.lstrip('#')
-            neon_rgb = tuple(int(hex_clean[i:i+2], 16) for i in (0, 2, 4))
-            hud_draw.rectangle([380, 892, 1540, 944], fill=(0, 0, 0, int(255 * 0.65)), outline=(*neon_rgb, int(255 * 0.70)), width=1)
-
-            # 3. Progress bar track background (X=280 to 1640, Y=990 to 1002)
-            hud_draw.rectangle([280, 990, 1640, 1002], fill=(255, 255, 255, int(255 * 0.22)))
-
-            # 4. Total duration text (e.g. "88:01") at (1580, 1014)
-            dur_font = self._get_bold_font(24)
-            clean_dur_str = f"{dur_min:02d}:{dur_sec:02d}"
-            hud_draw.text((1580, 1014), clean_dur_str, fill=(255, 255, 255, int(255 * 0.75)), font=dur_font)
+            # Top Channel Title (crisp white typography, 26px for 720p)
+            title_font = self._get_bold_font(26)
+            hud_draw.text((width // 2, 55), channel_title, fill=(255, 255, 255, 255), font=title_font, anchor="mm")
 
             final_bg = Image.alpha_composite(comp_bg, hud_layer).convert("RGB")
             final_bg.save(blur_bg_path, "JPEG", quality=90)
@@ -955,38 +938,17 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
             logger.error(f"Error creating blurred background: {e}")
             blur_bg_path = background_path
 
-        # Step 3: Pre-render 60 Spinning Vinyl Record Frames
-        logger.info("Pre-rendering 60 smooth 360° spinning vinyl record frames...")
+        # Step 3: Pre-render 60 Spinning Vinyl Record Frames (360px scaled for 720p)
+        disc_dim = 360
+        logger.info(f"Pre-rendering 60 smooth 360° spinning vinyl record frames ({disc_dim}px)...")
         disc_dir = os.path.join(self.output_dir, f"temp_{self.profile}_disc")
-        self._generate_spinning_vinyl_frames(disc_dir, num_frames=60, disc_dim=480)
+        self._generate_spinning_vinyl_frames(disc_dir, num_frames=60, disc_dim=disc_dim)
 
-        # Step 4: Generate News Sliding Ticker (.ass) inside sleek capsule
-        logger.info("Building clean TV news ticker for song titles (excluding DJ remixer tags)...")
-        ass_path = os.path.join(self.output_dir, f"temp_{self.profile}_ticker.ass")
-        self._generate_ticker_ass(ass_path, tracks=tracks, total_duration=duration_sec)
+        # Step 4: Native FFmpeg Filter Complex (Ultra-Fast 720p CPU: Only Centered Spinning Vinyl Disc Overlay)
+        disc_x = (width - disc_dim) // 2
+        disc_y = (height - disc_dim) // 2
 
-        # Safe escaped path for FFmpeg subtitles filter
-        ass_escaped = ass_path.replace(slash, "/").replace(":", slash + ":")
-        font_path = os.path.join(self.assets_dir, "impact.ttf")
-        if os.path.exists(font_path):
-            safe_font = font_path.replace(slash, "/").replace(":", slash + ":")
-            font_arg = f"fontfile='{safe_font}':"
-        else:
-            font_arg = ""
-
-        # Step 5: Native FFmpeg Filter Complex (Streamlined for Ultra-Fast CPU Encoding)
-        disc_x = (width - 480) // 2
-        disc_y = (height - 480) // 2 - 55
-
-        time_tag = "%{pts" + slash + ":gmtime" + slash + ":0" + slash + ":%M" + slash + slash + slash + ":%S}"
-
-        # Dynamic elements only: spinning disc + live progress fill + ticking time counter + sliding ticker subtitles
-        filter_chain = (
-            f"[0:v][1:v]overlay=x={disc_x}:y={disc_y}:shortest=1[v1];"
-            f"[v1]drawbox=x=280:y=990:w='min(1360" + slash + f", 1360*t/{duration_sec:.2f})':h=12:color={neon_hex}@0.95:t=fill,"
-            f"drawtext={font_arg}text='{time_tag}':fontcolor=white:fontsize=24:x=280:y=1014,"
-            f"subtitles='{ass_escaped}'[outv]"
-        )
+        filter_chain = f"[0:v][1:v]overlay=x={disc_x}:y={disc_y}:shortest=1[outv]"
 
         disc_pattern = os.path.join(disc_dir, "disc_%02d.png").replace(slash, "/")
 
@@ -1000,6 +962,7 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
             "-map", "2:a:0",
             "-c:v", "libx264",
             "-preset", "ultrafast",
+            "-tune", "fastdecode",
             "-crf", "23",
             "-pix_fmt", "yuv420p",
             "-c:a", "aac",
