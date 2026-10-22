@@ -399,7 +399,11 @@ class DJScraper:
         cmd = [
             sys.executable, "-m", "yt_dlp",
             "--js-runtimes", "node",
-            "--extractor-args", "youtube:player_client=android,web,tv",
+            "--extractor-args", "youtube:player_client=android,web,mweb,ios",
+            "-f", "ba/b",
+            "--retries", "10",
+            "--fragment-retries", "10",
+            "--retry-sleep", "3",
             "-x",
             "--audio-format", "wav",
             "--write-thumbnail",
@@ -414,12 +418,48 @@ class DJScraper:
         logger.info(f"[{idx}/{total}] Downloading ({track['remixer']}): {track['title'][:35]}...")
         try:
             res = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, timeout=120)
-            # If failed, retry with ios client
+            # If failed, retry with mobile & ios client
             if not os.path.exists(audio_out):
-                time.sleep(2)
-                retry_cmd = list(cmd)
-                retry_cmd[4] = "youtube:player_client=tv_embedded,mweb"
+                logger.info(f"[{idx}/{total}] Retrying download with mobile/ios client: {track['title'][:35]}...")
+                time.sleep(3)
+                retry_cmd = [
+                    sys.executable, "-m", "yt_dlp",
+                    "--js-runtimes", "node",
+                    "--extractor-args", "youtube:player_client=mweb,ios,web",
+                    "-f", "ba/b",
+                    "--retries", "10",
+                    "--fragment-retries", "10",
+                    "-x",
+                    "--audio-format", "wav",
+                    "--write-thumbnail",
+                    "--convert-thumbnails", "jpg",
+                    "-o", f"{out_prefix}.%(ext)s",
+                    "--no-playlist",
+                    "--no-warnings",
+                    "--quiet",
+                    track["url"]
+                ]
                 res = subprocess.run(retry_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, timeout=120)
+
+            # Final 3rd attempt with web client if needed
+            if not os.path.exists(audio_out):
+                logger.info(f"[{idx}/{total}] Final fallback retry with web client: {track['title'][:35]}...")
+                time.sleep(3)
+                retry3_cmd = [
+                    sys.executable, "-m", "yt_dlp",
+                    "--js-runtimes", "node",
+                    "--extractor-args", "youtube:player_client=web,tv",
+                    "-f", "ba/b",
+                    "--retries", "10",
+                    "-x",
+                    "--audio-format", "wav",
+                    "-o", f"{out_prefix}.%(ext)s",
+                    "--no-playlist",
+                    "--no-warnings",
+                    "--quiet",
+                    track["url"]
+                ]
+                res = subprocess.run(retry3_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, timeout=120)
 
             if os.path.exists(audio_out):
                 track["audio_path"] = audio_out
