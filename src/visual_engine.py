@@ -345,14 +345,14 @@ class DJVisualEngine:
 
             main_titles = [
                 "MANDAR X TAPORI MIX",
-                "THEATH MANDAR BEAT",
+                "FULL MANDAR BEAT",
                 "CG MANDAR VIBRATION",
                 "SPEAKER PHOD MANDAR",
                 "MANDAR X TAPORI DANCE",
                 "CG TAPORI VIBRATION",
                 "RECORD TOD MANDAR MIX",
-                "GAON DEHAT MANDAR BEAT",
-                "KAMARTOD MANDAR DANCE",
+                "RECORD TOD TAPORI BEAT",
+                "CG TAPORI DANCE",
                 "MANDAR STEP ROADSHOW",
                 "CG X NAGPURI MANDAR",
                 "FULL MANDAR HARD BASS",
@@ -370,24 +370,24 @@ class DJVisualEngine:
                 main_titles.append(f"{s1_name[:20].upper()} (TAPORI VIBRATION)")
 
             tags = [
-                f"• THEATH MANDAR BEAT SPECIAL {year} •",
+                f"• CG MANDAR BEAT SPECIAL {year} •",
                 f"• MANDAR X TAPORI VIBRATION •",
                 f"• CG X NAGPURI X BHOJPURI {year} •",
-                f"• GAON DEHAT ROADSHOW SPECIAL •",
+                f"• ROADSHOW COMPETITION SPECIAL •",
                 f"• SPEAKER PHOD MANDAR MIX •",
                 f"• 100% RECORD TOD MANDAR BEAT •",
                 f"• CHHATTISGARHIYA MANDAR DANCE •",
-                f"• KAMARTOD MANDAR STEP MIX •",
+                f"• CG TAPORI DANCE MIX •",
                 f"• PICKUP DJ MANDAR COMPETITION •"
             ]
 
             sub_texts = [
-                "THEATH MANDAR BEAT | TAPORI VIBRATION | 100% DANCE",
-                "SPEAKER PHOD MANDAR | GAON DEHAT ROADSHOW",
+                "CG MANDAR BEAT | TAPORI VIBRATION | 100% DANCE",
+                "SPEAKER PHOD MANDAR | ROADSHOW COMPETITION",
                 "MANDAR X TAPORI STYLE | FULL DANCE DHAMAKA",
                 "CG X NAGPURI X BHOJPURI | MANDAR HARD BASS",
-                "RECORD TOD MANDAR BEAT | KAMARTOD DANCE",
-                "FULL PICKUP ROADSHOW | THEATH MANDAR MIX",
+                "RECORD TOD MANDAR BEAT | FULL TAPORI DANCE",
+                "FULL PICKUP ROADSHOW | CG MANDAR MIX",
                 "KHATARNAK BASS | MANDAR STEP NONSTOP 320 KBPS",
                 "PARDA PHOD MANDAR VIBRATION | 100% ROADSHOW"
             ]

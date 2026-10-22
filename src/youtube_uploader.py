@@ -255,26 +255,26 @@ class YouTubeUploader:
         else:
             # Vibration Profile (Sumit RMX 6.0)
             channel_brand = "Sumit RMX 6.0"
-            genre_name = "Theath Mandar X Tapori Vibration"
+            genre_name = "CG Mandar X Tapori Vibration"
             templates = [
-                f"🔥 {song1} X {song2} - Theath Mandar Beat DJ Remix {year} 💃 CG Tapori Vibration",
+                f"🔥 {song1} X {song2} - CG Mandar Beat DJ Remix {year} 💃 Tapori Vibration",
                 f"🔊 {song1} X {song2} - मांदर बीट X टपोरी डीजे रीमिक्स {year} 💣 स्पीकर फाड़ वाइब्रेशन",
-                f"💥 {song1} - गाँव देहात रोडशो स्पेशल मांदर मिक्स {year} | CG Tapori Hard Bass 💃",
+                f"💥 {song1} - कंपटीशन रोडशो स्पेशल मांदर मिक्स {year} | CG Tapori Hard Bass 💃",
                 f"⚡ {song1} X {song2} - CG X NAGPURI MANDAR VIBRATION {year} 💃 Nonstop Dance Mix",
-                f"💣 {song1} - कमरतोड़ मांदर बीट डीजे डांस {year} 🔥 खतरनाक बास टपोरी वाइब्रेशन 🔊",
+                f"💣 {song1} - फुल डांस मांदर बीट डीजे रीमिक्स {year} 🔥 खतरनाक बास टपोरी वाइब्रेशन 🔊",
                 f"🔥 रिकॉर्ड तोड़ मांदर मिक्स {year} | {song1} x {song2} | Pickup Roadshow Special ⚡"
             ]
-            flavor_text = "Theath Mandar beats, Chhattisgarhiya tapori vibration, and regional roadshow competition dance mixes"
-            hashtags = f"#mandarbeardj #mandarmix #cgdjsong #cgtaporidj #theathmandar #hardvibration #dehatidj #nagpuridj #{song1.replace(' ', '')} #{song2.replace(' ', '')} #djremix{year}"
+            flavor_text = "CG Mandar beats, Chhattisgarhiya tapori vibration, and regional roadshow competition dance mixes"
+            hashtags = f"#mandarbeardj #mandarmix #cgdjsong #cgtaporidj #mandarbeat #hardvibration #cgremix #nagpuridj #{song1.replace(' ', '')} #{song2.replace(' ', '')} #djremix{year}"
             profile_queries = [
                 f"mandar beat dj remix {year}",
-                f"theath mandar mix nonstop",
+                f"cg mandar mix nonstop",
                 f"cg mandar dj song {year}",
                 f"mandar x tapori dj remix",
                 f"speaker phod mandar beat",
                 f"cg x nagpuri mandar mix",
-                f"gaon dehat mandar dj song",
-                f"kamartod mandar dj dance {year}",
+                f"cg tapori mandar beat {year}",
+                f"full dance mandar dj mix {year}",
                 f"pickup roadshow mandar competition",
                 f"cg tapori hard vibration dj mix",
                 f"khatarnak bass mandar vibration"
@@ -291,7 +291,7 @@ class YouTubeUploader:
                 title = f"🔥 {song1[:22]} X {song2[:20]} - Nonstop {genre_name} {year} 💃"
         if len(title) > 95:
             if self.profile == "vibration":
-                title = f"🔥 {song1[:24]} - Theath Mandar Beat DJ Remix {year} 💃"
+                title = f"🔥 {song1[:24]} - CG Mandar Beat DJ Remix {year} 💃"
             else:
                 title = f"🔥 {song1[:26]} - Nonstop {genre_name} {year} 💃 | 320kbps HD Mix"
 
@@ -659,7 +659,7 @@ Thank you for your love and support! ❤️
 
         post_body = f"""🔥 NEW 2026 {genre} NONSTOP DJ DANCE MIX IS LIVE! 🎧💃
 
-गाँव से लेकर शहर तक, हर DJ सेटअप पर तहलका मचाने वाला नया नॉनस्टॉप आ चुका है! ❤️🔥
+हर DJ सेटअप और रोडशो पर तहलका मचाने वाला नया नॉनस्टॉप आ चुका है! ❤️🔥
 
 👉 अभी पूरा नॉनस्टॉप सुनें (Full HD Video):
 {video_url}
