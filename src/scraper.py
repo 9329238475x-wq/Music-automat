@@ -87,18 +87,21 @@ class DJScraper:
 
         cmd = [
             "yt-dlp",
+            "--js-runtimes", "node",
+            "--extractor-args", "youtube:player_client=android,web",
             "--ignore-errors",
             "--print", "%(id)s\t%(duration)s\t%(view_count)s\t%(timestamp)s\t%(title)s",
             "--playlist-end", "4",
             "--no-warnings",
-            "--quiet",
             videos_url
         ]
 
         try:
-            proc = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, timeout=20)
+            proc = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, timeout=35)
             if not proc.stdout or not proc.stdout.strip():
-                logger.info(f"[SKIP] {name}: Could not fetch recent videos.")
+                err_msg = proc.stderr.strip().splitlines()[-1] if proc.stderr and proc.stderr.strip() else ""
+                log_extra = f" | Detail: {err_msg[:60]}" if err_msg else ""
+                logger.info(f"[SKIP] {name}: Could not fetch recent videos{log_extra}")
                 return None
 
             lines = proc.stdout.strip().splitlines()
@@ -312,7 +315,7 @@ class DJScraper:
         AND eliminates duplicate songs (same song remixed by different DJs).
         """
         num_channels = len(self.channels)
-        workers = min(16, max(8, num_channels // 6)) if num_channels > 0 else 8
+        workers = min(8, max(4, num_channels // 15)) if num_channels > 0 else 6
         logger.info(f"Scanning ALL {num_channels} channels for {self.profile} profile (Parallel Scanner with {workers} threads)...")
 
         def _run_scan_pass(ch_list: List[Dict[str, str]], max_age: float) -> List[Dict[str, Any]]:

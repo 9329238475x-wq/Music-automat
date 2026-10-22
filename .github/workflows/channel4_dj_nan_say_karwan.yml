@@ -13,6 +13,10 @@ on:
         default: false
         type: boolean
 
+concurrency:
+  group: kaggle-production-runner
+  cancel-in-progress: false
+
 jobs:
   launch-studio-beat:
     runs-on: ubuntu-latest
