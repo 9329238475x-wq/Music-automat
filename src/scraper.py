@@ -315,7 +315,7 @@ class DJScraper:
         AND eliminates duplicate songs (same song remixed by different DJs).
         """
         num_channels = len(self.channels)
-        workers = 4
+        workers = 8
         logger.info(f"Scanning ALL {num_channels} channels for {self.profile} profile (Parallel Scanner with {workers} threads)...")
 
         def _run_scan_pass(ch_list: List[Dict[str, str]], max_age: float) -> List[Dict[str, Any]]:
