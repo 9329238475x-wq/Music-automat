@@ -259,7 +259,7 @@ class YouTubeUploader:
             templates = [
                 f"🔥 {song1} X {song2} - CG Mandar Beat DJ Remix {year} 💃 Tapori Vibration",
                 f"🔊 {song1} X {song2} - मांदर बीट X टपोरी डीजे रीमिक्स {year} 💣 स्पीकर फाड़ वाइब्रेशन",
-                f"💥 {song1} - कंपटीशन रोडशो स्पेशल मांदर मिक्स {year} | CG Tapori Hard Bass 💃",
+                f"💥 {song1} - रोडशो स्पेशल मांदर मिक्स {year} | CG Tapori Hard Bass 💃",
                 f"⚡ {song1} X {song2} - CG X NAGPURI MANDAR VIBRATION {year} 💃 Nonstop Dance Mix",
                 f"💣 {song1} - फुल डांस मांदर बीट डीजे रीमिक्स {year} 🔥 खतरनाक बास टपोरी वाइब्रेशन 🔊",
                 f"🔥 रिकॉर्ड तोड़ मांदर मिक्स {year} | {song1} x {song2} | Pickup Roadshow Special ⚡"
