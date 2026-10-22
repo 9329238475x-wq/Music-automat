@@ -255,24 +255,29 @@ class YouTubeUploader:
         else:
             # Vibration Profile (Sumit RMX 6.0)
             channel_brand = "Sumit RMX 6.0"
-            genre_name = "Hard Vibration DJ"
+            genre_name = "Theath Mandar X Tapori Vibration"
             templates = [
-                f"🔊 {song1} X {song2} - HARD VIBRATION DJ REMIX {year} 🔥 Monster Bass Mix",
-                f"💣 Speaker Phod Hard Bass Mix {year} | {song1} x {song2} | Extreme Vibration Special ⚡",
-                f"💥 {song1} - Competition Bass Boosted DJ Remix {year} | Hard Vibration Nonstop Mix 🔊",
-                f"🔥 Heavy Bass Vibration DJ Song {year} | {song1} X {song2} | High Voltage Roadshow 🎧",
-                f"⚡ Monster Bass Competition Mix {year} 🔊 {song1} x {song2} | Extreme Woofer Test"
+                f"🔥 {song1} X {song2} - Theath Mandar Beat DJ Remix {year} 💃 CG Tapori Vibration",
+                f"🔊 {song1} X {song2} - मांदर बीट X टपोरी डीजे रीमिक्स {year} 💣 स्पीकर फाड़ वाइब्रेशन",
+                f"💥 {song1} - गाँव देहात रोडशो स्पेशल मांदर मिक्स {year} | CG Tapori Hard Bass 💃",
+                f"⚡ {song1} X {song2} - CG X NAGPURI MANDAR VIBRATION {year} 💃 Nonstop Dance Mix",
+                f"💣 {song1} - कमरतोड़ मांदर बीट डीजे डांस {year} 🔥 खतरनाक बास टपोरी वाइब्रेशन 🔊",
+                f"🔥 रिकॉर्ड तोड़ मांदर मिक्स {year} | {song1} x {song2} | Pickup Roadshow Special ⚡"
             ]
-            flavor_text = "Hard vibration bass-boosted roadshow competition mix engineered for heavy sub-woofers"
-            hashtags = f"#hardvibration #hardbassdj #competitiondj #bassboosted #{song1.replace(' ', '')} #{song2.replace(' ', '')} #djremix{year}"
+            flavor_text = "Theath Mandar beats, Chhattisgarhiya tapori vibration, and regional roadshow competition dance mixes"
+            hashtags = f"#mandarbeardj #mandarmix #cgdjsong #cgtaporidj #theathmandar #hardvibration #dehatidj #nagpuridj #{song1.replace(' ', '')} #{song2.replace(' ', '')} #djremix{year}"
             profile_queries = [
-                f"hard vibration dj remix {year}",
-                f"nonstop hard bass dj competition mix",
-                f"cg hard vibration dj mix",
-                f"monster bass sound test {year}",
-                f"speaker phod vibration dj song",
-                f"extreme sub bass dj competition",
-                f"roadshow dj remix nonstop {year}"
+                f"mandar beat dj remix {year}",
+                f"theath mandar mix nonstop",
+                f"cg mandar dj song {year}",
+                f"mandar x tapori dj remix",
+                f"speaker phod mandar beat",
+                f"cg x nagpuri mandar mix",
+                f"gaon dehat mandar dj song",
+                f"kamartod mandar dj dance {year}",
+                f"pickup roadshow mandar competition",
+                f"cg tapori hard vibration dj mix",
+                f"khatarnak bass mandar vibration"
             ]
 
         # Pick template based on mix date/randomness for variety
@@ -280,9 +285,15 @@ class YouTubeUploader:
         title = templates[random_index].strip()
         # Strictly guarantee <= 95 characters without ugly ellipsis or mid-word cutoffs
         if len(title) > 95:
-            title = f"🔥 {song1[:22]} X {song2[:20]} - Nonstop {genre_name} {year} 💃"
+            if self.profile == "vibration":
+                title = f"🔥 {song1[:18]} X {song2[:16]} - Mandar Tapori Mix {year} 💃 Nonstop"
+            else:
+                title = f"🔥 {song1[:22]} X {song2[:20]} - Nonstop {genre_name} {year} 💃"
         if len(title) > 95:
-            title = f"🔥 {song1[:26]} - Nonstop {genre_name} {year} 💃 | 320kbps HD Mix"
+            if self.profile == "vibration":
+                title = f"🔥 {song1[:24]} - Theath Mandar Beat DJ Remix {year} 💃"
+            else:
+                title = f"🔥 {song1[:26]} - Nonstop {genre_name} {year} 💃 | 320kbps HD Mix"
 
         # 3. Construct Dynamic High-Ranking Description
         top_songs_display = ", ".join(clean_songs[:6]) if clean_songs else song1

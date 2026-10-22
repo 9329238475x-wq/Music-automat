@@ -219,7 +219,8 @@ class DJVisualEngine:
         out_path: Optional[str] = None,
         custom_title: Optional[str] = None,
         custom_tag: Optional[str] = None,
-        custom_sub: Optional[str] = None
+        custom_sub: Optional[str] = None,
+        tracks: Optional[List[Dict[str, Any]]] = None
     ) -> str:
         """
         Creates a viral, ultra-high-CTR 1920x1080 YouTube Thumbnail Poster:
@@ -335,42 +336,60 @@ class DJVisualEngine:
                 "FULL ROADSHOW SPECIAL | NONSTOP DANCE MIX"
             ]
         elif p == "vibration":
+            s1_name = ""
+            s2_name = ""
+            if tracks and len(tracks) > 0:
+                s1_name = self._clean_ticker_title(tracks[0].get("title", ""), tracks[0].get("remixer", ""))
+                if len(tracks) > 1:
+                    s2_name = self._clean_ticker_title(tracks[1].get("title", ""), tracks[1].get("remixer", ""))
+
             main_titles = [
-                "CG & TAPORI HARD BASS",
-                "CG X NAGPURI NONSTOP",
-                "FULL BASS HARD VIBRATION",
-                "CG NONSTOP VIBRATION MIX",
-                "CG TAPORI STYLE REMIX",
-                "MANDAR X TAPORI REMIX",
-                "CG X BHOJPURI VIBRATION",
-                "SPEAKER PHOD HARD BASS",
-                "CG ROADSHOW COMPETITION MIX",
-                "100% WOOFER KILLER BLAST",
-                "KHATARNAK BASS VIBRATION",
-                "TRENDING CG REMIX NONSTOP",
-                "VIRAL CG TAPORI NONSTOP",
-                "CHHATTISGARHI DHAMAKA MIX",
-                "HARD VIBRATION DANCE MIX",
-                "EXTREME SUB BASS ROADSHOW"
+                "MANDAR X TAPORI MIX",
+                "THEATH MANDAR BEAT",
+                "CG MANDAR VIBRATION",
+                "SPEAKER PHOD MANDAR",
+                "MANDAR X TAPORI DANCE",
+                "CG TAPORI VIBRATION",
+                "RECORD TOD MANDAR MIX",
+                "GAON DEHAT MANDAR BEAT",
+                "KAMARTOD MANDAR DANCE",
+                "MANDAR STEP ROADSHOW",
+                "CG X NAGPURI MANDAR",
+                "FULL MANDAR HARD BASS",
+                "PARDA PHOD MANDAR BEAT",
+                "CHHATTISGARHI MANDAR MIX",
+                "KHATARNAK MANDAR BASS",
+                "TANDAV MANDAR VIBRATION",
+                "CG X BHOJPURI DHAMAKA",
+                "PICKUP ROADSHOW DHAMAKA"
             ]
+            if s1_name:
+                if s2_name:
+                    main_titles.append(f"{s1_name[:16].upper()} X {s2_name[:14].upper()}")
+                main_titles.append(f"{s1_name[:20].upper()} (MANDAR MIX)")
+                main_titles.append(f"{s1_name[:20].upper()} (TAPORI VIBRATION)")
+
             tags = [
-                f"• CG X NAGPURI SPECIAL {year} •",
-                f"• HARD BASS VIBRATION {year} •",
-                f"• CHHATTISGARHI DHAMAKA •",
-                f"• FULL TAPORI VIBRATION •",
-                f"• ROADSHOW COMPETITION SPECIAL •",
-                f"• 100% WOOFER TESTING BASS •",
-                f"• MANDAR X TAPORI BEATS •",
-                f"• VIRAL HARD BASS {year} •"
+                f"• THEATH MANDAR BEAT SPECIAL {year} •",
+                f"• MANDAR X TAPORI VIBRATION •",
+                f"• CG X NAGPURI X BHOJPURI {year} •",
+                f"• GAON DEHAT ROADSHOW SPECIAL •",
+                f"• SPEAKER PHOD MANDAR MIX •",
+                f"• 100% RECORD TOD MANDAR BEAT •",
+                f"• CHHATTISGARHIYA MANDAR DANCE •",
+                f"• KAMARTOD MANDAR STEP MIX •",
+                f"• PICKUP DJ MANDAR COMPETITION •"
             ]
+
             sub_texts = [
-                "320 KBPS HD SOUND | 100% WOOFER KILLER BLAST",
-                "FULL BASS HARD VIBRATION | ROADSHOW COMPETITION",
-                "MANDAR X TAPORI BEAT | EXTREME SUB BASS",
-                "SPEAKER PHOD VIBRATION | 100% DANGER BASS",
-                "320 KBPS ULTRA HD | HIGH POWER VIBRATION",
-                "FULL SYSTEM SHAKER | HARD TAPORI BEATS",
-                "CHHATTISGARHI DHAMAKA | NONSTOP DANCE MIX"
+                "THEATH MANDAR BEAT | TAPORI VIBRATION | 100% DANCE",
+                "SPEAKER PHOD MANDAR | GAON DEHAT ROADSHOW",
+                "MANDAR X TAPORI STYLE | FULL DANCE DHAMAKA",
+                "CG X NAGPURI X BHOJPURI | MANDAR HARD BASS",
+                "RECORD TOD MANDAR BEAT | KAMARTOD DANCE",
+                "FULL PICKUP ROADSHOW | THEATH MANDAR MIX",
+                "KHATARNAK BASS | MANDAR STEP NONSTOP 320 KBPS",
+                "PARDA PHOD MANDAR VIBRATION | 100% ROADSHOW"
             ]
         elif p == "dj_nan_say_karwan":
             main_titles = [
@@ -909,7 +928,7 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
         elif self.profile == "dj_nan_say_karwan":
             channel_title = "🎧 NAGPURI STUDIO REMIX • STUDIO BEAT NONSTOP 🎧"
         else:
-            channel_title = "🔊 CHHATTISGARHIYA & REGIONAL HARD VIBRATION DANCE MIX ⚡"
+            channel_title = "🔊 MANDAR X TAPORI VIBRATION • CG X NAGPURI X BHOJPURI ⚡"
 
         # Step 2: Build 720p 50% Blurred Background with Dark Overlay & Top Channel Title
         logger.info("Generating 720p blurred atmospheric background with top title...")

@@ -90,7 +90,11 @@ class DJProductionPipeline:
 
         # High-CTR YouTube Thumbnail Poster (Pure White Bold Text + Black Drop Shadow + Channel Logo)
         yt_thumb_path = os.path.join(self.output_dir, f"{self.profile}_youtube_thumbnail.jpg")
-        self.visual_engine.create_high_ctr_thumbnail(bg_wall_path=bg_wall_path, out_path=yt_thumb_path)
+        self.visual_engine.create_high_ctr_thumbnail(
+            bg_wall_path=bg_wall_path,
+            out_path=yt_thumb_path,
+            tracks=tracks
+        )
 
         video_out_name = f"{self.profile}_nonstop_mix.mp4"
         final_video_path = os.path.join(self.output_dir, video_out_name)
