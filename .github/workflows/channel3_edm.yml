@@ -14,10 +14,6 @@ on:
         default: false
         type: boolean
 
-concurrency:
-  group: kaggle-production-runner
-  cancel-in-progress: false
-
 jobs:
   launch-edm:
     runs-on: ubuntu-latest
