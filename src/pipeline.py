@@ -60,8 +60,8 @@ class DJProductionPipeline:
         # -----------------------------------------------------------------
         logger.info("[STEP 1/4] Discovering and downloading fresh DJ tracks...")
         tracks = self.scraper.download_tracks(target_count=target_tracks)
-        if not tracks or len(tracks) < 2:
-            logger.error("Insufficient tracks downloaded to compile a nonstop mix.")
+        if not tracks or len(tracks) < 5:
+            logger.error(f"Insufficient tracks downloaded to compile a nonstop mix (Found {len(tracks) if tracks else 0}, minimum 5 required).")
             return False
 
         logger.info(f"Step 1 Complete: {len(tracks)} tracks ready.")

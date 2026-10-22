@@ -334,24 +334,6 @@ class DJScraper:
         base_age = float(self.settings.get("scraper", {}).get("max_track_age_hours", 24.0))
         candidates = _run_scan_pass(self.channels, base_age)
 
-        # Smart Fallback: If 24h yields fewer than 15 tracks, auto-expand to 48h and 72h
-        # to ensure nonstop mix is ALWAYS fully populated even on slow upload days!
-        if len(candidates) < 15 and num_channels > 0:
-            found_urls = {c.get("channel_url", "").lower().rstrip("/") for c in candidates}
-            remaining_channels = [ch for ch in self.channels if ch.get("url", "").lower().rstrip("/") not in found_urls]
-            if remaining_channels:
-                logger.info(f"Found {len(candidates)} tracks within {base_age}h. Smart fallback: scanning remaining channels up to 48h...")
-                more_tracks = _run_scan_pass(remaining_channels, 48.0)
-                candidates.extend(more_tracks)
-
-        if len(candidates) < 10 and num_channels > 0:
-            found_urls = {c.get("channel_url", "").lower().rstrip("/") for c in candidates}
-            remaining_channels = [ch for ch in self.channels if ch.get("url", "").lower().rstrip("/") not in found_urls]
-            if remaining_channels:
-                logger.info(f"Found {len(candidates)} tracks. Smart fallback: scanning remaining channels up to 72h...")
-                more_tracks = _run_scan_pass(remaining_channels, 72.0)
-                candidates.extend(more_tracks)
-
         # STRICT GUARANTEE: Exactly 1 song per channel AND 0 duplicate songs in mix!
         seen_remixers = set()
         seen_channel_urls = set()
