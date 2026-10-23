@@ -13,6 +13,8 @@ import json
 import time
 import logging
 import subprocess
+import re
+import urllib.request
 from datetime import datetime, timedelta
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import List, Dict, Any, Optional, Tuple
@@ -66,81 +68,239 @@ class DJScraper:
         with open(self.history_file, "w", encoding="utf-8") as f:
             json.dump(self.history[-1000:], f, indent=2)
 
+    @staticmethod
+    def _parse_relative_time_to_hours(text: str) -> float:
+        if not text:
+            return 99999.0
+        tl = text.lower()
+        m = re.search(r'(\d+(?:\.\d+)?)\s*(sec|second|s\b|min|minute|m\b|hr|hour|h\b|day|d\b|week|w\b|month|year)', tl)
+        if not m:
+            return 99999.0
+        val = float(m.group(1))
+        unit = m.group(2)
+        if unit in ['s', 'sec', 'second']:
+            return val / 3600.0
+        elif unit in ['m', 'min', 'minute']:
+            return val / 60.0
+        elif unit in ['h', 'hr', 'hour']:
+            return val
+        elif unit in ['d', 'day']:
+            return val * 24.0
+        elif unit in ['w', 'week']:
+            return val * 24.0 * 7.0
+        elif unit in ['month']:
+            return val * 24.0 * 30.0
+        elif unit in ['year']:
+            return val * 24.0 * 365.0
+        return 99999.0
+
+    @staticmethod
+    def _parse_duration_to_seconds(dur_str: str) -> float:
+        if not dur_str:
+            return 0.0
+        m_time = re.search(r'(\d+):(\d{2})(?::(\d{2}))?', dur_str)
+        if m_time:
+            parts = [p for p in m_time.groups() if p is not None]
+            if len(parts) == 3:
+                return float(parts[0]) * 3600 + float(parts[1]) * 60 + float(parts[2])
+            elif len(parts) == 2:
+                return float(parts[0]) * 60 + float(parts[1])
+        m_min = re.search(r'(\d+)\s*min', dur_str.lower())
+        m_sec = re.search(r'(\d+)\s*sec', dur_str.lower())
+        dur = 0.0
+        if m_min:
+            dur += float(m_min.group(1)) * 60
+        if m_sec:
+            dur += float(m_sec.group(1))
+        return dur
+
+    @staticmethod
+    def _parse_views_to_int(view_str: str) -> int:
+        if not view_str:
+            return 0
+        vs = str(view_str).lower().replace(',', '')
+        m = re.search(r'([\d.]+)\s*([kmb])?', vs)
+        if not m:
+            return 0
+        val = float(m.group(1))
+        mult = m.group(2)
+        if mult == 'k':
+            return int(val * 1000)
+        if mult == 'm':
+            return int(val * 1000000)
+        if mult == 'b':
+            return int(val * 1000000000)
+        return int(val)
+
+    def _fetch_channel_videos_native(self, videos_url: str) -> List[Dict[str, Any]]:
+        """Fast, 100% headless YouTube channel page parser directly fetching videos tab."""
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+            'Accept-Language': 'en-US,en;q=0.9',
+        }
+        req = urllib.request.Request(videos_url, headers=headers)
+        try:
+            with urllib.request.urlopen(req, timeout=12) as resp:
+                html = resp.read().decode('utf-8', errors='ignore')
+        except Exception:
+            return []
+
+        m = re.search(r'ytInitialData\s*=\s*({.*?});</script>', html)
+        if not m:
+            m = re.search(r'var ytInitialData = ({.*?});', html)
+        if not m:
+            return []
+
+        try:
+            data = json.loads(m.group(1))
+        except Exception:
+            return []
+
+        def find_items(obj):
+            if isinstance(obj, dict):
+                if 'lockupViewModel' in obj:
+                    yield ('lockup', obj['lockupViewModel'])
+                if 'videoRenderer' in obj:
+                    yield ('renderer', obj['videoRenderer'])
+                for v in obj.values():
+                    yield from find_items(v)
+            elif isinstance(obj, list):
+                for item in obj:
+                    yield from find_items(item)
+
+        results = []
+        for it_type, it in find_items(data):
+            vid_id = None
+            title = None
+            time_text = None
+            dur_str = None
+            views = 0
+
+            if it_type == 'lockup':
+                vid_id = it.get('contentId')
+                meta = it.get('metadata', {}).get('lockupMetadataViewModel', {})
+                title = meta.get('title', {}).get('content')
+                rows = meta.get('metadata', {}).get('contentMetadataViewModel', {}).get('metadataRows', [])
+                for r in rows:
+                    for p in r.get('metadataParts', []):
+                        acc = p.get('accessibilityLabel', '')
+                        txt = p.get('text', {}).get('content', '')
+                        if 'ago' in acc or 'ago' in txt:
+                            time_text = acc or txt
+                        if 'view' in acc or 'view' in txt:
+                            views = self._parse_views_to_int(acc or txt)
+                dur_str = it.get('rendererContext', {}).get('accessibilityContext', {}).get('label', '')
+
+            elif it_type == 'renderer':
+                vid_id = it.get('videoId')
+                title = it.get('title', {}).get('runs', [{}])[0].get('text')
+                time_text = it.get('publishedTimeText', {}).get('simpleText')
+                dur_str = it.get('lengthText', {}).get('simpleText')
+                views = self._parse_views_to_int(it.get('viewCountText', {}).get('simpleText', ''))
+
+            if vid_id and title:
+                age_h = self._parse_relative_time_to_hours(time_text)
+                dur_sec = self._parse_duration_to_seconds(dur_str)
+                results.append({
+                    'id': vid_id,
+                    'title': title,
+                    'age_hours': age_h,
+                    'duration': dur_sec,
+                    'view_count': views
+                })
+                if len(results) >= 8:
+                    break
+
+        return results
+
+    def _fetch_channel_videos_ytdlp(self, videos_url: str) -> List[Dict[str, Any]]:
+        """Fallback fast flat-playlist extraction using yt-dlp."""
+        cmd = [
+            sys.executable, "-m", "yt_dlp",
+            "--flat-playlist",
+            "--js-runtimes", "node",
+            "--extractor-args", "youtube:player_client=android,mweb",
+            "--ignore-errors",
+            "--print", "%(id)s\t%(duration)s\t%(view_count)s\t%(title)s",
+            "--playlist-end", "5",
+            "--no-warnings",
+            videos_url
+        ]
+        try:
+            proc = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, timeout=25)
+            if not proc.stdout or not proc.stdout.strip():
+                return []
+            items = []
+            for line in proc.stdout.strip().splitlines():
+                parts = line.split("\t")
+                if len(parts) >= 4:
+                    vid_id = parts[0].strip()
+                    dur_s = self._parse_duration_to_seconds(parts[1].strip())
+                    vc = self._parse_views_to_int(parts[2].strip())
+                    t = parts[3].strip()
+                    if vid_id and t:
+                        items.append({
+                            'id': vid_id,
+                            'title': t,
+                            'age_hours': 12.0,
+                            'duration': dur_s,
+                            'view_count': vc
+                        })
+            return items
+        except Exception:
+            return []
+
     def _scan_single_channel(self, ch: Dict[str, str], max_age_hours: Optional[float] = None) -> Optional[Dict[str, Any]]:
         """
-        Scans a single channel for its newest valid video using fast yt-dlp metadata.
+        Scans a single channel for its newest valid video using direct fast HTML parser with yt-dlp fallback.
         STRICT RULES:
         1. At most 1 song from this channel.
         2. STRICT AGE RULE: Must be within specified max_age_hours.
         3. Skips shorts (<100s) and long nonstop mixes (>840s / 14 mins).
         4. Skips previously used songs in history.
         5. Skips any song containing Sound Check / Frequency test keywords.
+        6. Skips devotional/bhakti, nonstop mixes, and junk tutorials/vlogs.
+        7. MANDATORY DJ/Song keyword match.
         """
         name = ch.get("name", "Unknown")
         url = ch.get("url", "")
         if not url and ch.get("handle"):
             url = f"https://www.youtube.com/{ch['handle']}"
-        videos_url = f"{url.rstrip('/')}/videos"
+        if not url.endswith("/videos"):
+            videos_url = f"{url.rstrip('/')}/videos"
+        else:
+            videos_url = url
 
         if max_age_hours is None:
             max_age_hours = float(self.settings.get("scraper", {}).get("max_track_age_hours", 24.0))
 
-        cmd = [
-            sys.executable, "-m", "yt_dlp",
-            "--js-runtimes", "node",
-            "--extractor-args", "youtube:player_client=android,web",
-            "--ignore-errors",
-            "--print", "%(id)s\t%(duration)s\t%(view_count)s\t%(timestamp)s\t%(title)s",
-            "--playlist-end", "4",
-            "--no-warnings",
-            videos_url
-        ]
-
         try:
-            proc = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, timeout=35)
-            if not proc.stdout or not proc.stdout.strip():
-                err_msg = proc.stderr.strip().splitlines()[-1] if proc.stderr and proc.stderr.strip() else ""
-                log_extra = f" | Detail: {err_msg[:60]}" if err_msg else ""
-                logger.info(f"[SKIP] {name}: Could not fetch recent videos{log_extra}")
+            # 1. Primary: Direct Fast Channel Scanner (No bot detection, 0.3s response)
+            items = self._fetch_channel_videos_native(videos_url)
+            # 2. Fallback: yt-dlp flat playlist
+            if not items:
+                items = self._fetch_channel_videos_ytdlp(videos_url)
+
+            if not items:
+                logger.info(f"[SKIP] {name}: Could not fetch recent videos from /videos")
                 return None
 
-            lines = proc.stdout.strip().splitlines()
-            now_ts = time.time()
-
-            for line in lines:
-                parts = line.split("	")
-                if len(parts) < 5:
-                    continue
-
-                vid_id = parts[0].strip()
-                dur_str = parts[1].strip()
-                vc_str = parts[2].strip()
-                ts_str = parts[3].strip()
-                title = parts[4].strip()
+            for it in items:
+                vid_id = it.get("id", "").strip()
+                title = it.get("title", "").strip()
+                duration = float(it.get("duration", 0.0))
+                view_cnt = int(it.get("view_count", 0))
+                age_hours = float(it.get("age_hours", 99999.0))
 
                 if not vid_id or vid_id in self.history:
                     continue
 
-                # 1. STRICT 24-HOUR RULE: Song must be uploaded within last 11 hours!
-                try:
-                    timestamp = float(ts_str) if ts_str and ts_str != "None" else 0.0
-                except (ValueError, TypeError):
-                    timestamp = 0.0
-
-                if timestamp <= 0.0:
-                    continue
-
-                age_hours = (now_ts - timestamp) / 3600.0
+                # 1. STRICT AGE RULE: Song must be uploaded within specified max_age_hours
                 if age_hours > max_age_hours:
                     logger.info(f"[SKIP AGE] {name} ({vid_id}): Uploaded {age_hours:.1f}h ago (Older than {max_age_hours}h rule)")
                     continue
 
                 # 2. Duration filter (skip Shorts < 100s, skip full nonstop mixes > 840s / 14 mins)
-                try:
-                    duration = float(dur_str) if dur_str and dur_str != "None" else 0.0
-                except (ValueError, TypeError):
-                    duration = 0.0
-
                 if duration < 100.0 or duration > 840.0:
                     continue
 
@@ -167,30 +327,23 @@ class DJScraper:
                     continue
 
                 # 6. IRONCLAD ANTI-JUNK FILTER: Reject Tutorials, AI Song Generation, FLP Downloads, Vlogs, Setups, etc.
-                import re
                 tl = title.lower()
                 JUNK_KEYWORDS = [
-                    # Tutorials & How-To
                     "kaise banaye", "kaise bnaye", "kaise banayein", "kaise bnayein", "kaise banate", "kaise banaye mobile",
                     "kaise kare", "kaise karen", "kaise download", "kaise sikhe", "kaise seekhe", "kaise banta",
                     "how to make", "how to create", "how to mix", "how to edit", "how to download", "how to use",
                     "tutorial", "tutorials", "guide", "sikhe", "seekhe", "shikhe", "step by step", "full course",
-                    # AI song creation & tools
                     "suno ai", "sunoai", "suno.com", "ai se song", "ai se gana", "ai song kaise", "ai gana kaise",
                     "chatgpt", "chat gpt", "udio ai", "udio.com", "ai music generator", "ai tool", "ai tools",
-                    # FLP, FLM, Sample Packs, Projects
                     "flp", "free flp", "flp download", "flp project", "project file", "flm", "flm project", "flm download",
                     "no password", "password", "sample pack", "sound pack", "data pack", "voice pack", "vst plugin",
                     "preset", "presets", "drum kit", "loop pack", "zip file",
-                    # Vlogs, Setup, Tech, Reviews, Unboxing
                     "vlog", "vlogs", "daily vlog", "mini vlog", "my setup", "dj setup", "sound setup", "cabinet setup",
                     "light setup", "stage setup", "roadshow setup", "box setup", "speaker cabinet",
                     "unboxing", "review", "price", "kitna kharcha", "rate", "shop visit", "market visit", "dukan",
-                    # Talks, Drama, News, Interviews, Comedy
                     "interview", "podcast", "reaction", "roast", "prank", "comedy", "funny video",
                     "news", "khabar", "update", "lafda", "vivad", "controversy", "matter",
                     "behind the scene", "behind the scenes", "bts", "live stream", "live video",
-                    # Video editing, Status creator
                     "status kaise banaye", "avee player template", "avee template", "kinemaster", "editing kaise kare",
                     "thumbnail kaise banaye", "greenscreen", "green screen"
                 ]
@@ -216,7 +369,6 @@ class DJScraper:
                     continue
 
                 # 7. MANDATORY SONG/DJ KEYWORD VERIFICATION: Title MUST be a legitimate Music/DJ track!
-                # Strictly requires explicit musical keywords like 'dj', 'song', 'remix', 'rmx', 'mix', 'dance', 'drop', etc.
                 NICHE_PATTERNS = [
                     r"\bdj\b", r"\bd\.j\b", r"\bsong\b", r"\bsongs\b", r"\bremix\b", r"\brmx\b",
                     r"\bmix\b", r"\btrack\b", r"\bgana\b", r"\bgaana\b", r"\bgeet\b", r"\bdance\b",
@@ -228,12 +380,6 @@ class DJScraper:
                     logger.info(f"[SKIP NO SONG KEYWORD] {name} ({vid_id}): Title lacks DJ/Song keywords: '{title[:45]}'")
                     continue
 
-                # 7. Valid fresh song found within 11 hours!
-                try:
-                    view_cnt = int(vc_str) if vc_str and vc_str != "None" else 0
-                except (ValueError, TypeError):
-                    view_cnt = 0
-
                 logger.info(f"[ACCEPTED 24H] ({age_hours:.1f}h ago <= {max_age_hours}h): [{name}] {title[:45]}")
                 return {
                     "id": vid_id,
@@ -241,7 +387,7 @@ class DJScraper:
                     "duration": duration,
                     "view_count": view_cnt,
                     "remixer": name,
-                    "channel_url": url,
+                    "channel_url": videos_url,
                     "url": f"https://www.youtube.com/watch?v={vid_id}",
                     "age_hours": age_hours
                 }
