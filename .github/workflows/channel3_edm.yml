@@ -1,8 +1,7 @@
 name: "⚡ Channel 3 - Mega Music Nonstop EDM (Daily 04:00 PM)"
 
 on:
-  schedule:
-    - cron: '30 10 * * *'  # Daily 04:00 PM IST (10:30 UTC)
+  # Triggered exclusively via Cloudflare Worker API to prevent duplicate runs
   workflow_dispatch:
     inputs:
       target_tracks:
