@@ -1,6 +1,8 @@
 name: "📻 Channel 4 - Nagpuri Studio Remix (Studio Beat Daily 06:00 AM)"
 
 on:
+  schedule:
+    - cron: '30 0 * * *'  # Daily 06:00 AM IST (00:30 UTC)
   workflow_dispatch:
     inputs:
       target_tracks:
@@ -45,6 +47,6 @@ jobs:
           ALERT_GMAIL_APP_PASS: ${{ secrets.ALERT_GMAIL_APP_PASS }}
           DJ_PROFILE: dj_nan_say_karwan
           DJ_TARGET_TRACKS: ${{ inputs.target_tracks || '0' }}
-          DJ_SKIP_UPLOAD: ${{ inputs.skip_upload }}
+          DJ_SKIP_UPLOAD: ${{ inputs.skip_upload || 'false' }}
         run: |
           python push_to_kaggle.py

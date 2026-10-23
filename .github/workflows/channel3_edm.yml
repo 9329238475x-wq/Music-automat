@@ -1,7 +1,8 @@
 name: "⚡ Channel 3 - Mega Music Nonstop EDM (Daily 04:00 PM)"
 
 on:
-  # Triggered exclusively via Cloudflare Worker API to prevent duplicate runs
+  schedule:
+    - cron: '30 10 * * *'  # Daily 04:00 PM IST (10:30 UTC)
   workflow_dispatch:
     inputs:
       target_tracks:
@@ -46,6 +47,6 @@ jobs:
           ALERT_GMAIL_APP_PASS: ${{ secrets.ALERT_GMAIL_APP_PASS }}
           DJ_PROFILE: edm
           DJ_TARGET_TRACKS: ${{ inputs.target_tracks || '0' }}
-          DJ_SKIP_UPLOAD: ${{ inputs.skip_upload }}
+          DJ_SKIP_UPLOAD: ${{ inputs.skip_upload || 'false' }}
         run: |
           python push_to_kaggle.py
