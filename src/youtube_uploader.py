@@ -397,23 +397,12 @@ If any copyright owner, artist, or music label has any concern or would like any
 Thank you for your love and support! ❤️
 """
 
-        # 4. Generate Dynamic Tags (Sanitized and strictly within YouTube Data API character limits)
-        p_settings = self.settings.get("profiles", {}).get(self.profile, {})
-        base_tags = p_settings.get("tags", ["dj remix", "nonstop dj"])
-        dynamic_tags = [
-            f"{song1} dj remix",
-            f"{song1} dj song",
-            f"{song2} dj remix",
-            f"{song2} dj song",
-            f"{top_dj} dj"
-        ]
-        all_tags = self._sanitize_tags(dynamic_tags + base_tags, max_total_chars=380)
-
+        # 4. Tags left completely empty per user instruction (100% clean, error-free)
         self.last_title = title[:100]
         return {
             "title": self.last_title,
             "description": description[:4900],
-            "tags": all_tags,
+            "tags": [],
             "categoryId": "10"  # Music category
         }
 
@@ -682,15 +671,11 @@ Thank you for your love and support! ❤️
 #Shorts #DJRemix #NonstopDJ #{self.profile} #ViralDJ #BhojpuriEDM #NagpuriDJ #HardBass
 """
 
-        short_tags = self._sanitize_tags(
-            ["shorts", "short", "dj remix", "nonstop dj", self.profile, clean_song.lower()],
-            max_total_chars=250
-        )
         body = {
             "snippet": {
                 "title": short_title[:100],
                 "description": description[:4500],
-                "tags": short_tags,
+                "tags": [],
                 "categoryId": "10"
             },
             "status": {
