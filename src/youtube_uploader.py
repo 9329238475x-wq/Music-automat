@@ -142,6 +142,60 @@ class YouTubeUploader:
                 parsed.append({"title": s_title, "remixer": s_remixer})
         return parsed
 
+    def _sanitize_tags(self, raw_tags: List[str], max_total_chars: int = 380) -> List[str]:
+        """
+        Sanitizes tags for YouTube Data API v3 compliance:
+        - Strips invalid characters (<, >, ", commas, slashes, control symbols).
+        - Enforces YouTube's internal character limit where tags with spaces are counted
+          with enclosing quotes ("tag with space" = +2 chars) and commas (+1 char).
+        - Safely caps total effective length below max_total_chars (default 380, safe from 500 limit).
+        - Keeps up to 18 high-relevance tags.
+        """
+        import re
+        sanitized = []
+        seen = set()
+        current_length = 0
+
+        for tag in raw_tags:
+            if not tag:
+                continue
+            # Remove characters forbidden or problematic in YouTube tags
+            t = re.sub(r'[<>"\'`,|/?\\:;~!@#$%^&*+=()[\]{}]', ' ', str(tag))
+            t = re.sub(r'\s+', ' ', t).strip().lower()
+
+            # YouTube tag length requirement (must be between 2 and 45 characters)
+            if len(t) < 2 or len(t) > 45:
+                continue
+
+            if t in seen:
+                continue
+
+            # Effective length calculation for YouTube API:
+            # YouTube quotes tags containing spaces ("tag with space"), consuming +2 characters
+            effective_len = len(t) + (2 if ' ' in t else 0)
+            # Add 1 for the separating comma (except the first tag)
+            additional_len = effective_len + (1 if sanitized else 0)
+
+            if current_length + additional_len > max_total_chars:
+                continue
+
+            sanitized.append(t)
+            seen.add(t)
+            current_length += additional_len
+
+            if len(sanitized) >= 18:
+                break
+
+        return sanitized
+
+    def _truncate_word(self, text: str, max_chars: int) -> str:
+        """Truncates text cleanly at a word boundary before max_chars without mid-word cuts."""
+        text = text.strip()
+        if len(text) <= max_chars:
+            return text
+        truncated = text[:max_chars].rsplit(" ", 1)[0].strip()
+        return truncated if len(truncated) >= 3 else text[:max_chars].strip()
+
     def generate_metadata(
         self,
         tracklist_text: str,
@@ -285,15 +339,21 @@ class YouTubeUploader:
         title = templates[random_index].strip()
         # Strictly guarantee <= 95 characters without ugly ellipsis or mid-word cutoffs
         if len(title) > 95:
+            s1_short = self._truncate_word(song1, 18)
+            s2_short = self._truncate_word(song2, 16)
             if self.profile == "vibration":
-                title = f"🔥 {song1[:18]} X {song2[:16]} - Mandar Tapori Mix {year} 💃 Nonstop"
+                title = f"🔥 {s1_short} X {s2_short} - Mandar Tapori Mix {year} 💃 Nonstop"
             else:
-                title = f"🔥 {song1[:22]} X {song2[:20]} - Nonstop {genre_name} {year} 💃"
+                title = f"🔥 {s1_short} X {s2_short} - Nonstop {genre_name} {year} 💃"
         if len(title) > 95:
+            s1_single = self._truncate_word(song1, 24)
             if self.profile == "vibration":
-                title = f"🔥 {song1[:24]} - CG Mandar Beat DJ Remix {year} 💃"
+                title = f"🔥 {s1_single} - CG Mandar Beat DJ Remix {year} 💃"
             else:
-                title = f"🔥 {song1[:26]} - Nonstop {genre_name} {year} 💃 | 320kbps HD Mix"
+                title = f"🔥 {s1_single} - Nonstop {genre_name} {year} 💃 | 320kbps HD Mix"
+
+        import re
+        title = re.sub(r"[<>]", "", title).strip()
 
         # 3. Construct Dynamic High-Ranking Description
         top_songs_display = ", ".join(clean_songs[:6]) if clean_songs else song1
@@ -337,7 +397,7 @@ If any copyright owner, artist, or music label has any concern or would like any
 Thank you for your love and support! ❤️
 """
 
-        # 4. Generate Dynamic Tags
+        # 4. Generate Dynamic Tags (Sanitized and strictly within YouTube Data API character limits)
         p_settings = self.settings.get("profiles", {}).get(self.profile, {})
         base_tags = p_settings.get("tags", ["dj remix", "nonstop dj"])
         dynamic_tags = [
@@ -347,19 +407,70 @@ Thank you for your love and support! ❤️
             f"{song2} dj song",
             f"{top_dj} dj"
         ]
-        all_tags = []
-        for tag in dynamic_tags + base_tags:
-            t_clean = tag.strip().lower()
-            if t_clean and t_clean not in all_tags and len(",".join(all_tags + [t_clean])) < 480:
-                all_tags.append(t_clean)
+        all_tags = self._sanitize_tags(dynamic_tags + base_tags, max_total_chars=380)
 
         self.last_title = title[:100]
         return {
             "title": self.last_title,
             "description": description[:4900],
-            "tags": all_tags[:30],
+            "tags": all_tags,
             "categoryId": "10"  # Music category
         }
+
+    def _execute_resumable_upload(
+        self,
+        youtube,
+        body: Dict[str, Any],
+        video_path: str,
+        chunk_size: int = 1024 * 1024 * 16,
+        is_short: bool = False
+    ) -> Dict[str, Any]:
+        """
+        Executes resumable video upload with automatic tag/metadata sanitization fallback.
+        Guarantees that a completed video render will NEVER fail due to tag formatting issues.
+        """
+        original_tags = list(body.get("snippet", {}).get("tags", []))
+        tag_attempts = [
+            original_tags,
+            [f"{self.profile} dj remix", "nonstop dj"],
+            []
+        ]
+
+        last_exception = None
+        label = "Short upload" if is_short else "Video upload"
+
+        for attempt_idx, tags in enumerate(tag_attempts):
+            body["snippet"]["tags"] = tags
+            media = MediaFileUpload(video_path, chunksize=chunk_size, resumable=True)
+            req = youtube.videos().insert(
+                part="snippet,status",
+                body=body,
+                media_body=media
+            )
+            response = None
+            try:
+                while response is None:
+                    status, response = req.next_chunk()
+                    if status:
+                        pct = int(status.progress() * 100)
+                        logger.info(f"{label} progress: {pct}%")
+                return response
+            except Exception as e:
+                err_str = str(e)
+                if ("invalidTags" in err_str or "invalid video keywords" in err_str) and attempt_idx < len(tag_attempts) - 1:
+                    fallback = tag_attempts[attempt_idx + 1]
+                    logger.warning(
+                        f"⚠️ YouTube rejected tags (attempt {attempt_idx + 1}): {err_str}. "
+                        f"Retrying with safe fallback tags: {fallback}..."
+                    )
+                    last_exception = e
+                    continue
+                else:
+                    logger.error(f"❌ {label} failed: {e}")
+                    raise e
+
+        if last_exception:
+            raise last_exception
 
     def upload_video(
         self,
@@ -395,20 +506,13 @@ Thank you for your love and support! ❤️
         }
 
         logger.info(f"Initiating YouTube upload for: {meta['title']}...")
-        media = MediaFileUpload(video_path, chunksize=1024 * 1024 * 16, resumable=True)
-
-        req = youtube.videos().insert(
-            part="snippet,status",
+        response = self._execute_resumable_upload(
+            youtube=youtube,
             body=body,
-            media_body=media
+            video_path=video_path,
+            chunk_size=1024 * 1024 * 16,
+            is_short=False
         )
-
-        response = None
-        while response is None:
-            status, response = req.next_chunk()
-            if status:
-                pct = int(status.progress() * 100)
-                logger.info(f"Upload progress: {pct}%")
 
         video_id = response.get("id")
         video_url = f"https://youtu.be/{video_id}"
@@ -578,11 +682,15 @@ Thank you for your love and support! ❤️
 #Shorts #DJRemix #NonstopDJ #{self.profile} #ViralDJ #BhojpuriEDM #NagpuriDJ #HardBass
 """
 
+        short_tags = self._sanitize_tags(
+            ["shorts", "short", "dj remix", "nonstop dj", self.profile, clean_song.lower()],
+            max_total_chars=250
+        )
         body = {
             "snippet": {
                 "title": short_title[:100],
                 "description": description[:4500],
-                "tags": ["shorts", "short", "dj remix", "nonstop dj", self.profile, clean_song.lower()][:25],
+                "tags": short_tags,
                 "categoryId": "10"
             },
             "status": {
@@ -592,20 +700,13 @@ Thank you for your love and support! ❤️
         }
 
         logger.info(f"Initiating YouTube Short upload: {short_title}...")
-        media = MediaFileUpload(video_path, chunksize=1024 * 1024 * 8, resumable=True)
-
-        req = youtube.videos().insert(
-            part="snippet,status",
+        response = self._execute_resumable_upload(
+            youtube=youtube,
             body=body,
-            media_body=media
+            video_path=video_path,
+            chunk_size=1024 * 1024 * 8,
+            is_short=True
         )
-
-        response = None
-        while response is None:
-            status, response = req.next_chunk()
-            if status:
-                pct = int(status.progress() * 100)
-                logger.info(f"Short upload progress: {pct}%")
 
         short_id = response.get("id")
         short_url = f"https://youtube.com/shorts/{short_id}"
