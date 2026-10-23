@@ -92,6 +92,40 @@ if target_tracks:
 if skip_upload:
     header += f'os.environ["DJ_SKIP_UPLOAD"] = "{skip_upload}"\n'
 
+# Create local code payload to guarantee zero drift from local workspace
+import io
+import zipfile
+import base64
+
+def _build_local_code_payload(root_dir: Path) -> str:
+    buf = io.BytesIO()
+    with zipfile.ZipFile(buf, "w", zipfile.ZIP_DEFLATED) as zf:
+        for folder in ["src", "config"]:
+            f_path = root_dir / folder
+            if f_path.exists():
+                for p in f_path.rglob("*"):
+                    if p.is_file() and p.suffix != ".pyc" and "__pycache__" not in p.parts:
+                        if p.name in ["github_token.txt", "client_secrets.json"]:
+                            continue
+                        rel_path = p.relative_to(root_dir)
+                        zf.write(p, str(rel_path).replace("\\", "/"))
+    return base64.b64encode(buf.getvalue()).decode("ascii")
+
+local_payload = _build_local_code_payload(ROOT)
+override_block = f"""
+    # ─── AUTO-SYNC LATEST LOCAL CODE (ZERO DRIFT) ───
+    import base64, io, zipfile
+    _payload = "{local_payload}"
+    if _payload:
+        print("[2.1/5] Injecting latest local workspace updates (src/ & config/)...", flush=True)
+        _zf = zipfile.ZipFile(io.BytesIO(base64.b64decode(_payload)))
+        _zf.extractall(WORK_DIR)
+        print("✓ Local updates synchronized into workspace!", flush=True)
+"""
+target_hook = 'print("✓ Git clone successful!", flush=True)'
+if target_hook in orig_runner:
+    orig_runner = orig_runner.replace(target_hook, target_hook + "\n" + override_block)
+
 with open(TEMP_DEPLOY / "kaggle_runner.py", "w", encoding="utf-8") as f:
     f.write(header + "\n" + orig_runner)
 
