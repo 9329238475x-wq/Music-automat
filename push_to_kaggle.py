@@ -130,12 +130,26 @@ def _build_local_code_payload(root_dir: Path) -> str:
                             continue
                         rel_path = p.relative_to(root_dir)
                         zf.write(p, str(rel_path).replace("\\", "/"))
-        # Also include cookies.txt if present
+        # Also include cookies.txt if present locally or from GitHub Actions Secrets
+        cookies_data = None
         for cname in ["cookies.txt", "config/cookies.txt"]:
             cp = root_dir / cname
             if cp.exists():
-                zf.write(cp, "cookies.txt")
-                break
+                try:
+                    cookies_data = cp.read_bytes()
+                    break
+                except Exception:
+                    pass
+        if not cookies_data:
+            c_env = (os.environ.get("YOUTUBE_COOKIES_B64") or os.environ.get("YOUTUBE_COOKIES") or "").strip()
+            if c_env:
+                try:
+                    cookies_data = base64.b64decode(c_env)
+                except Exception:
+                    cookies_data = c_env.encode("utf-8")
+        if cookies_data:
+            zf.writestr("cookies.txt", cookies_data)
+            print("✓ Packed cookies.txt into deployment payload for Kaggle!")
     return base64.b64encode(buf.getvalue()).decode("ascii")
 
 local_payload = _build_local_code_payload(ROOT)

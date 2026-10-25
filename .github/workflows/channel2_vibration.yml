@@ -43,6 +43,7 @@ jobs:
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
           YOUTUBE_REFRESH_TOKEN_VIBRATION: ${{ secrets.YOUTUBE_REFRESH_TOKEN_VIBRATION }}
+          YOUTUBE_COOKIES_B64: ${{ secrets.YOUTUBE_COOKIES_B64 }}
           ALERT_GMAIL_APP_PASS: ${{ secrets.ALERT_GMAIL_APP_PASS }}
           DJ_PROFILE: vibration
           DJ_TARGET_TRACKS: ${{ inputs.target_tracks || '0' }}
