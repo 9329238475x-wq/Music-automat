@@ -31,6 +31,18 @@ try:
     first_line = ffmpeg_ver.stdout.split("\n")[0] if ffmpeg_ver.stdout else "FFmpeg available"
     print(f"✓ {first_line}", flush=True)
 
+    # ─── 1B. INSTALL DENO (AUTOMATED YOUTUBE BOTGUARD SOLVER) ───
+    if not shutil.which("deno"):
+        print("Installing Deno JS runtime for automatic YouTube BotGuard solver...", flush=True)
+        try:
+            subprocess.run("curl -fsSL https://deno.land/install.sh | sh", shell=True, check=False)
+            deno_bin = "/root/.deno/bin"
+            if os.path.exists(deno_bin):
+                os.environ["PATH"] = f"{deno_bin}:{os.environ.get('PATH', '')}"
+                print("✓ Deno installed & configured!", flush=True)
+        except Exception as de:
+            print(f"Notice: Deno install skipped: {de}", flush=True)
+
     # ─── 2. INITIALIZE WORKSPACE & CLONE ───
     print("\n[2/5] Initializing workspace & fetching latest repository...", flush=True)
     WORK_DIR = "/kaggle/working/Music-automat"
