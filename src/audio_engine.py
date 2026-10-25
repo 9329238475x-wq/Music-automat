@@ -122,14 +122,14 @@ class DJAudioEngine:
         cut_intro_sec: float = 10.0,
         cut_outro_sec: float = 15.0,
         fade_sec: float = 1.5,
-        pitch_factor: float = 1.0
+        pitch_factor: float = 1.05
     ) -> bool:
         """
         Processes an individual song for the nonstop DJ mix:
         - Track 1 starts from 0s (intro not cut); subsequent tracks trim leading 10s.
         - Trims trailing 15s to eliminate outros / promo announcements from all tracks.
         - Bass is kept 100% PURE, RAW & UNTOUCHED (Zero frequency filtering or sub-bass choking).
-        - Pitch defaults to 1.0 (Exact native DJ key & ground-shaking sub-bass frequencies).
+        - Natural DJ Pitch & Speed boost (+5% / 1.05x) for full Anti-Fingerprint / Copyright Claim bypass.
         - Mastered to punchy commercial club standard (-8.5 LUFS, -0.5 dBTP, LRA 9.0).
         """
         raw_dur = self._get_audio_duration(in_file)
@@ -142,8 +142,8 @@ class DJAudioEngine:
             start_s = cut_intro_sec if track_index > 1 else 0.0
             end_s = max(start_s + 15.0, raw_dur - cut_outro_sec)
 
-        # Pitch & Key: Default 1.0 = Pure Native DJ Pitch (sub-bass 35Hz-60Hz stays 100% untouched)
-        setting_pitch = float(self.settings.get("audio", {}).get("pitch_factor", 1.0))
+        # Pitch & Speed: Default 1.05 (+5% Speed & Natural DJ Pitch for Copyright Protection)
+        setting_pitch = float(self.settings.get("audio", {}).get("pitch_factor", 1.05))
         env_pitch = os.environ.get("DJ_PITCH_FACTOR")
         eff_pitch = float(env_pitch) if env_pitch else (setting_pitch or pitch_factor)
 

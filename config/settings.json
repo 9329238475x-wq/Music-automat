@@ -93,7 +93,7 @@
   "audio": {
     "bitrate": "320k",
     "sample_rate": 44100,
-    "pitch_factor": 1.0,
+    "pitch_factor": 1.05,
     "target_lufs": -8.5,
     "true_peak": -0.5,
     "loudness_range": 9.0,
