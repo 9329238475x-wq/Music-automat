@@ -542,14 +542,26 @@ class DJScraper:
             track["thumb_path"] = thumb_out
             return track
 
+        cookie_candidates = [
+            os.path.join(self.base_dir, "cookies.txt"),
+            os.path.join(self.config_dir, "cookies.txt"),
+            "/kaggle/working/Music-automat/cookies.txt"
+        ]
+        cookie_args = []
+        for cp in cookie_candidates:
+            if os.path.exists(cp):
+                cookie_args = ["--cookies", cp]
+                break
+
+        # Primary: android client with progressive stream support (avoids SABR audio-only drop & botwall)
         cmd = [
             sys.executable, "-m", "yt_dlp",
             "--js-runtimes", "node",
-            "--extractor-args", "youtube:player_client=android,web,mweb,ios",
-            "-f", "ba/b",
+            "--extractor-args", "youtube:player_client=android",
+            "-f", "ba/b/18/best",
             "--retries", "10",
             "--fragment-retries", "10",
-            "--retry-sleep", "3",
+            "--retry-sleep", "2",
             "-x",
             "--audio-format", "wav",
             "--write-thumbnail",
@@ -558,21 +570,24 @@ class DJScraper:
             "--no-playlist",
             "--no-warnings",
             "--quiet",
+            *cookie_args,
             track["url"]
         ]
 
         logger.info(f"[{idx}/{total}] Downloading ({track['remixer']}): {track['title'][:35]}...")
         try:
+            time.sleep(1.0)
             res = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, timeout=120)
-            # If failed, retry with mobile & ios client
+
+            # Retry 1: Force format 18 (progressive audio-video stream) via android client
             if not os.path.exists(audio_out):
-                logger.info(f"[{idx}/{total}] Retrying download with mobile/ios client: {track['title'][:35]}...")
-                time.sleep(3)
+                logger.info(f"[{idx}/{total}] Retrying download with progressive stream format 18: {track['title'][:35]}...")
+                time.sleep(2)
                 retry_cmd = [
                     sys.executable, "-m", "yt_dlp",
                     "--js-runtimes", "node",
-                    "--extractor-args", "youtube:player_client=mweb,ios,web",
-                    "-f", "ba/b",
+                    "--extractor-args", "youtube:player_client=android",
+                    "-f", "18/best",
                     "--retries", "10",
                     "--fragment-retries", "10",
                     "-x",
@@ -583,19 +598,20 @@ class DJScraper:
                     "--no-playlist",
                     "--no-warnings",
                     "--quiet",
+                    *cookie_args,
                     track["url"]
                 ]
                 res = subprocess.run(retry_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, timeout=120)
 
-            # Final 3rd attempt with web client if needed
+            # Retry 2: Fallback with iOS client
             if not os.path.exists(audio_out):
-                logger.info(f"[{idx}/{total}] Final fallback retry with web client: {track['title'][:35]}...")
-                time.sleep(3)
+                logger.info(f"[{idx}/{total}] Final fallback retry with iOS client: {track['title'][:35]}...")
+                time.sleep(2)
                 retry3_cmd = [
                     sys.executable, "-m", "yt_dlp",
                     "--js-runtimes", "node",
-                    "--extractor-args", "youtube:player_client=web,tv",
-                    "-f", "ba/b",
+                    "--extractor-args", "youtube:player_client=ios",
+                    "-f", "ba/b/18/best",
                     "--retries", "10",
                     "-x",
                     "--audio-format", "wav",
@@ -603,6 +619,7 @@ class DJScraper:
                     "--no-playlist",
                     "--no-warnings",
                     "--quiet",
+                    *cookie_args,
                     track["url"]
                 ]
                 res = subprocess.run(retry3_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, timeout=120)

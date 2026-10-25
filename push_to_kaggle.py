@@ -23,8 +23,7 @@ print("=" * 65)
 shutil.rmtree(TEMP_DEPLOY, ignore_errors=True)
 TEMP_DEPLOY.mkdir(parents=True, exist_ok=True)
 
-# Copy base runner and metadata
-shutil.copy(DEPLOY_SRC / "kernel-metadata.json", TEMP_DEPLOY / "kernel-metadata.json")
+# Note: kernel-metadata.json is generated dynamically below per profile
 
 # Read credentials from environment (GitHub Actions Secrets) or local files
 client_id = os.environ.get("YOUTUBE_CLIENT_ID", "")
@@ -66,9 +65,31 @@ for k, v in os.environ.items():
         tokens_map[k] = v
 
 # Optional pipeline overrides
-profile = os.environ.get("DJ_PROFILE", "")
+profile = os.environ.get("DJ_PROFILE", "vibration").lower().strip() or "vibration"
 target_tracks = os.environ.get("DJ_TARGET_TRACKS", "")
 skip_upload = os.environ.get("DJ_SKIP_UPLOAD", "")
+
+# Dedicated Kaggle kernel per channel profile to allow concurrent runs without cancellation
+kernel_slug = f"music-automat-{profile.replace('_', '-')}"
+kernel_title = f"Music Automat {profile.upper().replace('_', ' ')}"
+kernel_id = f"sonuji93/{kernel_slug}"
+
+# Write profile-specific kernel metadata
+meta = {
+    "id": kernel_id,
+    "title": kernel_title,
+    "code_file": "kaggle_runner.py",
+    "language": "python",
+    "kernel_type": "script",
+    "is_private": "true",
+    "enable_gpu": "false",
+    "enable_internet": "true",
+    "dataset_sources": [],
+    "competition_sources": [],
+    "kernel_sources": []
+}
+with open(TEMP_DEPLOY / "kernel-metadata.json", "w", encoding="utf-8") as f:
+    json.dump(meta, f, indent=2)
 
 # Read runner code
 with open(DEPLOY_SRC / "kaggle_runner.py", encoding="utf-8") as f:
@@ -109,6 +130,12 @@ def _build_local_code_payload(root_dir: Path) -> str:
                             continue
                         rel_path = p.relative_to(root_dir)
                         zf.write(p, str(rel_path).replace("\\", "/"))
+        # Also include cookies.txt if present
+        for cname in ["cookies.txt", "config/cookies.txt"]:
+            cp = root_dir / cname
+            if cp.exists():
+                zf.write(cp, "cookies.txt")
+                break
     return base64.b64encode(buf.getvalue()).decode("ascii")
 
 local_payload = _build_local_code_payload(ROOT)
@@ -129,7 +156,7 @@ if target_hook in orig_runner:
 with open(TEMP_DEPLOY / "kaggle_runner.py", "w", encoding="utf-8") as f:
     f.write(header + "\n" + orig_runner)
 
-print(f"Deploying private kernel to Kaggle (Kernel ID: sonuji93/music-automat-worker)...")
+print(f"Deploying private kernel to Kaggle (Kernel ID: {kernel_id})...")
 res = subprocess.run(["kaggle", "kernels", "push", "-p", str(TEMP_DEPLOY)], capture_output=True, text=True)
 print(res.stdout)
 if res.stderr:
@@ -138,11 +165,11 @@ if res.stderr:
 shutil.rmtree(TEMP_DEPLOY, ignore_errors=True)
 
 if res.returncode == 0:
-    print("\n🎉 SUCCESS! KERNEL TRIGGERED ON KAGGLE!")
-    print("🔗 Direct URL: https://www.kaggle.com/code/sonuji93/music-automat-worker")
+    print(f"\n🎉 SUCCESS! KERNEL TRIGGERED ON KAGGLE ({profile.upper()})!")
+    print(f"🔗 Direct URL: https://www.kaggle.com/code/{kernel_id}")
     print("Waiting 10 seconds for Kaggle to schedule the kernel...")
     time.sleep(10)
-    st = subprocess.run(["kaggle", "kernels", "status", "sonuji93/music-automat-worker"], capture_output=True, text=True)
+    st = subprocess.run(["kaggle", "kernels", "status", kernel_id], capture_output=True, text=True)
     print(f"Current Kaggle Status: {st.stdout.strip()}")
 else:
     sys.exit(res.returncode)
