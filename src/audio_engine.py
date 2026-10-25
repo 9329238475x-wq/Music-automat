@@ -148,7 +148,7 @@ class DJAudioEngine:
         eff_pitch = float(env_pitch) if env_pitch else (setting_pitch or pitch_factor)
 
         # Precision Equalizer: Only active if configured in settings (default 0.0 = untouched)
-        pairy_db = float(self.settings.get("audio", {}).get("pairy_damping_db", 0.0))
+        pairy_db = float(self.settings.get("audio", {}).get("pairy_damping_db", -5.0))
         pairy_freq = int(self.settings.get("audio", {}).get("pairy_frequency_hz", 8800))
 
         # Vocals: 100% PURE & UNTOUCHED (Zero vocal reduction / ducking, 0 dB)

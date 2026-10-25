@@ -99,7 +99,7 @@
     "loudness_range": 9.0,
     "transition_sound": "assets/wooosh.wav",
     "crossfade_duration": 1.5,
-    "pairy_damping_db": 0.0,
+    "pairy_damping_db": -5.0,
     "pairy_frequency_hz": 8800,
     "vocal_reduction_db": 0.0,
     "vocal_center_freq_hz": 1600,
