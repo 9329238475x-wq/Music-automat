@@ -122,14 +122,15 @@ class DJAudioEngine:
         cut_intro_sec: float = 10.0,
         cut_outro_sec: float = 15.0,
         fade_sec: float = 1.5,
-        pitch_factor: float = 1.05
+        pitch_factor: float = 1.0
     ) -> bool:
         """
         Processes an individual song for the nonstop DJ mix:
         - Track 1 starts from 0s (intro not cut); subsequent tracks trim leading 10s.
         - Trims trailing 15s to eliminate outros / promo announcements from all tracks.
-        - Vocals and DJ drops are kept 100% PURE & UNTOUCHED (Zero vocal ducking).
-        - Normalizes to broadcast standard EBU R128 (-14 LUFS, -1.0 dBTP ceiling).
+        - Bass is kept 100% PURE, RAW & UNTOUCHED (Zero frequency filtering or sub-bass choking).
+        - Pitch defaults to 1.0 (Exact native DJ key & ground-shaking sub-bass frequencies).
+        - Mastered to punchy commercial club standard (-8.5 LUFS, -0.5 dBTP, LRA 9.0).
         """
         raw_dur = self._get_audio_duration(in_file)
         if raw_dur < 30.0:
@@ -141,44 +142,51 @@ class DJAudioEngine:
             start_s = cut_intro_sec if track_index > 1 else 0.0
             end_s = max(start_s + 15.0, raw_dur - cut_outro_sec)
 
+        # Pitch & Key: Default 1.0 = Pure Native DJ Pitch (sub-bass 35Hz-60Hz stays 100% untouched)
+        setting_pitch = float(self.settings.get("audio", {}).get("pitch_factor", 1.0))
         env_pitch = os.environ.get("DJ_PITCH_FACTOR")
-        eff_pitch = float(env_pitch) if env_pitch else pitch_factor
+        eff_pitch = float(env_pitch) if env_pitch else (setting_pitch or pitch_factor)
 
-        # Precision Equalizer: Tames harsh "पैरी" / metallic "छम-छम" high-frequencies (8800 Hz) by 10% (-2.0 dB) without touching bass or vocals
-        pairy_db = float(self.settings.get("audio", {}).get("pairy_damping_db", -2.0))
+        # Precision Equalizer: Only active if configured in settings (default 0.0 = untouched)
+        pairy_db = float(self.settings.get("audio", {}).get("pairy_damping_db", 0.0))
         pairy_freq = int(self.settings.get("audio", {}).get("pairy_frequency_hz", 8800))
-        pairy_filter = f"equalizer=f={pairy_freq}:t=q:w=1.4:g={pairy_db:.1f}," if pairy_db != 0 else ""
 
-        # Vocals: 100% PURE & UNTOUCHED (Zero vocal reduction / ducking, 0 dB):
+        # Vocals: 100% PURE & UNTOUCHED (Zero vocal reduction / ducking, 0 dB)
         vocal_db = float(self.settings.get("audio", {}).get("vocal_reduction_db", 0.0))
         vocal_freq = int(self.settings.get("audio", {}).get("vocal_center_freq_hz", 1600))
         vocal_q = float(self.settings.get("audio", {}).get("vocal_q_width", 1.1))
-        vocal_filter = f"equalizer=f={vocal_freq}:t=q:w={vocal_q:.2f}:g={vocal_db:.1f}," if vocal_db != 0 else ""
 
-        # Bass is kept 100% PURE & ORIGINAL (Zero artificial bass boost applied)
-
-        # Smooth Professional Volume Swell: After wooosh.wav transition, new song swells smoothly over 1.5s (1s-2s)
+        # Smooth Professional Volume Swell: After wooosh.wav transition, new song swells smoothly over 1.5s
         fade_in_sec = float(self.settings.get("audio", {}).get("fade_in_duration", 1.5))
         fade_in_d = fade_in_sec if track_index > 1 else 0.5
 
-        # Commercial DJ Loudness Normalization (Club punch, -8.5 LUFS, -0.5 dBTP, zero volume suppression)
+        # Commercial DJ Loudness Normalization with full dynamic range preservation (No bass choking)
         target_lufs = float(self.settings.get("audio", {}).get("target_lufs", -8.5))
         true_peak = float(self.settings.get("audio", {}).get("true_peak", -0.5))
-        lra = float(self.settings.get("audio", {}).get("loudness_range", 7.0))
-        loudnorm_filter = f"loudnorm=I={target_lufs:.1f}:TP={true_peak:.1f}:LRA={lra:.1f}:linear=true,"
+        lra = float(self.settings.get("audio", {}).get("loudness_range", 9.0))
 
-        # Pure Audio Filter Chain (Smooth 1.5s swell after wooosh transition, maximum punch, commercial DJ master)
-        filter_chain = (
-            f"atrim=start={start_s:.2f}:end={end_s:.2f},"
-            f"asetpts=PTS-STARTPTS,"
-            f"afade=t=in:st=0:d={fade_in_d:.2f},"
-            f"asetrate=44100*{eff_pitch:.4f},"
-            f"aresample=44100:resample_cutoff=1.0:precision=28:filter_type=kaiser:dither_method=triangular,"
-            f"{pairy_filter}"
-            f"{vocal_filter}"
-            f"{loudnorm_filter}"
-            f"aformat=sample_fmts=s16:sample_rates=44100:channel_layouts=stereo"
-        )
+        # Assemble clean filter parts (Original Bass & True Frequency Response 100% Intact)
+        filter_parts = [
+            f"atrim=start={start_s:.2f}:end={end_s:.2f}",
+            "asetpts=PTS-STARTPTS",
+            f"afade=t=in:st=0:d={fade_in_d:.2f}"
+        ]
+
+        # Only apply pitch modification if user explicitly configured it away from 1.0
+        if abs(eff_pitch - 1.0) > 0.001:
+            filter_parts.append(f"asetrate=44100*{eff_pitch:.4f}")
+            filter_parts.append("aresample=44100:resample_cutoff=1.0:precision=28:filter_type=kaiser:dither_method=triangular")
+
+        if pairy_db != 0:
+            filter_parts.append(f"equalizer=f={pairy_freq}:t=q:w=1.4:g={pairy_db:.1f}")
+
+        if vocal_db != 0:
+            filter_parts.append(f"equalizer=f={vocal_freq}:t=q:w={vocal_q:.2f}:g={vocal_db:.1f}")
+
+        filter_parts.append(f"loudnorm=I={target_lufs:.1f}:TP={true_peak:.1f}:LRA={lra:.1f}:linear=true")
+        filter_parts.append("aformat=sample_fmts=s16:sample_rates=44100:channel_layouts=stereo")
+
+        filter_chain = ",".join(filter_parts)
 
         cmd = [
             "ffmpeg", "-y",
