@@ -1084,14 +1084,14 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 
         logger.info(f"🎬 Generating 35-Second 9:16 Short (Original track from 0:00, zero cuts): {top_track.get('title', '')[:35]}...")
 
-        # 1. Play strictly from the start (0.0s) for exactly 35.0 seconds
+        # 1. Play strictly from the start (0.0s) for exactly 35.0 seconds (Mastered at punchy -8.5 LUFS)
         temp_short_audio = os.path.join(self.output_dir, f"temp_{self.profile}_short.wav")
         cut_cmd = [
             "ffmpeg", "-y",
             "-ss", "0.00",
             "-t", f"{clip_duration_sec:.2f}",
             "-i", src_audio,
-            "-af", f"afade=t=in:st=0:d=0.05,afade=t=out:st={clip_duration_sec - 1.0:.1f}:d=1.0,loudnorm=I=-14:TP=-1.0",
+            "-af", f"afade=t=in:st=0:d=0.05,afade=t=out:st={clip_duration_sec - 1.0:.1f}:d=1.0,loudnorm=I=-8.5:TP=-0.5:LRA=7.0",
             "-ar", "44100",
             "-ac", "2",
             temp_short_audio

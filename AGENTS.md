@@ -10,7 +10,7 @@
 
 ## 2. Core Architecture
 - **Scraper (`src/scraper.py`):** Uses `yt-dlp` flat-playlist scraping (consumes 0 YouTube API quota).
-- **Audio Engine (`src/audio_engine.py`):** EBU R128 loudness normalizer (-14 LUFS, -1.0 dBTP), 320 kbps MP3 master, cinematic smooth 'Wooosh' transitions.
+- **Audio Engine (`src/audio_engine.py`):** Commercial DJ club loudness normalizer (-8.5 LUFS, -0.5 dBTP, LRA 7.0), 320 kbps MP3 master, cinematic smooth 'Wooosh' transitions.
 - **Visual Engine (`src/visual_engine.py`):** 1920x1080 Thumbnail Wall grid collage + 360-degree Avee Player circular bass-reactive spectrum visualizer with channel center emblem.
 - **Local Hub & Remote Server (`src/server.py`):**
   - FastAPI server bound to `0.0.0.0:8000` (started via `start_local.bat`).

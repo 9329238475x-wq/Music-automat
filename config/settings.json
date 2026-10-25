@@ -93,8 +93,9 @@
   "audio": {
     "bitrate": "320k",
     "sample_rate": 44100,
-    "target_lufs": -14.0,
-    "true_peak": -1.0,
+    "target_lufs": -8.5,
+    "true_peak": -0.5,
+    "loudness_range": 7.0,
     "transition_sound": "assets/wooosh.wav",
     "crossfade_duration": 1.5,
     "pairy_damping_db": -2.0,

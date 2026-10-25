@@ -161,7 +161,13 @@ class DJAudioEngine:
         fade_in_sec = float(self.settings.get("audio", {}).get("fade_in_duration", 1.5))
         fade_in_d = fade_in_sec if track_index > 1 else 0.5
 
-        # Pure Audio Filter Chain (Smooth 1.5s swell after wooosh transition, zero artificial gunj, EBU R128 master)
+        # Commercial DJ Loudness Normalization (Club punch, -8.5 LUFS, -0.5 dBTP, zero volume suppression)
+        target_lufs = float(self.settings.get("audio", {}).get("target_lufs", -8.5))
+        true_peak = float(self.settings.get("audio", {}).get("true_peak", -0.5))
+        lra = float(self.settings.get("audio", {}).get("loudness_range", 7.0))
+        loudnorm_filter = f"loudnorm=I={target_lufs:.1f}:TP={true_peak:.1f}:LRA={lra:.1f}:linear=true,"
+
+        # Pure Audio Filter Chain (Smooth 1.5s swell after wooosh transition, maximum punch, commercial DJ master)
         filter_chain = (
             f"atrim=start={start_s:.2f}:end={end_s:.2f},"
             f"asetpts=PTS-STARTPTS,"
@@ -170,7 +176,7 @@ class DJAudioEngine:
             f"aresample=44100:resample_cutoff=1.0:precision=28:filter_type=kaiser:dither_method=triangular,"
             f"{pairy_filter}"
             f"{vocal_filter}"
-            f"loudnorm=I=-14:TP=-1.0:LRA=11:linear=true,"
+            f"{loudnorm_filter}"
             f"aformat=sample_fmts=s16:sample_rates=44100:channel_layouts=stereo"
         )
 
