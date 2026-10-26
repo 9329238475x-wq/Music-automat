@@ -553,11 +553,16 @@ class DJScraper:
                 cookie_args = ["--cookies", cp]
                 break
 
-        # Primary: android client with progressive stream support & Deno BotGuard solver
+        # Determine client strategy:
+        # When cookies are provided, do NOT force android (android rejects cookies), use default authenticated client with ejs solver!
+        primary_extractor_args = [] if cookie_args else ["--extractor-args", "youtube:player_client=android"]
+
+        # Primary: Authenticated client with Deno/Node BotGuard & EJS solver
         cmd = [
             sys.executable, "-m", "yt_dlp",
             "--js-runtimes", "deno,node",
-            "--extractor-args", "youtube:player_client=android",
+            "--remote-components", "ejs:github",
+            *primary_extractor_args,
             "-f", "ba/b/18/best",
             "--retries", "10",
             "--fragment-retries", "10",
@@ -586,6 +591,7 @@ class DJScraper:
                 tv_cmd = [
                     sys.executable, "-m", "yt_dlp",
                     "--js-runtimes", "deno,node",
+                    "--remote-components", "ejs:github",
                     "--extractor-args", "youtube:player_client=tv,tv_embedded;player_skip=webpage",
                     "--force-ipv4",
                     "-f", "ba/b/18/best",
@@ -608,6 +614,7 @@ class DJScraper:
                 retry_cmd = [
                     sys.executable, "-m", "yt_dlp",
                     "--js-runtimes", "deno,node",
+                    "--remote-components", "ejs:github",
                     "--extractor-args", "youtube:player_client=android",
                     "-f", "18/best",
                     "--retries", "10",
@@ -632,6 +639,7 @@ class DJScraper:
                 retry3_cmd = [
                     sys.executable, "-m", "yt_dlp",
                     "--js-runtimes", "deno,node",
+                    "--remote-components", "ejs:github",
                     "--extractor-args", "youtube:player_client=ios",
                     "-f", "ba/b/18/best",
                     "--retries", "10",

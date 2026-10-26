@@ -27,6 +27,8 @@ YT-API-KEY.json
 tokens/
 *.token
 config/github_token.txt
+cookies.txt
+*cookies*
 
 kaggle_logs/
 pulled_kernel/
