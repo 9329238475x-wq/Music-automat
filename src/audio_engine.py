@@ -130,7 +130,7 @@ class DJAudioEngine:
         - Trims trailing 15s to eliminate outros / promo announcements from all tracks.
         - Bass is kept 100% PURE, RAW & UNTOUCHED (Zero frequency filtering or sub-bass choking).
         - Natural DJ Pitch & Speed boost (+5% / 1.05x) for full Anti-Fingerprint / Copyright Claim bypass.
-        - Mastered to punchy commercial club standard (-8.5 LUFS, -0.5 dBTP, LRA 9.0).
+        - Mastered to punchy commercial club standard (-10.5 LUFS, -1.0 dBTP, LRA 9.0) for crystal clear, unclipped bass.
         """
         raw_dur = self._get_audio_duration(in_file)
         if raw_dur < 30.0:
@@ -160,9 +160,9 @@ class DJAudioEngine:
         fade_in_sec = float(self.settings.get("audio", {}).get("fade_in_duration", 1.5))
         fade_in_d = fade_in_sec if track_index > 1 else 0.5
 
-        # Commercial DJ Loudness Normalization with full dynamic range preservation (No bass choking)
-        target_lufs = float(self.settings.get("audio", {}).get("target_lufs", -8.5))
-        true_peak = float(self.settings.get("audio", {}).get("true_peak", -0.5))
+        # Commercial DJ Loudness Normalization with full dynamic range preservation (No bass choking or distortion)
+        target_lufs = float(self.settings.get("audio", {}).get("target_lufs", -10.5))
+        true_peak = float(self.settings.get("audio", {}).get("true_peak", -1.0))
         lra = float(self.settings.get("audio", {}).get("loudness_range", 9.0))
 
         # Assemble clean filter parts (Original Bass & True Frequency Response 100% Intact)
