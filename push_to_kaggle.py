@@ -70,9 +70,25 @@ target_tracks = os.environ.get("DJ_TARGET_TRACKS", "")
 skip_upload = os.environ.get("DJ_SKIP_UPLOAD", "")
 
 # Dedicated Kaggle kernel per channel profile to allow concurrent runs without cancellation
+def _get_kaggle_username():
+    k_env = os.environ.get("KAGGLE_USERNAME", "")
+    if k_env:
+        return k_env.strip()
+    k_file = Path.home() / ".kaggle" / "kaggle.json"
+    if k_file.exists():
+        try:
+            with open(k_file, encoding="utf-8") as f:
+                u = json.load(f).get("username", "")
+                if u:
+                    return u.strip()
+        except Exception:
+            pass
+    return "sonuji12345"
+
+kaggle_user = _get_kaggle_username()
 kernel_slug = f"music-automat-{profile.replace('_', '-')}"
 kernel_title = f"Music Automat {profile.upper().replace('_', ' ')}"
-kernel_id = f"sonuji93/{kernel_slug}"
+kernel_id = f"{kaggle_user}/{kernel_slug}"
 
 # Write profile-specific kernel metadata
 meta = {
