@@ -65,7 +65,7 @@ for k, v in os.environ.items():
         tokens_map[k] = v
 
 # Optional pipeline overrides
-profile = os.environ.get("DJ_PROFILE", "vibration").lower().strip() or "vibration"
+profile = (sys.argv[1] if len(sys.argv) > 1 else os.environ.get("DJ_PROFILE", "vibration")).lower().strip() or "vibration"
 target_tracks = os.environ.get("DJ_TARGET_TRACKS", "")
 skip_upload = os.environ.get("DJ_SKIP_UPLOAD", "")
 
