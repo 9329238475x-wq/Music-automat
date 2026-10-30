@@ -155,11 +155,15 @@ import base64
 def _build_local_code_payload(root_dir: Path) -> str:
     buf = io.BytesIO()
     with zipfile.ZipFile(buf, "w", zipfile.ZIP_DEFLATED) as zf:
-        for folder in ["src", "config", "CopyRight-Work", "assets"]:
+        for folder in ["src", "config", "CopyRight-Work"]:
             f_path = root_dir / folder
             if f_path.exists():
                 for p in f_path.rglob("*"):
                     if p.is_file() and p.suffix != ".pyc" and "__pycache__" not in p.parts:
+                        if p.suffix.lower() in [".mp4", ".mp3", ".wav", ".mkv", ".webm", ".avi", ".ts", ".jpg", ".png", ".jpeg"]:
+                            continue
+                        if any(part in ["footage", "output", "temp", "downloads", "temp_deploy"] for part in p.parts):
+                            continue
                         if p.name in ["github_token.txt", "client_secrets.json", ".env"]:
                             continue
                         rel_path = p.relative_to(root_dir)
@@ -184,7 +188,9 @@ def _build_local_code_payload(root_dir: Path) -> str:
         if cookies_data:
             zf.writestr("cookies.txt", cookies_data)
             print("✓ Packed cookies.txt into deployment payload for Kaggle!")
-    return base64.b64encode(buf.getvalue()).decode("ascii")
+    payload_bytes = buf.getvalue()
+    print(f"✓ Deployment payload zip size: {len(payload_bytes) / 1024:.1f} KB")
+    return base64.b64encode(payload_bytes).decode("ascii")
 
 local_payload = _build_local_code_payload(ROOT)
 override_block = f"""
