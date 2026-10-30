@@ -162,11 +162,17 @@ try:
     print(f"Skip Upload      : {skip_upload}", flush=True)
 
     # ─── 5. EXECUTE PRODUCTION PIPELINE ───
-    print("\n[5/5] Launching autonomous DJ production pipeline...", flush=True)
-    from src.pipeline import DJProductionPipeline
-
-    pipeline = DJProductionPipeline(profile=profile, base_dir=WORK_DIR)
-    success = pipeline.run(target_tracks=target_tracks, skip_upload=skip_upload)
+    print("\n[5/5] Launching autonomous production pipeline...", flush=True)
+    if profile == "copy_right_work":
+        print("Launching CopyRight-Work Pipeline for DJ JAY LAL BARBASPUR...", flush=True)
+        sys.path.insert(0, os.path.join(WORK_DIR, "CopyRight-Work"))
+        from pipeline import CopyRightWorkPipeline
+        crw_pipeline = CopyRightWorkPipeline()
+        success = crw_pipeline.run(skip_upload=skip_upload)
+    else:
+        from src.pipeline import DJProductionPipeline
+        pipeline = DJProductionPipeline(profile=profile, base_dir=WORK_DIR)
+        success = pipeline.run(target_tracks=target_tracks, skip_upload=skip_upload)
 
     if success:
         print("\n🎉 [COMPLETE] Autonomous DJ Remix Pipeline Succeeded!", flush=True)

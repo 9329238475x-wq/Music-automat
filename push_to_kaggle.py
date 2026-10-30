@@ -98,7 +98,7 @@ meta = {
     "language": "python",
     "kernel_type": "script",
     "is_private": "true",
-    "enable_gpu": "false",
+    "enable_gpu": "true" if (profile == "copy_right_work" or os.environ.get("ENABLE_GPU", "").lower() in ["true", "1"]) else "false",
     "enable_internet": "true",
     "dataset_sources": [],
     "competition_sources": [],
@@ -122,6 +122,24 @@ os.environ.setdefault("ALERT_GMAIL_RECIPIENT", "9329238475x@gmail.com")
 for k, v in tokens_map.items():
     header += f'os.environ.setdefault("{k}", "{v}")\n'
 
+# Pexels & Pixabay keys for footage fetching
+pex_key = os.environ.get("PEXELS_API_KEY", "")
+pix_key = os.environ.get("PIXABAY_API_KEY", "")
+if not pex_key or not pix_key:
+    crw_env = ROOT / "CopyRight-Work" / ".env"
+    if crw_env.exists():
+        for line in crw_env.read_text(encoding="utf-8").splitlines():
+            if "=" in line and not line.startswith("#"):
+                k, v = line.split("=", 1)
+                if k.strip() == "PEXELS_API_KEY" and not pex_key:
+                    pex_key = v.strip()
+                elif k.strip() == "PIXABAY_API_KEY" and not pix_key:
+                    pix_key = v.strip()
+if pex_key:
+    header += f'os.environ.setdefault("PEXELS_API_KEY", "{pex_key}")\n'
+if pix_key:
+    header += f'os.environ.setdefault("PIXABAY_API_KEY", "{pix_key}")\n'
+
 if profile:
     header += f'os.environ["DJ_PROFILE"] = "{profile}"\n'
 if target_tracks:
@@ -137,12 +155,12 @@ import base64
 def _build_local_code_payload(root_dir: Path) -> str:
     buf = io.BytesIO()
     with zipfile.ZipFile(buf, "w", zipfile.ZIP_DEFLATED) as zf:
-        for folder in ["src", "config"]:
+        for folder in ["src", "config", "CopyRight-Work", "assets"]:
             f_path = root_dir / folder
             if f_path.exists():
                 for p in f_path.rglob("*"):
                     if p.is_file() and p.suffix != ".pyc" and "__pycache__" not in p.parts:
-                        if p.name in ["github_token.txt", "client_secrets.json"]:
+                        if p.name in ["github_token.txt", "client_secrets.json", ".env"]:
                             continue
                         rel_path = p.relative_to(root_dir)
                         zf.write(p, str(rel_path).replace("\\", "/"))

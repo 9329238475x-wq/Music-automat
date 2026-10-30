@@ -1,13 +1,12 @@
-name: "📻 Channel 4 - Nagpuri Studio Remix (Studio Beat Daily 06:00 AM)"
+name: "📻 Channel 4 - DJ JAY LAL BARBASPUR (CopyRight-Work Daily 01:30 AM IST)"
 
 on:
-  # Triggered exclusively via Cloudflare Worker API to prevent duplicate runs
+  # Daily automated schedule at 01:30 AM IST (20:00 UTC previous day)
+  schedule:
+    - cron: '0 20 * * *'
+  # Manual trigger via GitHub Actions UI / Cloudflare Worker API
   workflow_dispatch:
     inputs:
-      target_tracks:
-        description: 'Number of Tracks (0 = All available from all channels)'
-        required: false
-        default: '0'
       skip_upload:
         description: 'Skip YouTube Upload (Test Only)'
         required: false
@@ -15,7 +14,7 @@ on:
         type: boolean
 
 jobs:
-  launch-studio-beat:
+  launch-copyright-work:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -36,17 +35,19 @@ jobs:
           echo '{"username":"${{ secrets.KAGGLE_USERNAME }}","key":"${{ secrets.KAGGLE_KEY }}"}' > ~/.kaggle/kaggle.json
           chmod 600 ~/.kaggle/kaggle.json
 
-      - name: Deploy & Trigger Studio Beat Production
+      - name: Deploy & Trigger CopyRight-Work Production (GPU)
         env:
           KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
           KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
-          YOUTUBE_REFRESH_TOKEN_DJ_NAN_SAY_KARWAN: ${{ secrets.YOUTUBE_REFRESH_TOKEN_DJ_NAN_SAY_KARWAN }}
+          YOUTUBE_REFRESH_TOKEN_COPY_RIGHT_WORK: ${{ secrets.YOUTUBE_REFRESH_TOKEN_COPY_RIGHT_WORK }}
           YOUTUBE_COOKIES_B64: ${{ secrets.YOUTUBE_COOKIES_B64 }}
           ALERT_GMAIL_APP_PASS: ${{ secrets.ALERT_GMAIL_APP_PASS }}
-          DJ_PROFILE: dj_nan_say_karwan
-          DJ_TARGET_TRACKS: ${{ inputs.target_tracks || '0' }}
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+          PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
+          DJ_PROFILE: copy_right_work
+          ENABLE_GPU: 'true'
           DJ_SKIP_UPLOAD: ${{ inputs.skip_upload || 'false' }}
         run: |
           python push_to_kaggle.py
