@@ -109,24 +109,28 @@ class DJProductionPipeline:
         logger.info(f"Step 3 Complete: Full video rendered ({final_video_path}).")
 
         # -----------------------------------------------------------------
-        # STEP 3B: Render 9:16 Vertical Viral YouTube Short from Top Track!
+        # STEP 3B: Render 9:16 Vertical Viral YouTube Short (Disabled - Long videos only)
         # -----------------------------------------------------------------
-        top_track = max(tracks, key=lambda x: int(x.get("view_count") or 0)) if tracks else tracks[0]
+        enable_shorts = bool(self.settings.get("enable_shorts", False) or os.environ.get("ENABLE_SHORTS", "0") == "1")
         short_video_path = None
-        try:
-            logger.info(f"Rendering 9:16 Vertical Short for top viral hit: {top_track.get('title', '')[:35]}...")
-            short_out_name = f"{self.profile}_viral_short.mp4"
-            target_short_path = os.path.join(self.output_dir, short_out_name)
-            short_video_path = self.visual_engine.render_shorts_video(
-                top_track=top_track,
-                out_mp4=target_short_path,
-                clip_duration_sec=35.0,
-                fps=24
-            )
-            if short_video_path and os.path.exists(short_video_path):
-                logger.info(f"✓ Viral Short rendered successfully ({short_video_path})!")
-        except Exception as e:
-            logger.warning(f"Short rendering notice (non-fatal): {e}")
+        if enable_shorts:
+            top_track = max(tracks, key=lambda x: int(x.get("view_count") or 0)) if tracks else tracks[0]
+            try:
+                logger.info(f"Rendering 9:16 Vertical Short for top viral hit: {top_track.get('title', '')[:35]}...")
+                short_out_name = f"{self.profile}_viral_short.mp4"
+                target_short_path = os.path.join(self.output_dir, short_out_name)
+                short_video_path = self.visual_engine.render_shorts_video(
+                    top_track=top_track,
+                    out_mp4=target_short_path,
+                    clip_duration_sec=35.0,
+                    fps=24
+                )
+                if short_video_path and os.path.exists(short_video_path):
+                    logger.info(f"✓ Viral Short rendered successfully ({short_video_path})!")
+            except Exception as e:
+                logger.warning(f"Short rendering notice (non-fatal): {e}")
+        else:
+            logger.info("ℹ️ Shorts creation disabled: Only long nonstop video will be rendered and uploaded.")
 
         # -----------------------------------------------------------------
         # STEP 4: YouTube Data API Auto-Upload
@@ -144,9 +148,9 @@ class DJProductionPipeline:
             if video_url:
                 logger.info(f"🎉 Pipeline Succeeded! Video live at: {video_url}")
 
-                # Upload Viral YouTube Short with direct link to full video
+                # Upload Viral YouTube Short with direct link to full video (if enabled)
                 short_url = None
-                if short_video_path and os.path.exists(short_video_path):
+                if enable_shorts and short_video_path and os.path.exists(short_video_path):
                     try:
                         logger.info("🚀 Uploading 9:16 Viral YouTube Short...")
                         top_song_title = top_track.get("title", f"{self.profile.upper()} DJ Drop")

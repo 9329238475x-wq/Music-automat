@@ -138,5 +138,6 @@
     "min_track_duration_seconds": 100.0,
     "max_track_duration_seconds": 840.0,
     "ban_sound_check": true
-  }
+  },
+  "enable_shorts": false
 }
