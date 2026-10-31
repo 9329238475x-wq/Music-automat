@@ -49,14 +49,16 @@ ENABLE_ALTERNATING_MIRROR = True            # एक क्लिप साम�
 ENABLE_TRANSITION_EFFECT = True             # हर कट पर डायनेमिक ट्रांजिशन इफ़ेक्ट
 
 # === Download Settings (Full HD 1080p Priority) ===
-VIDEO_FORMAT = "bestvideo[height<=1080][ext=mp4]+bestaudio[ext=m4a]/bestvideo[height<=1080]+bestaudio/best[height<=1080]/best"
+VIDEO_FORMAT = "bestvideo[height<=1080]+bestaudio/best[height<=1080]/bestvideo+bestaudio/best"
 DOWNLOAD_TIMEOUT = 900                      # 15 min timeout for Full HD video download
 DOWNLOAD_RETRIES = 10
 
-# === Output Video Encoding ===
+# === Output Video Encoding (Full HD 1080p Crisp Master) ===
+TARGET_WIDTH = 1920
+TARGET_HEIGHT = 1080
 OUTPUT_CODEC = "libx264"
-OUTPUT_CRF = 23
-OUTPUT_PRESET = "ultrafast"                # CPU पर 300+ fps अल्ट्राफास्ट एन्कोडिंग
+OUTPUT_CRF = 21                             # क्रिस्प हाई-डेफिनिशन 1080p (No Blur / No pixelation)
+OUTPUT_PRESET = "veryfast"                  # बेहतरीन 1080p क्वालिटी और तेज़ CPU गति
 OUTPUT_AUDIO_CODEC = "aac"
 OUTPUT_AUDIO_BITRATE = "192k"
 

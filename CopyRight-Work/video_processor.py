@@ -242,11 +242,10 @@ def concat_with_footage(
     config.ensure_dirs()
     temp_dir = config.TEMP_DIR
 
-    # Get main video specs for normalization
-    main_info = get_video_info(main_video)
-    target_w = main_info["width"]
-    target_h = main_info["height"]
-    target_fps = min(main_info["fps"], 30.0)  # Cap at 30fps
+    # Get main video specs for normalization (Force 1920x1080 Full HD)
+    target_w = getattr(config, "TARGET_WIDTH", 1920)
+    target_h = getattr(config, "TARGET_HEIGHT", 1080)
+    target_fps = 30.0
 
     # Main video is ALREADY normalized in dynamic editing pass (30fps, 44.1kHz aac).
     # We DO NOT re-encode main video here to save 30+ minutes and prevent timeouts!
@@ -385,6 +384,11 @@ def apply_dynamic_editing_and_watermark(
         v_filters.append(
             f"eq=brightness={bright}:contrast={cont}:enable='lt(mod(t,{interval:.2f}),{trans_dur:.2f})'"
         )
+
+    # Force 1920x1080 Full HD output with aspect-ratio preserving letterbox/padding if needed
+    v_filters.append(
+        "scale=1920:1080:force_original_aspect_ratio=decrease,pad=1920:1080:(ow-iw)/2:(oh-ih)/2:black"
+    )
 
     # Standardize fps to 30.00 for seamless concat with footage
     v_filters.append("fps=30.00")
