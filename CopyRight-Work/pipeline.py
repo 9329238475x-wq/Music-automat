@@ -308,8 +308,18 @@ class CopyRightWorkPipeline:
     def _send_notification_email(self, video_title: str, video_url: str, video_path: str):
         """Dispatches an executive dark-mode confirmation email with the new video link to Gmail."""
         try:
+            try:
+                from video_processor import get_video_duration
+            except ImportError:
+                from .video_processor import get_video_duration
+
+            # Ensure root directory is in sys.path for src.notifier
+            import sys
+            from pathlib import Path
+            root_dir = Path(__file__).resolve().parent.parent
+            if str(root_dir) not in sys.path:
+                sys.path.insert(0, str(root_dir))
             from src.notifier import send_upload_success_email
-            from .video_processor import get_video_duration
 
             dur_sec = get_video_duration(video_path)
             hrs = int(dur_sec // 3600)

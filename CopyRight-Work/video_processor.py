@@ -175,7 +175,7 @@ def _normalize_footage(
         ),
         "-c:v", config.OUTPUT_CODEC,
         "-crf", str(config.OUTPUT_CRF),
-        "-preset", config.OUTPUT_PRESET,
+        "-preset", "ultrafast",
         "-c:a", config.OUTPUT_AUDIO_CODEC,
         "-b:a", config.OUTPUT_AUDIO_BITRATE,
         "-ar", "44100",
@@ -186,48 +186,11 @@ def _normalize_footage(
     try:
         subprocess.run(
             cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-            text=True, timeout=600
+            text=True, timeout=120
         )
         return os.path.exists(output_path) and os.path.getsize(output_path) > 1024
     except Exception as e:
         logger.warning(f"Normalize failed for {footage_path}: {e}")
-        return False
-
-
-def _normalize_main_video(
-    input_path: str,
-    output_path: str,
-    target_width: int,
-    target_height: int,
-    target_fps: float,
-) -> bool:
-    """
-    Re-encode the main (cut) video to ensure consistent codec/params for concat.
-    This is needed because stream-copy cut may have incompatible codec params
-    when concatenating with normalized footage.
-    """
-    cmd = [
-        "ffmpeg",
-        "-y",
-        "-i", input_path,
-        "-vf", f"fps={target_fps:.2f}",
-        "-c:v", config.OUTPUT_CODEC,
-        "-crf", str(config.OUTPUT_CRF),
-        "-preset", config.OUTPUT_PRESET,
-        "-c:a", config.OUTPUT_AUDIO_CODEC,
-        "-b:a", config.OUTPUT_AUDIO_BITRATE,
-        "-ar", "44100",
-        "-ac", "2",
-        output_path,
-    ]
-    try:
-        subprocess.run(
-            cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-            text=True, timeout=1800  # 30 min for 2hr video re-encode
-        )
-        return os.path.exists(output_path) and os.path.getsize(output_path) > 1024
-    except Exception as e:
-        logger.warning(f"Main video re-encode failed: {e}")
         return False
 
 
@@ -285,20 +248,24 @@ def concat_with_footage(
     target_h = main_info["height"]
     target_fps = min(main_info["fps"], 30.0)  # Cap at 30fps
 
-    # Re-encode main video for consistent concat
-    logger.info("  Re-encoding main video for concat compatibility...")
-    main_normalized = str(temp_dir / "main_normalized.mp4")
-    if not _normalize_main_video(main_video, main_normalized, target_w, target_h, target_fps):
-        logger.error("Failed to normalize main video")
-        return False
+    # Main video is ALREADY normalized in dynamic editing pass (30fps, 44.1kHz aac).
+    # We DO NOT re-encode main video here to save 30+ minutes and prevent timeouts!
+    main_normalized = main_video
 
-    # Normalize footage files
+    # Normalize ONLY as many footage files as needed to cover needed_footage_sec!
     normalized_footage = []
+    accumulated_footage_sec = 0.0
+
     for i, fp in enumerate(footage_files):
+        if accumulated_footage_sec >= needed_footage_sec:
+            break
         norm_path = str(temp_dir / f"footage_norm_{i:03d}.mp4")
         logger.info(f"  Normalizing footage {i+1}/{len(footage_files)}: {fp.name}")
         if _normalize_footage(str(fp), norm_path, target_w, target_h, target_fps):
-            normalized_footage.append(norm_path)
+            dur = get_video_duration(norm_path)
+            if dur > 0:
+                normalized_footage.append(norm_path)
+                accumulated_footage_sec += dur
 
     if not normalized_footage:
         logger.warning("All footage normalization failed. Using main video only.")
@@ -307,23 +274,22 @@ def concat_with_footage(
 
     # Build concat list — loop footage files until we have enough duration
     concat_files = [main_normalized]
-    accumulated_footage_sec = 0.0
-
+    loop_accum = 0.0
     loop_count = 0
     max_loops = 50  # Safety limit
-    while accumulated_footage_sec < needed_footage_sec and loop_count < max_loops:
+    while loop_accum < needed_footage_sec and loop_count < max_loops:
         for nf in normalized_footage:
-            if accumulated_footage_sec >= needed_footage_sec:
+            if loop_accum >= needed_footage_sec:
                 break
             dur = get_video_duration(nf)
             if dur > 0:
                 concat_files.append(nf)
-                accumulated_footage_sec += dur
+                loop_accum += dur
         loop_count += 1
 
     logger.info(
         f"  Concat plan: 1 main + {len(concat_files)-1} footage segment(s) "
-        f"({accumulated_footage_sec/60:.0f} min footage)"
+        f"({loop_accum/60:.0f} min footage)"
     )
 
     # Create FFmpeg concat list file
@@ -394,15 +360,18 @@ def apply_dynamic_editing_and_watermark(
     enable_mirror = getattr(config, "ENABLE_ALTERNATING_MIRROR", True)
     enable_trans = getattr(config, "ENABLE_TRANSITION_EFFECT", True)
 
-    margin = config.WATERMARK_MARGIN_PX
-    scale = config.WATERMARK_SCALE
+    info = get_video_info(input_path)
+    main_h = info.get("height", 1080) or 1080
+    wm_target_size = getattr(config, "WATERMARK_MAX_WIDTH_PX", 150)
+    wm_size = min(wm_target_size, max(90, int(main_h * getattr(config, "WATERMARK_SCALE", 0.13))))
+    margin = getattr(config, "WATERMARK_MARGIN_PX", 30)
 
     logger.info(
         f"🎨 Applying dynamic editing & watermark:\n"
         f"   - Cut Interval: {interval:.1f}s (cycle: {period:.1f}s)\n"
         f"   - Alternating Mirror: {'ENABLED (1 normal, 1 mirrored)' if enable_mirror else 'DISABLED'}\n"
         f"   - Cut Transition Effect: {'ENABLED (flash/contrast pulse)' if enable_trans else 'DISABLED'}\n"
-        f"   - Watermark: 70% smaller ({scale*100:.0f}%), top-right corner"
+        f"   - Watermark: {wm_size}x{wm_size}px in top-right corner ({margin}px margin)"
     )
 
     # Build video filter chain for dynamic editing
@@ -417,13 +386,16 @@ def apply_dynamic_editing_and_watermark(
             f"eq=brightness={bright}:contrast={cont}:enable='lt(mod(t,{interval:.2f}),{trans_dur:.2f})'"
         )
 
+    # Standardize fps to 30.00 for seamless concat with footage
+    v_filters.append("fps=30.00")
+
     filter_chain = ",".join(v_filters) if v_filters else "null"
 
     has_wm = os.path.exists(watermark_path)
     if has_wm:
         filter_complex = (
             f"[0:v]{filter_chain}[v_edited];"
-            f"[1:v]scale=iw*{scale}:ih*{scale}[wm];"
+            f"[1:v]scale={wm_size}:{wm_size}[wm];"
             f"[v_edited][wm]overlay=W-w-{margin}:{margin}"
         )
         cmd = [
@@ -435,7 +407,10 @@ def apply_dynamic_editing_and_watermark(
             "-c:v", config.OUTPUT_CODEC,
             "-crf", str(config.OUTPUT_CRF),
             "-preset", config.OUTPUT_PRESET,
-            "-c:a", "copy",             # Lossless audio stream copy
+            "-c:a", config.OUTPUT_AUDIO_CODEC,
+            "-b:a", config.OUTPUT_AUDIO_BITRATE,
+            "-ar", "44100",
+            "-ac", "2",
             output_path,
         ]
     else:
@@ -447,7 +422,10 @@ def apply_dynamic_editing_and_watermark(
             "-c:v", config.OUTPUT_CODEC,
             "-crf", str(config.OUTPUT_CRF),
             "-preset", config.OUTPUT_PRESET,
-            "-c:a", "copy",
+            "-c:a", config.OUTPUT_AUDIO_CODEC,
+            "-b:a", config.OUTPUT_AUDIO_BITRATE,
+            "-ar", "44100",
+            "-ac", "2",
             output_path,
         ]
 

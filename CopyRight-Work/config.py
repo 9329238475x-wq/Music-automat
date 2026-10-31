@@ -35,8 +35,9 @@ SCAN_MAX_VIDEOS_PER_CHANNEL = 10            # Max videos to parse per channel pa
 # === Video Processing ===
 KEEP_DURATION_SEC = 7200                    # पहले 2 घंटे रखना (cut point)
 TARGET_TOTAL_SEC = 10800                    # कुल 3 घंटे+ बनाना (10800 = 3hr minimum)
-WATERMARK_SCALE = 0.30                      # 70% छोटा = original का 30%
-WATERMARK_MARGIN_PX = 20                    # कोने से gap (pixels)
+WATERMARK_MAX_WIDTH_PX = 150                # कोने का सही लोगो साइज़ (~140-150px, यूजर के सर्कल अनुसार)
+WATERMARK_SCALE = 0.13                      # वीडियो हाइट का 13% (~140px on 1080p)
+WATERMARK_MARGIN_PX = 30                    # कोने से gap (pixels)
 WATERMARK_OPACITY = 0.85                    # Watermark transparency
 
 # === Dynamic Editing Settings (Auto-Cut + Alternating Mirror + Transitions) ===
@@ -55,7 +56,7 @@ DOWNLOAD_RETRIES = 10
 # === Output Video Encoding ===
 OUTPUT_CODEC = "libx264"
 OUTPUT_CRF = 23
-OUTPUT_PRESET = "medium"
+OUTPUT_PRESET = "veryfast"                  # 4x-5x faster encoding than medium
 OUTPUT_AUDIO_CODEC = "aac"
 OUTPUT_AUDIO_BITRATE = "192k"
 
