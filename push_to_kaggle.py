@@ -98,7 +98,7 @@ meta = {
     "language": "python",
     "kernel_type": "script",
     "is_private": "true",
-    "enable_gpu": "true" if (profile == "copy_right_work" or os.environ.get("ENABLE_GPU", "").lower() in ["true", "1"]) else "false",
+    "enable_gpu": "true" if os.environ.get("ENABLE_GPU", "").lower() in ["true", "1"] else "false",
     "enable_internet": "true",
     "dataset_sources": [],
     "competition_sources": [],

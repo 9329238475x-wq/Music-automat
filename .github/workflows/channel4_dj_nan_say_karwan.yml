@@ -32,7 +32,7 @@ jobs:
           echo '{"username":"${{ secrets.KAGGLE_USERNAME }}","key":"${{ secrets.KAGGLE_KEY }}"}' > ~/.kaggle/kaggle.json
           chmod 600 ~/.kaggle/kaggle.json
 
-      - name: Deploy & Trigger CopyRight-Work Production (GPU)
+      - name: Deploy & Trigger CopyRight-Work Production (Fast CPU)
         env:
           KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
           KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
@@ -44,7 +44,7 @@ jobs:
           PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
           PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
           DJ_PROFILE: copy_right_work
-          ENABLE_GPU: 'true'
+          ENABLE_GPU: 'false'
           DJ_SKIP_UPLOAD: ${{ inputs.skip_upload || 'false' }}
         run: |
           python push_to_kaggle.py

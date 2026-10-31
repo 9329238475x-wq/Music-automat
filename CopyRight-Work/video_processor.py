@@ -401,6 +401,7 @@ def apply_dynamic_editing_and_watermark(
         cmd = [
             "ffmpeg",
             "-y",
+            "-threads", "0",
             "-i", input_path,
             "-i", watermark_path,
             "-filter_complex", filter_complex,
@@ -417,6 +418,7 @@ def apply_dynamic_editing_and_watermark(
         cmd = [
             "ffmpeg",
             "-y",
+            "-threads", "0",
             "-i", input_path,
             "-vf", filter_chain,
             "-c:v", config.OUTPUT_CODEC,

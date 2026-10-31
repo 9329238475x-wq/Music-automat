@@ -56,7 +56,7 @@ DOWNLOAD_RETRIES = 10
 # === Output Video Encoding ===
 OUTPUT_CODEC = "libx264"
 OUTPUT_CRF = 23
-OUTPUT_PRESET = "veryfast"                  # 4x-5x faster encoding than medium
+OUTPUT_PRESET = "ultrafast"                # CPU पर 300+ fps अल्ट्राफास्ट एन्कोडिंग
 OUTPUT_AUDIO_CODEC = "aac"
 OUTPUT_AUDIO_BITRATE = "192k"
 
