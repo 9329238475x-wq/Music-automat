@@ -130,7 +130,7 @@ class DJAudioEngine:
         - Trims trailing 15s to eliminate outros / promo announcements from all tracks.
         - Bass is kept 100% PURE, RAW & UNTOUCHED (Zero frequency filtering or sub-bass choking).
         - Natural DJ Pitch & Speed boost (+5% / 1.05x) for full Anti-Fingerprint / Copyright Claim bypass.
-        - Mastered to punchy commercial club standard (-10.5 LUFS, -1.0 dBTP, LRA 9.0) for crystal clear, unclipped bass.
+        - Mastered to crystal clear commercial club standard (-13.0 LUFS, -1.5 dBTP, LRA 9.0) with brickwall peak limiter.
         """
         raw_dur = self._get_audio_duration(in_file)
         if raw_dur < 30.0:
@@ -161,8 +161,8 @@ class DJAudioEngine:
         fade_in_d = fade_in_sec if track_index > 1 else 0.5
 
         # Commercial DJ Loudness Normalization with full dynamic range preservation (No bass choking or distortion)
-        target_lufs = float(self.settings.get("audio", {}).get("target_lufs", -10.5))
-        true_peak = float(self.settings.get("audio", {}).get("true_peak", -1.0))
+        target_lufs = float(self.settings.get("audio", {}).get("target_lufs", -13.0))
+        true_peak = float(self.settings.get("audio", {}).get("true_peak", -1.5))
         lra = float(self.settings.get("audio", {}).get("loudness_range", 9.0))
 
         # Assemble clean filter parts (Original Bass & True Frequency Response 100% Intact)
@@ -184,6 +184,7 @@ class DJAudioEngine:
             filter_parts.append(f"equalizer=f={vocal_freq}:t=q:w={vocal_q:.2f}:g={vocal_db:.1f}")
 
         filter_parts.append(f"loudnorm=I={target_lufs:.1f}:TP={true_peak:.1f}:LRA={lra:.1f}:linear=true")
+        filter_parts.append(f"alimiter=limit={true_peak:.1f}dB:attack=5:release=50:asc=1")
         filter_parts.append("aformat=sample_fmts=s16:sample_rates=44100:channel_layouts=stereo")
 
         filter_chain = ",".join(filter_parts)
@@ -305,8 +306,9 @@ class DJAudioEngine:
         concat_inputs = "".join(f"[{i}:a]" for i in range(n))
         filter_parts = [f"{concat_inputs}concat=n={n}:v=0:a=1[base]"]
 
-        final_audio_label = "base"
+        final_audio_label = "final_mix"
         has_wooosh = os.path.exists(self.wooosh_path) and n > 1
+        target_tp = float(self.settings.get("audio", {}).get("true_peak", -1.5))
 
         if has_wooosh:
             logger.info(f"Adding cinematic 'Wooosh' transition sound ({self.wooosh_path}) at all {len(chapters) - 1} song changes...")
@@ -319,15 +321,21 @@ class DJAudioEngine:
                 delay_ms = max(0, int((ch["seconds"] - 0.35) * 1000))
                 w_lbl = f"w{ch_idx}"
                 filter_parts.append(
-                    f"[{wooosh_input_idx}:a]adelay={delay_ms}|{delay_ms},volume=0.90[{w_lbl}]"
+                    f"[{wooosh_input_idx}:a]adelay={delay_ms}|{delay_ms},volume=0.50[{w_lbl}]"
                 )
                 wooosh_labels.append(w_lbl)
 
             mix_inputs = "".join([f"[base]"] + [f"[{w}]" for w in wooosh_labels])
             filter_parts.append(
-                f"{mix_inputs}amix=inputs={len(wooosh_labels) + 1}:normalize=0:duration=first[final_mix]"
+                f"{mix_inputs}amix=inputs={len(wooosh_labels) + 1}:normalize=0:duration=first[pre_limit]"
             )
-            final_audio_label = "final_mix"
+            filter_parts.append(
+                f"[pre_limit]alimiter=limit={target_tp:.1f}dB:attack=5:release=50:asc=1[final_mix]"
+            )
+        else:
+            filter_parts.append(
+                f"[base]alimiter=limit={target_tp:.1f}dB:attack=5:release=50:asc=1[final_mix]"
+            )
 
         filter_complex = ";".join(filter_parts)
 
