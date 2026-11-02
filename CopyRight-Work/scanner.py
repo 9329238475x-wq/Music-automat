@@ -441,17 +441,26 @@ class VideoScanner:
         logger.info(f"📋 Fetching full description from viral video ({viral_video['url']})...")
         copied_desc = fetch_video_description(viral_video["url"])
 
-        if copied_desc:
-            chosen["description"] = copied_desc
-            chosen["desc_source_title"] = viral_video["title"]
-            chosen["desc_source_views"] = viral_video.get("view_count", 0)
-            chosen["desc_source_channel"] = viral_video.get("channel_name", "")
-            logger.info(f"✅ Successfully copied full description ({len(copied_desc)} characters)!")
-        else:
-            logger.warning("Could not fetch description from viral video. Using fallback.")
-            chosen["description"] = f"{chosen['title']}\n\nUploaded via DJ JAY LAL BARBASPUR"
+        final_desc = copied_desc if copied_desc else f"{chosen['title']}\n\nUploaded via DJ JAY LAL BARBASPUR"
+        for c in candidates:
+            c["description"] = final_desc
+            if copied_desc:
+                c["desc_source_title"] = viral_video["title"]
+                c["desc_source_views"] = viral_video.get("view_count", 0)
+                c["desc_source_channel"] = viral_video.get("channel_name", "")
 
+        if copied_desc:
+            logger.info(f"✅ Successfully attached full description ({len(copied_desc)} characters) to all {len(candidates)} candidate(s)!")
+        else:
+            logger.warning("Could not fetch description from viral video. Using fallback for all candidates.")
+
+        self.candidates = candidates
         return chosen
+
+    def scan_candidates(self) -> List[Dict[str, Any]]:
+        """Returns all qualifying 2hr+ candidates sorted newest first."""
+        self.scan_channels()
+        return getattr(self, "candidates", [])
 
 
 def fetch_video_description(video_url: str) -> str:

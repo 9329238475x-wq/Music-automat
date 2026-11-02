@@ -68,14 +68,19 @@ def download_video(video_info: Dict[str, Any]) -> Optional[Dict[str, str]]:
 
     logger.info(f"📥 Downloading video: \"{title[:60]}\" [{vid_id}]...")
 
-    # ── Tier 1: Android Innertube API (Zero BotGuard, No Cookies, player_skip=webpage) ──
-    # Direct API request without downloading YouTube webpage - bypasses cloud datacenter bot challenges
-    logger.info("  Tier 1: Android client direct API (Bypass BotGuard)...")
+    def _log_err(tier_num: int, res: subprocess.CompletedProcess):
+        if res.returncode != 0 and res.stderr:
+            err_lines = [l.strip() for l in res.stderr.splitlines() if l.strip() and not l.strip().startswith("See https://")]
+            msg = " | ".join(err_lines[-2:]) if err_lines else res.stderr[-200:].strip()
+            logger.warning(f"  Tier {tier_num} notice: {msg[:250]}")
+
+    # ── Tier 1: Browser Impersonation (Chrome) + TLS Fingerprint Bypasser via curl-cffi ──
+    logger.info("  Tier 1: Browser Impersonation (Chrome) + BotGuard solver...")
     cmd_tier1 = [
         sys.executable, "-m", "yt_dlp",
+        "--impersonate", "chrome",
         "--js-runtimes", "deno,node",
         "--remote-components", "ejs:github",
-        "--extractor-args", "youtube:player_client=android;player_skip=webpage",
         "-f", fallback_format,
         "--retries", str(config.DOWNLOAD_RETRIES),
         "--fragment-retries", str(config.DOWNLOAD_RETRIES),
@@ -86,6 +91,7 @@ def download_video(video_info: Dict[str, Any]) -> Optional[Dict[str, str]]:
         "-o", f"{out_prefix}.%(ext)s",
         "--no-playlist",
         "--no-warnings",
+        *cookie_args,
         url,
     ]
     try:
@@ -94,23 +100,23 @@ def download_video(video_info: Dict[str, Any]) -> Optional[Dict[str, str]]:
             cmd_tier1, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
             text=True, timeout=config.DOWNLOAD_TIMEOUT
         )
-        if res.returncode != 0 and res.stderr:
-            logger.warning(f"  Tier 1 notice: {res.stderr[-250:].strip()}")
+        _log_err(1, res)
     except subprocess.TimeoutExpired:
         logger.warning("  Tier 1: Timeout expired")
     except Exception as e:
         logger.warning(f"  Tier 1: Error - {e}")
 
-    # ── Tier 2: Progressive stream format 18 fallback (Android direct) ──
+    # ── Tier 2: Android Direct API (Zero BotGuard, player_skip=webpage) ──
     if not _video_exists(video_out):
-        logger.info("  Tier 2: Progressive stream format 18 fallback (Android direct)...")
+        logger.info("  Tier 2: Android client direct API (Bypass BotGuard)...")
         cmd_tier2 = [
             sys.executable, "-m", "yt_dlp",
             "--js-runtimes", "deno,node",
             "--remote-components", "ejs:github",
             "--extractor-args", "youtube:player_client=android;player_skip=webpage",
-            "-f", "18/best",
+            "-f", fallback_format,
             "--retries", str(config.DOWNLOAD_RETRIES),
+            "--fragment-retries", str(config.DOWNLOAD_RETRIES),
             "--merge-output-format", "mp4",
             "--write-thumbnail",
             "--convert-thumbnails", "jpg",
@@ -125,21 +131,18 @@ def download_video(video_info: Dict[str, Any]) -> Optional[Dict[str, str]]:
                 cmd_tier2, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                 text=True, timeout=config.DOWNLOAD_TIMEOUT
             )
-            if res.returncode != 0 and res.stderr:
-                logger.warning(f"  Tier 2 notice: {res.stderr[-250:].strip()}")
+            _log_err(2, res)
         except Exception as e:
             logger.warning(f"  Tier 2: Error - {e}")
 
-    # ── Tier 3: Web client with Cookies (If valid cookies provided) ──
+    # ── Tier 3: Progressive format 18 single-stream fallback (Chrome impersonated) ──
     if not _video_exists(video_out):
-        logger.info("  Tier 3: Web client with cookies + BotGuard solver...")
+        logger.info("  Tier 3: Progressive stream format 18 fallback (Chrome impersonated)...")
         cmd_tier3 = [
             sys.executable, "-m", "yt_dlp",
-            "--js-runtimes", "deno,node",
-            "--remote-components", "ejs:github",
-            "-f", fallback_format,
+            "--impersonate", "chrome",
+            "-f", "18/best",
             "--retries", str(config.DOWNLOAD_RETRIES),
-            "--fragment-retries", str(config.DOWNLOAD_RETRIES),
             "--merge-output-format", "mp4",
             "--write-thumbnail",
             "--convert-thumbnails", "jpg",
@@ -155,19 +158,16 @@ def download_video(video_info: Dict[str, Any]) -> Optional[Dict[str, str]]:
                 cmd_tier3, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                 text=True, timeout=config.DOWNLOAD_TIMEOUT
             )
-            if res.returncode != 0 and res.stderr:
-                logger.warning(f"  Tier 3 notice: {res.stderr[-250:].strip()}")
+            _log_err(3, res)
         except Exception as e:
             logger.warning(f"  Tier 3: Error - {e}")
 
-    # ── Tier 4: iOS client fallback (player_skip=webpage) ──
+    # ── Tier 4: Safari / iOS fallback ──
     if not _video_exists(video_out):
-        logger.info("  Tier 4: iOS client fallback...")
+        logger.info("  Tier 4: Safari / iOS fallback...")
         cmd_tier4 = [
             sys.executable, "-m", "yt_dlp",
-            "--js-runtimes", "deno,node",
-            "--remote-components", "ejs:github",
-            "--extractor-args", "youtube:player_client=ios;player_skip=webpage",
+            "--impersonate", "safari",
             "-f", fallback_format,
             "--retries", str(config.DOWNLOAD_RETRIES),
             "--merge-output-format", "mp4",
@@ -182,8 +182,7 @@ def download_video(video_info: Dict[str, Any]) -> Optional[Dict[str, str]]:
                 cmd_tier4, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                 text=True, timeout=config.DOWNLOAD_TIMEOUT
             )
-            if res.returncode != 0 and res.stderr:
-                logger.warning(f"  Tier 4 notice: {res.stderr[-250:].strip()}")
+            _log_err(4, res)
         except Exception as e:
             logger.warning(f"  Tier 4: Error - {e}")
 

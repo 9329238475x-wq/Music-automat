@@ -39,7 +39,11 @@ try:
             deno_bin = "/root/.deno/bin"
             if os.path.exists(deno_bin):
                 os.environ["PATH"] = f"{deno_bin}:{os.environ.get('PATH', '')}"
-                print("✓ Deno installed & configured!", flush=True)
+                try:
+                    subprocess.run(["ln", "-sf", f"{deno_bin}/deno", "/usr/local/bin/deno"], check=False)
+                except Exception:
+                    pass
+                print("✓ Deno installed & configured globally!", flush=True)
         except Exception as de:
             print(f"Notice: Deno install skipped: {de}", flush=True)
 
@@ -59,7 +63,8 @@ try:
     print("\n[3/5] Installing cloud dependencies...", flush=True)
     pip_cmd = [
         sys.executable, "-m", "pip", "install", "-q", "--upgrade",
-        "yt-dlp[default]",
+        "yt-dlp[default,curl-cffi]",
+        "curl-cffi",
         "google-api-python-client",
         "google-auth-oauthlib",
         "google-auth-httplib2",

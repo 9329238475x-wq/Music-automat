@@ -93,44 +93,52 @@ class CopyRightWorkPipeline:
         )
 
         # ════════════════════════════════════════════════════════
-        # STEP 1: SCAN — Find 2hr+ video
+        # STEP 1: SCAN — Find 2hr+ video candidates
         # ════════════════════════════════════════════════════════
         logger.info("═══ STEP 1/5: SCANNING CHANNELS ═══")
         scanner = VideoScanner()
-        video_info = scanner.scan_channels()
+        candidate_list = scanner.scan_candidates()
 
-        if not video_info:
+        if not candidate_list:
             logger.error(
                 "❌ Pipeline ABORTED: No qualifying 2hr+ video found "
                 "in any source channel."
             )
             return False
 
-        logger.info(
-            f"  Selected: \"{video_info['title'][:60]}\"\n"
-            f"  Channel:  {video_info['channel_name']}\n"
-            f"  Duration: {video_info['duration_sec']/3600:.1f}hr\n"
-            f"  Age:      {video_info['age_hours']:.1f}hr ago\n"
-            f"  URL:      {video_info['url']}"
-        )
-
         if scan_only:
             logger.info("🔍 Scan-only mode. Pipeline stops here.")
             return True
 
         # ════════════════════════════════════════════════════════
-        # STEP 2: DOWNLOAD — Get full video
+        # STEP 2: DOWNLOAD — Get full video with candidate fallback loop
         # ════════════════════════════════════════════════════════
-        logger.info("═══ STEP 2/5: DOWNLOADING VIDEO ═══")
-        download_result = download_video(video_info)
+        logger.info(f"═══ STEP 2/5: DOWNLOADING VIDEO ({len(candidate_list)} candidate(s) available) ═══")
+        download_result = None
+        video_info = None
+
+        for idx, candidate in enumerate(candidate_list, 1):
+            logger.info(
+                f"\n▶ Attempting candidate #{idx}/{len(candidate_list)}: \"{candidate['title'][:55]}\" [{candidate['id']}]\n"
+                f"   Channel:  {candidate['channel_name']}\n"
+                f"   Duration: {candidate['duration_sec']/3600:.1f}hr\n"
+                f"   Age:      {candidate['age_hours']:.1f}hr ago\n"
+                f"   URL:      {candidate['url']}"
+            )
+            download_result = download_video(candidate)
+            if download_result and download_result.get("video_path"):
+                video_info = candidate
+                logger.info(f"✅ Candidate #{idx} successfully downloaded: {download_result['video_path']}")
+                break
+            logger.warning(f"⚠️ Candidate #{idx} failed to download. Trying next candidate from pool...")
 
         if not download_result or not download_result.get("video_path"):
-            logger.error("❌ Pipeline ABORTED: Video download failed.")
+            logger.error("❌ Pipeline ABORTED: All candidates failed to download.")
             return False
 
         source_video_path = download_result["video_path"]
         source_thumb_path = download_result.get("thumb_path")
-        logger.info(f"  Downloaded: {source_video_path}")
+        logger.info(f"  Selected source video: {source_video_path}")
 
         # ════════════════════════════════════════════════════════
         # STEP 3: PROCESS — Cut + Footage + Watermark
