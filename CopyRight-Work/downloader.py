@@ -63,21 +63,20 @@ def download_video(video_info: Dict[str, Any]) -> Optional[Dict[str, str]]:
     cookie_path = config.get_cookie_path()
     cookie_args = ["--cookies", cookie_path] if cookie_path else []
 
-    # When cookies are provided, don't force android client (android rejects cookies)
-    primary_extractor_args = (
-        [] if cookie_args
-        else ["--extractor-args", "youtube:player_client=android"]
-    )
+    # Fallback format: includes progressive stream 18 if separate streams unavailable
+    fallback_format = f"{config.VIDEO_FORMAT}/18/best"
 
     logger.info(f"📥 Downloading video: \"{title[:60]}\" [{vid_id}]...")
 
-    # ── Tier 1: Default client + BotGuard/EJS ──
+    # ── Tier 1: Android Innertube API (Zero BotGuard, No Cookies, player_skip=webpage) ──
+    # Direct API request without downloading YouTube webpage - bypasses cloud datacenter bot challenges
+    logger.info("  Tier 1: Android client direct API (Bypass BotGuard)...")
     cmd_tier1 = [
         sys.executable, "-m", "yt_dlp",
         "--js-runtimes", "deno,node",
         "--remote-components", "ejs:github",
-        *primary_extractor_args,
-        "-f", config.VIDEO_FORMAT,
+        "--extractor-args", "youtube:player_client=android;player_skip=webpage",
+        "-f", fallback_format,
         "--retries", str(config.DOWNLOAD_RETRIES),
         "--fragment-retries", str(config.DOWNLOAD_RETRIES),
         "--retry-sleep", "2",
@@ -87,12 +86,9 @@ def download_video(video_info: Dict[str, Any]) -> Optional[Dict[str, str]]:
         "-o", f"{out_prefix}.%(ext)s",
         "--no-playlist",
         "--no-warnings",
-        *cookie_args,
         url,
     ]
-
     try:
-        logger.info("  Tier 1: Default client + BotGuard...")
         time.sleep(1.0)
         res = subprocess.run(
             cmd_tier1, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
@@ -105,20 +101,16 @@ def download_video(video_info: Dict[str, Any]) -> Optional[Dict[str, str]]:
     except Exception as e:
         logger.warning(f"  Tier 1: Error - {e}")
 
-    # Fallback format for mobile clients: includes progressive stream 18 if separate streams unavailable
-    fallback_format = f"{config.VIDEO_FORMAT}/18/best"
-
-    # ── Tier 2: Android client fallback (Clean mobile API, no web cookies) ──
+    # ── Tier 2: Progressive stream format 18 fallback (Android direct) ──
     if not _video_exists(video_out):
-        logger.info("  Tier 2: Android client fallback (Full HD / Stream)...")
+        logger.info("  Tier 2: Progressive stream format 18 fallback (Android direct)...")
         cmd_tier2 = [
             sys.executable, "-m", "yt_dlp",
             "--js-runtimes", "deno,node",
             "--remote-components", "ejs:github",
-            "--extractor-args", "youtube:player_client=android",
-            "-f", fallback_format,
+            "--extractor-args", "youtube:player_client=android;player_skip=webpage",
+            "-f", "18/best",
             "--retries", str(config.DOWNLOAD_RETRIES),
-            "--fragment-retries", str(config.DOWNLOAD_RETRIES),
             "--merge-output-format", "mp4",
             "--write-thumbnail",
             "--convert-thumbnails", "jpg",
@@ -138,22 +130,23 @@ def download_video(video_info: Dict[str, Any]) -> Optional[Dict[str, str]]:
         except Exception as e:
             logger.warning(f"  Tier 2: Error - {e}")
 
-    # ── Tier 3: iOS client fallback (No web cookies) ──
+    # ── Tier 3: Web client with Cookies (If valid cookies provided) ──
     if not _video_exists(video_out):
-        logger.info("  Tier 3: iOS client fallback...")
+        logger.info("  Tier 3: Web client with cookies + BotGuard solver...")
         cmd_tier3 = [
             sys.executable, "-m", "yt_dlp",
             "--js-runtimes", "deno,node",
             "--remote-components", "ejs:github",
-            "--extractor-args", "youtube:player_client=ios",
             "-f", fallback_format,
             "--retries", str(config.DOWNLOAD_RETRIES),
+            "--fragment-retries", str(config.DOWNLOAD_RETRIES),
             "--merge-output-format", "mp4",
             "--write-thumbnail",
             "--convert-thumbnails", "jpg",
             "-o", f"{out_prefix}.%(ext)s",
             "--no-playlist",
             "--no-warnings",
+            *cookie_args,
             url,
         ]
         try:
@@ -167,14 +160,14 @@ def download_video(video_info: Dict[str, Any]) -> Optional[Dict[str, str]]:
         except Exception as e:
             logger.warning(f"  Tier 3: Error - {e}")
 
-    # ── Tier 4: TV client fallback ──
+    # ── Tier 4: iOS client fallback (player_skip=webpage) ──
     if not _video_exists(video_out):
-        logger.info("  Tier 4: TV client fallback...")
+        logger.info("  Tier 4: iOS client fallback...")
         cmd_tier4 = [
             sys.executable, "-m", "yt_dlp",
             "--js-runtimes", "deno,node",
             "--remote-components", "ejs:github",
-            "--extractor-args", "youtube:player_client=tv;player_skip=webpage",
+            "--extractor-args", "youtube:player_client=ios;player_skip=webpage",
             "-f", fallback_format,
             "--retries", str(config.DOWNLOAD_RETRIES),
             "--merge-output-format", "mp4",

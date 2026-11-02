@@ -219,7 +219,7 @@ class DJScraper:
             sys.executable, "-m", "yt_dlp",
             "--flat-playlist",
             "--js-runtimes", "node",
-            "--extractor-args", "youtube:player_client=android,mweb",
+            "--extractor-args", "youtube:player_client=android,mweb;player_skip=webpage",
             "--ignore-errors",
             "--print", "%(id)s\t%(duration)s\t%(view_count)s\t%(title)s",
             "--playlist-end", "5",
@@ -555,7 +555,7 @@ class DJScraper:
 
         # Determine client strategy:
         # When cookies are provided, do NOT force android (android rejects cookies), use default authenticated client with ejs solver!
-        primary_extractor_args = [] if cookie_args else ["--extractor-args", "youtube:player_client=android"]
+        primary_extractor_args = [] if cookie_args else ["--extractor-args", "youtube:player_client=android;player_skip=webpage"]
 
         # Primary: Authenticated client with Deno/Node BotGuard & EJS solver
         cmd = [
@@ -615,7 +615,7 @@ class DJScraper:
                     sys.executable, "-m", "yt_dlp",
                     "--js-runtimes", "deno,node",
                     "--remote-components", "ejs:github",
-                    "--extractor-args", "youtube:player_client=android",
+                    "--extractor-args", "youtube:player_client=android;player_skip=webpage",
                     "-f", "18/best",
                     "--retries", "10",
                     "--fragment-retries", "10",
@@ -639,7 +639,7 @@ class DJScraper:
                     sys.executable, "-m", "yt_dlp",
                     "--js-runtimes", "deno,node",
                     "--remote-components", "ejs:github",
-                    "--extractor-args", "youtube:player_client=ios",
+                    "--extractor-args", "youtube:player_client=ios;player_skip=webpage",
                     "-f", "ba/b/18/best",
                     "--retries", "10",
                     "-x",

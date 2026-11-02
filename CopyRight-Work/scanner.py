@@ -237,7 +237,7 @@ class VideoScanner:
             sys.executable, "-m", "yt_dlp",
             "--flat-playlist",
             "--js-runtimes", "node",
-            "--extractor-args", "youtube:player_client=android,mweb",
+            "--extractor-args", "youtube:player_client=android,mweb;player_skip=webpage",
             "--ignore-errors",
             "--print", "%(id)s\t%(duration)s\t%(view_count)s\t%(title)s",
             "--playlist-end", "8",
@@ -458,7 +458,7 @@ def fetch_video_description(video_url: str) -> str:
     """Fetches full description of a YouTube video using yt-dlp with android client."""
     cmd = [
         sys.executable, "-m", "yt_dlp",
-        "--extractor-args", "youtube:player_client=android",
+        "--extractor-args", "youtube:player_client=android;player_skip=webpage",
         "--skip-download",
         "--no-warnings",
         "--quiet",
