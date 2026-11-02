@@ -7,7 +7,6 @@ BEFORE downloading it into production mixes.
 
 import os
 import sys
-import json
 import re
 import logging
 import subprocess
@@ -59,17 +58,16 @@ def is_title_blacklisted(title: str) -> Tuple[bool, str]:
     """
     t_lower = title.lower()
     for label in MAJOR_CLAIMANTS:
-        # Match whole word boundary to avoid false positives
         pattern = rf"\b{re.escape(label)}\b"
         if re.search(pattern, t_lower):
             return True, f"Major record label detected in title: '{label}'"
     return False, ""
 
 
-def check_video_copyright(video_id_or_url: str, timeout: int = 15) -> Tuple[bool, str]:
+def check_video_copyright(video_id_or_url: str, timeout: int = 25) -> Tuple[bool, str]:
     """
     Checks if a YouTube video has active Content ID claims or record label licensing.
-    Uses yt-dlp android client to fetch video metadata without downloading.
+    Uses lightweight yt-dlp print extraction to fetch metadata and description without downloading.
     Returns (is_claimed: bool, reason: str).
     """
     vid_id = video_id_or_url.split("v=")[-1].split("&")[0].split("?")[0].strip()
@@ -86,8 +84,7 @@ def check_video_copyright(video_id_or_url: str, timeout: int = 15) -> Tuple[bool
         "--extractor-args", "youtube:player_client=android;player_skip=webpage",
         "--skip-download",
         "--no-warnings",
-        "--quiet",
-        "--dump-single-json",
+        "--print", "%(track)s|||%(artist)s|||%(album)s|||%(description)s",
         url,
     ]
 
@@ -100,18 +97,19 @@ def check_video_copyright(video_id_or_url: str, timeout: int = 15) -> Tuple[bool
             timeout=timeout
         )
 
-        if res.returncode != 0 or not res.stdout.strip():
-            # If metadata fetch failed, do not block unless we have proof
-            _COPYRIGHT_CACHE[vid_id] = (False, "Metadata extraction skipped")
-            return False, "Metadata extraction skipped"
+        out_text = res.stdout.strip()
+        if not out_text:
+            _COPYRIGHT_CACHE[vid_id] = (False, "Metadata unavailable")
+            return False, "Metadata unavailable"
 
-        data = json.loads(res.stdout)
+        # Split into track, artist, album, description
+        parts = out_text.split("|||", 3)
+        track = parts[0].strip() if len(parts) > 0 and parts[0].strip() != "NA" else ""
+        artist = parts[1].strip() if len(parts) > 1 and parts[1].strip() != "NA" else ""
+        album = parts[2].strip() if len(parts) > 2 and parts[2].strip() != "NA" else ""
+        desc = parts[3].lower() if len(parts) > 3 else ""
 
-        # 1. Check Content ID Metadata fields
-        track = (data.get("track") or "").strip()
-        artist = (data.get("artist") or "").strip()
-        album = (data.get("album") or "").strip()
-
+        # 1. Content ID Metadata Check (Track & Artist tagged by YouTube Music / Innertube)
         if track and artist:
             reason = f"Content ID Audio Match: Track='{track}', Artist='{artist}'"
             if album:
@@ -119,12 +117,9 @@ def check_video_copyright(video_id_or_url: str, timeout: int = 15) -> Tuple[bool
             _COPYRIGHT_CACHE[vid_id] = (True, reason)
             return True, reason
 
-        # 2. Check Description for YouTube's automated copyright attribution
-        desc = (data.get("description") or "").lower()
-
+        # 2. Automated Content ID Description Claim Check
         for phrase in CONTENT_ID_PHRASES:
             if phrase in desc:
-                # Find matching label if mentioned
                 matched_label = ""
                 for lbl in MAJOR_CLAIMANTS:
                     if lbl in desc:
@@ -134,7 +129,13 @@ def check_video_copyright(video_id_or_url: str, timeout: int = 15) -> Tuple[bool
                 _COPYRIGHT_CACHE[vid_id] = (True, reason)
                 return True, reason
 
-        # Clean track - no Content ID or label claims detected
+        # 3. Label presence in description footer (e.g. copyright holders)
+        for lbl in ["t-series", "zee music", "sony music", "saregama", "tips official", "speed records", "yrf"]:
+            if f"© {lbl}" in desc or f"℗ {lbl}" in desc or f"(c) {lbl}" in desc or f"(p) {lbl}" in desc:
+                reason = f"Copyright owner line detected in description: '{lbl.title()}'"
+                _COPYRIGHT_CACHE[vid_id] = (True, reason)
+                return True, reason
+
         _COPYRIGHT_CACHE[vid_id] = (False, "Clean (No Copyright Claims)")
         return False, "Clean (No Copyright Claims)"
 
