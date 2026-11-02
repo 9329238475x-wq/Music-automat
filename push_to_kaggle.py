@@ -6,6 +6,16 @@ import shutil
 import subprocess
 from pathlib import Path
 
+# Auto-ensure 'six' dependency for Kaggle CLI compatibility
+try:
+    import six
+except ImportError:
+    try:
+        subprocess.run([sys.executable, "-m", "pip", "install", "-q", "six"], check=False)
+    except Exception:
+        pass
+
+
 if hasattr(sys.stdout, 'reconfigure'):
     try:
         sys.stdout.reconfigure(encoding='utf-8')

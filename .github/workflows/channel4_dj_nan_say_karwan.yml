@@ -24,7 +24,7 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          pip install --upgrade kaggle requests
+          pip install --upgrade kaggle requests six
 
       - name: Configure Kaggle API
         run: |
