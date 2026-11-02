@@ -171,6 +171,21 @@ def sync_all_secrets_to_github(gh_token: Optional[str] = None) -> Dict[str, Any]
         except Exception as e:
             logger.warning(f"Error reading client secrets: {e}")
 
+    # 3. YouTube Cookies if present
+    cookie_candidates = [
+        BASE_DIR / "cookies.txt",
+        CONFIG_DIR / "cookies.txt"
+    ]
+    for c_file in cookie_candidates:
+        if c_file.exists():
+            try:
+                c_bytes = c_file.read_bytes()
+                if len(c_bytes) > 20:
+                    secrets_to_push["YOUTUBE_COOKIES_B64"] = base64.b64encode(c_bytes).decode("ascii")
+                    break
+            except Exception as e:
+                logger.warning(f"Error reading cookies: {e}")
+
     if not secrets_to_push:
         return {
             "success": False,

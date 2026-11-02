@@ -627,7 +627,6 @@ class DJScraper:
                     "--no-playlist",
                     "--no-warnings",
                     "--quiet",
-                    *cookie_args,
                     track["url"]
                 ]
                 res = subprocess.run(retry_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, timeout=120)
@@ -649,7 +648,6 @@ class DJScraper:
                     "--no-playlist",
                     "--no-warnings",
                     "--quiet",
-                    *cookie_args,
                     track["url"]
                 ]
                 res = subprocess.run(retry3_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, timeout=120)
