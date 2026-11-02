@@ -455,12 +455,10 @@ class VideoScanner:
 
 
 def fetch_video_description(video_url: str) -> str:
-    """Fetches full description of a YouTube video using yt-dlp with cookies."""
-    cookie_path = config.get_cookie_path()
-    cookie_args = ["--cookies", cookie_path] if cookie_path else []
+    """Fetches full description of a YouTube video using yt-dlp with android client."""
     cmd = [
         sys.executable, "-m", "yt_dlp",
-        *cookie_args,
+        "--extractor-args", "youtube:player_client=android",
         "--skip-download",
         "--no-warnings",
         "--quiet",

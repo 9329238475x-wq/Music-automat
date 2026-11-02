@@ -94,51 +94,29 @@ def download_video(video_info: Dict[str, Any]) -> Optional[Dict[str, str]]:
     try:
         logger.info("  Tier 1: Default client + BotGuard...")
         time.sleep(1.0)
-        subprocess.run(
+        res = subprocess.run(
             cmd_tier1, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
             text=True, timeout=config.DOWNLOAD_TIMEOUT
         )
+        if res.returncode != 0 and res.stderr:
+            logger.warning(f"  Tier 1 notice: {res.stderr[-250:].strip()}")
     except subprocess.TimeoutExpired:
         logger.warning("  Tier 1: Timeout expired")
     except Exception as e:
         logger.warning(f"  Tier 1: Error - {e}")
 
-    # ── Tier 2: TV Embedded client ──
+    # Fallback format for mobile clients: includes progressive stream 18 if separate streams unavailable
+    fallback_format = f"{config.VIDEO_FORMAT}/18/best"
+
+    # ── Tier 2: Android client fallback (Clean mobile API, no web cookies) ──
     if not _video_exists(video_out):
-        logger.info("  Tier 2: TV Embedded client...")
+        logger.info("  Tier 2: Android client fallback (Full HD / Stream)...")
         cmd_tier2 = [
             sys.executable, "-m", "yt_dlp",
             "--js-runtimes", "deno,node",
             "--remote-components", "ejs:github",
-            "--extractor-args", "youtube:player_client=tv,tv_embedded;player_skip=webpage",
-            "--force-ipv4",
-            "-f", config.VIDEO_FORMAT,
-            "--retries", str(config.DOWNLOAD_RETRIES),
-            "--merge-output-format", "mp4",
-            "-o", f"{out_prefix}.%(ext)s",
-            "--no-playlist",
-            "--no-warnings",
-            *cookie_args,
-            url,
-        ]
-        try:
-            time.sleep(2)
-            subprocess.run(
-                cmd_tier2, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                text=True, timeout=config.DOWNLOAD_TIMEOUT
-            )
-        except Exception as e:
-            logger.warning(f"  Tier 2: Error - {e}")
-
-    # ── Tier 3: Android client (Full HD stream) ──
-    if not _video_exists(video_out):
-        logger.info("  Tier 3: Android client fallback (Full HD)...")
-        cmd_tier3 = [
-            sys.executable, "-m", "yt_dlp",
-            "--js-runtimes", "deno,node",
-            "--remote-components", "ejs:github",
             "--extractor-args", "youtube:player_client=android",
-            "-f", config.VIDEO_FORMAT,
+            "-f", fallback_format,
             "--retries", str(config.DOWNLOAD_RETRIES),
             "--fragment-retries", str(config.DOWNLOAD_RETRIES),
             "--merge-output-format", "mp4",
@@ -147,27 +125,28 @@ def download_video(video_info: Dict[str, Any]) -> Optional[Dict[str, str]]:
             "-o", f"{out_prefix}.%(ext)s",
             "--no-playlist",
             "--no-warnings",
-            *cookie_args,
             url,
         ]
         try:
             time.sleep(2)
-            subprocess.run(
-                cmd_tier3, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+            res = subprocess.run(
+                cmd_tier2, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                 text=True, timeout=config.DOWNLOAD_TIMEOUT
             )
+            if res.returncode != 0 and res.stderr:
+                logger.warning(f"  Tier 2 notice: {res.stderr[-250:].strip()}")
         except Exception as e:
-            logger.warning(f"  Tier 3: Error - {e}")
+            logger.warning(f"  Tier 2: Error - {e}")
 
-    # ── Tier 4: iOS client fallback ──
+    # ── Tier 3: iOS client fallback (No web cookies) ──
     if not _video_exists(video_out):
-        logger.info("  Tier 4: iOS client fallback...")
-        cmd_tier4 = [
+        logger.info("  Tier 3: iOS client fallback...")
+        cmd_tier3 = [
             sys.executable, "-m", "yt_dlp",
             "--js-runtimes", "deno,node",
             "--remote-components", "ejs:github",
             "--extractor-args", "youtube:player_client=ios",
-            "-f", config.VIDEO_FORMAT,
+            "-f", fallback_format,
             "--retries", str(config.DOWNLOAD_RETRIES),
             "--merge-output-format", "mp4",
             "--write-thumbnail",
@@ -175,15 +154,43 @@ def download_video(video_info: Dict[str, Any]) -> Optional[Dict[str, str]]:
             "-o", f"{out_prefix}.%(ext)s",
             "--no-playlist",
             "--no-warnings",
-            *cookie_args,
             url,
         ]
         try:
             time.sleep(2)
-            subprocess.run(
+            res = subprocess.run(
+                cmd_tier3, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                text=True, timeout=config.DOWNLOAD_TIMEOUT
+            )
+            if res.returncode != 0 and res.stderr:
+                logger.warning(f"  Tier 3 notice: {res.stderr[-250:].strip()}")
+        except Exception as e:
+            logger.warning(f"  Tier 3: Error - {e}")
+
+    # ── Tier 4: TV client fallback ──
+    if not _video_exists(video_out):
+        logger.info("  Tier 4: TV client fallback...")
+        cmd_tier4 = [
+            sys.executable, "-m", "yt_dlp",
+            "--js-runtimes", "deno,node",
+            "--remote-components", "ejs:github",
+            "--extractor-args", "youtube:player_client=tv;player_skip=webpage",
+            "-f", fallback_format,
+            "--retries", str(config.DOWNLOAD_RETRIES),
+            "--merge-output-format", "mp4",
+            "-o", f"{out_prefix}.%(ext)s",
+            "--no-playlist",
+            "--no-warnings",
+            url,
+        ]
+        try:
+            time.sleep(2)
+            res = subprocess.run(
                 cmd_tier4, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                 text=True, timeout=config.DOWNLOAD_TIMEOUT
             )
+            if res.returncode != 0 and res.stderr:
+                logger.warning(f"  Tier 4 notice: {res.stderr[-250:].strip()}")
         except Exception as e:
             logger.warning(f"  Tier 4: Error - {e}")
 
