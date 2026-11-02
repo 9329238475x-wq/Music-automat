@@ -19,6 +19,11 @@ from datetime import datetime, timedelta
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import List, Dict, Any, Optional, Tuple
 
+try:
+    from src.copyright_checker import check_video_copyright, is_title_blacklisted
+except ImportError:
+    from copyright_checker import check_video_copyright, is_title_blacklisted
+
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 logger = logging.getLogger("Scraper")
 
@@ -380,6 +385,12 @@ class DJScraper:
                     logger.info(f"[SKIP NO SONG KEYWORD] {name} ({vid_id}): Title lacks DJ/Song keywords: '{title[:45]}'")
                     continue
 
+                # 8. PRE-FILTER: Check title against major record labels blacklist
+                is_bl, bl_reason = is_title_blacklisted(title)
+                if is_bl:
+                    logger.info(f"[SKIP COPYRIGHT LABEL] {name} ({vid_id}): {bl_reason}")
+                    continue
+
                 logger.info(f"[ACCEPTED 24H] ({age_hours:.1f}h ago <= {max_age_hours}h): [{name}] {title[:45]}")
                 return {
                     "id": vid_id,
@@ -542,6 +553,13 @@ class DJScraper:
             track["thumb_path"] = thumb_out
             return track
 
+        # Copyright & Content ID Shield: inspect metadata & description for active claims
+        is_claimed, claim_reason = check_video_copyright(vid_id)
+        if is_claimed:
+            logger.warning(f"🛡️ [SKIP COPYRIGHT CLAIM] ({track['remixer']}) '{track['title'][:40]}' -> {claim_reason}")
+            self.history.append(vid_id)
+            return None
+
         cookie_candidates = [
             os.path.join(self.base_dir, "cookies.txt"),
             os.path.join(self.config_dir, "cookies.txt"),
@@ -676,25 +694,30 @@ class DJScraper:
             logger.error("No valid candidates found.")
             return []
 
-        if target_count is not None and target_count > 0:
-            selected = candidates[:target_count]
-        else:
-            selected = candidates
-        logger.info(f"🚀 Starting PARALLEL download of {len(selected)} unique tracks from {len(selected)} different channels...")
+        needed = target_count if (target_count is not None and target_count > 0) else len(candidates)
+        logger.info(f"🚀 Starting PARALLEL download with Anti-Copyright Shield (Target: {needed} clean tracks)...")
 
-        items = [(i, len(selected), track) for i, track in enumerate(selected, 1)]
         downloaded_tracks = []
+        candidate_idx = 0
+        total_candidates = len(candidates)
 
-        with ThreadPoolExecutor(max_workers=2) as executor:
-            future_to_track = {}
-            for item in items:
-                future_to_track[executor.submit(self._download_single_track, item)] = item
-                time.sleep(1.5)  # Anti-Bot: human jitter delay prevents YouTube 429 rate limits
-            for future in as_completed(future_to_track):
-                res = future.result()
-                if res and res.get("audio_path"):
-                    downloaded_tracks.append(res)
-                    self.history.append(res["id"])
+        while len(downloaded_tracks) < needed and candidate_idx < total_candidates:
+            batch_size = min(needed - len(downloaded_tracks), total_candidates - candidate_idx)
+            batch = candidates[candidate_idx : candidate_idx + batch_size]
+            candidate_idx += batch_size
+
+            items = [(len(downloaded_tracks) + i, needed, track) for i, track in enumerate(batch, 1)]
+
+            with ThreadPoolExecutor(max_workers=2) as executor:
+                future_to_track = {}
+                for item in items:
+                    future_to_track[executor.submit(self._download_single_track, item)] = item
+                    time.sleep(1.5)  # Anti-Bot: human jitter delay prevents YouTube 429 rate limits
+                for future in as_completed(future_to_track):
+                    res = future.result()
+                    if res and res.get("audio_path"):
+                        downloaded_tracks.append(res)
+                        self.history.append(res["id"])
 
         # Preserve strict ascending order by track length so shortest songs play first!
         downloaded_tracks.sort(key=lambda x: float(x.get("duration") or 999999.0), reverse=False)
