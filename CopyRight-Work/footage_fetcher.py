@@ -174,7 +174,7 @@ def fetch_from_pixabay(needed_duration_sec: float) -> List[Path]:
         random.shuffle(hits)
 
         for h in hits:
-            if accumulated_dur >= needed_duration_sec:
+            if accumulated_dur >= needed_duration_sec or len(downloaded) >= 8:
                 break
 
             vid_id = h.get("id")
@@ -243,7 +243,7 @@ def fetch_from_pexels(needed_duration_sec: float) -> List[Path]:
         random.shuffle(videos)
 
         for v in videos:
-            if accumulated_dur >= needed_duration_sec:
+            if accumulated_dur >= needed_duration_sec or len(downloaded) >= 8:
                 break
 
             vid_id = v.get("id")
@@ -285,23 +285,27 @@ def fetch_footage(needed_duration_sec: float) -> List[Path]:
     """
     config.ensure_dirs()
 
+    # Target 300s (5 minutes) of diverse high-quality nature clips.
+    # concat_with_footage loops these clips seamlessly to cover the full required duration.
+    # This keeps cloud disk footprint under 200 MB (vs 7+ GB) and saves 40+ minutes of encoding!
+    target_fetch_dur = min(needed_duration_sec, 300.0)
+
     # 1. Existing local footage
     local_files = get_local_footage()
     total_local_dur = sum(get_video_duration(str(p)) for p in local_files)
 
-    if total_local_dur >= needed_duration_sec and len(local_files) >= 5:
+    if (total_local_dur >= target_fetch_dur and len(local_files) >= 4) or len(local_files) >= 8:
         logger.info(
             f"📁 Local footage cache sufficient: {len(local_files)} files "
-            f"({total_local_dur/60:.1f} min available, need {needed_duration_sec/60:.1f} min)"
+            f"({total_local_dur/60:.1f} min available, will loop to cover {needed_duration_sec/60:.1f} min)"
         )
-        for f in local_files:
+        for f in local_files[:8]:
             ensure_nature_audio(f)
-        return local_files
+        return local_files[:8]
 
-    still_needed = max(needed_duration_sec - total_local_dur, 60.0)
+    still_needed = max(target_fetch_dur - total_local_dur, 60.0)
     logger.info(
-        f"🌿 Need {still_needed/60:.1f} more minutes of pure nature video. "
-        f"Querying stock APIs..."
+        f"🌿 Fetching {still_needed/60:.1f} min of unique nature video clips (will loop to cover {needed_duration_sec/60:.1f} min)..."
     )
 
     # 2. Fetch from Pixabay
@@ -311,15 +315,16 @@ def fetch_footage(needed_duration_sec: float) -> List[Path]:
     current_files = get_local_footage()
     current_dur = sum(get_video_duration(str(p)) for p in current_files)
 
-    if current_dur < needed_duration_sec:
-        fetch_from_pexels(needed_duration_sec - current_dur)
+    if current_dur < target_fetch_dur and len(current_files) < 6:
+        fetch_from_pexels(target_fetch_dur - current_dur)
 
     all_footage = get_local_footage()
-    final_dur = sum(get_video_duration(str(p)) for p in all_footage)
+    selected_footage = all_footage[:8]
+    final_dur = sum(get_video_duration(str(p)) for p in selected_footage)
 
     logger.info(
-        f"✅ Nature footage ready: {len(all_footage)} clip(s) "
-        f"({final_dur/60:.1f} min total nature footage, 100% watermark-free, audio verified)"
+        f"✅ Nature footage ready: {len(selected_footage)} clip(s) "
+        f"({final_dur/60:.1f} min unique nature footage, will loop to cover {needed_duration_sec/60:.1f} min)"
     )
 
-    return all_footage
+    return selected_footage

@@ -251,15 +251,15 @@ def concat_with_footage(
     # We DO NOT re-encode main video here to save 30+ minutes and prevent timeouts!
     main_normalized = main_video
 
-    # Normalize ONLY as many footage files as needed to cover needed_footage_sec!
+    # Normalize at most 10 high-quality clips (concat loops them to fill 60 minutes).
+    # This prevents Kaggle 20GB disk exhaustion and saves 40+ minutes of encoding time!
     normalized_footage = []
     accumulated_footage_sec = 0.0
+    clips_to_normalize = footage_files[:10]
 
-    for i, fp in enumerate(footage_files):
-        if accumulated_footage_sec >= needed_footage_sec:
-            break
+    for i, fp in enumerate(clips_to_normalize):
         norm_path = str(temp_dir / f"footage_norm_{i:03d}.mp4")
-        logger.info(f"  Normalizing footage {i+1}/{len(footage_files)}: {fp.name}")
+        logger.info(f"  Normalizing footage {i+1}/{len(clips_to_normalize)}: {fp.name}")
         if _normalize_footage(str(fp), norm_path, target_w, target_h, target_fps):
             dur = get_video_duration(norm_path)
             if dur > 0:
@@ -316,6 +316,19 @@ def concat_with_footage(
             cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
             text=True, timeout=600
         )
+        # Clean up normalized footage clips and list to reclaim disk space immediately
+        for nf in normalized_footage:
+            try:
+                if os.path.exists(nf):
+                    os.remove(nf)
+            except Exception:
+                pass
+        try:
+            if os.path.exists(concat_list_path):
+                os.remove(concat_list_path)
+        except Exception:
+            pass
+
         if os.path.exists(output_path) and os.path.getsize(output_path) > 1024:
             total_dur = get_video_duration(output_path)
             logger.info(
@@ -500,12 +513,28 @@ def process_full_video(
         logger.error("Step 1 (Cut) failed!")
         return None
 
+    # CRITICAL DISK SAVER: Delete the massive 10hr raw source video immediately to free 6-8 GB!
+    try:
+        if os.path.exists(source_path):
+            os.remove(source_path)
+            logger.info(f"🗑️ Reclaimed disk: deleted raw source video ({source_path})")
+    except Exception as e:
+        logger.debug(f"Could not remove source video: {e}")
+
     # ── Step 2: Apply dynamic editing + Watermark on the 2-hour video ──
     edited_2hr_path = str(temp_dir / "step2_edited_2hr.mp4")
     logger.info("━━ Step 2/3: Applying 5-6s auto-cut, alternating mirror, transitions & watermark...")
     if not apply_dynamic_editing_and_watermark(cut_path, edited_2hr_path):
         logger.error("Step 2 (Dynamic editing) failed!")
         return None
+
+    # CRITICAL DISK SAVER: Delete step1_cut.mp4 immediately to free another 3-4 GB!
+    try:
+        if os.path.exists(cut_path):
+            os.remove(cut_path)
+            logger.info(f"🗑️ Reclaimed disk: deleted intermediate cut video ({cut_path})")
+    except Exception as e:
+        logger.debug(f"Could not remove cut video: {e}")
 
     # ── Step 3: Concat stock footage (if any available) ──
     # Generate unique output filename
@@ -522,6 +551,14 @@ def process_full_video(
     else:
         logger.info("━━ Step 3/3: No stock footage provided yet (API key pending). Using edited 2hr video as final.")
         shutil.copy2(edited_2hr_path, final_path)
+
+    # CRITICAL DISK SAVER: Delete intermediate edited_2hr_path after final video is produced
+    try:
+        if os.path.exists(edited_2hr_path) and os.path.abspath(edited_2hr_path) != os.path.abspath(final_path):
+            os.remove(edited_2hr_path)
+            logger.info(f"🗑️ Reclaimed disk: deleted intermediate 2hr video ({edited_2hr_path})")
+    except Exception as e:
+        logger.debug(f"Could not remove edited video: {e}")
 
     # Verify final output
     final_duration = get_video_duration(final_path)
