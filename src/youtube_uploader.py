@@ -361,9 +361,8 @@ class YouTubeUploader:
 
         description = f"""{title}
 Edition: {month_name.upper()} {year} SPECIAL HD RELEASE
-Channel: {channel_brand}
 
-Welcome to {channel_brand}! Enjoy this nonstop {genre_name} compilation featuring {flavor_text}.
+Enjoy this nonstop {genre_name} compilation featuring {flavor_text}.
 Hit Like & Subscribe to stay tuned for more nonstop DJ dance mixes!
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -519,7 +518,8 @@ Thank you for your love and support! ❤️
                 logger.warning(f"Thumbnail upload failed: {e}")
 
         # 1. Post Auto-Engagement Comment with Tracklist & Chapters
-        self.post_pinned_comment(video_id=video_id, tracklist_text=tracklist_text, title=meta["title"])
+        # Auto-comment disabled per user instruction
+        # self.post_pinned_comment(video_id=video_id, tracklist_text=tracklist_text, title=meta["title"])
 
         # 2. Add to Official Channel Playlist (Auto-Playlist SEO Boost)
         self.add_to_official_playlist(video_id=video_id)
@@ -530,7 +530,9 @@ Thank you for your love and support! ❤️
         return video_url
 
     def post_pinned_comment(self, video_id: str, tracklist_text: str = "", title: str = "") -> bool:
-        """Posts a high-engagement, viral comment triggering massive user comments and algorithm push."""
+        """Auto-commenting is completely disabled per user instruction."""
+        logger.info("Auto-commenting is disabled per user configuration.")
+        return False
         try:
             youtube = self.get_authenticated_service()
             if not youtube:
@@ -697,29 +699,8 @@ Thank you for your love and support! ❤️
         short_url = f"https://youtube.com/shorts/{short_id}"
         logger.info(f"🎉 YouTube Short Live! URL: {short_url}")
 
-        # Post direct backlink comment on the Short
-        try:
-            short_comment = (
-                f"🔥 पूरा नॉनस्टॉप DJ डांस मिक्स सुनने के लिए यहाँ क्लिक करें! 👇\n\n"
-                f"🎧 फुल वीडियो लिंक: {full_video_url}\n\n"
-                f"❤️ 320 kbps HD Sound & Nonstop Dance Dhamaka! 🚀"
-            )
-            youtube.commentThreads().insert(
-                part="snippet",
-                body={
-                    "snippet": {
-                        "videoId": short_id,
-                        "topLevelComment": {
-                            "snippet": {
-                                "textOriginal": short_comment
-                            }
-                        }
-                    }
-                }
-            ).execute()
-            logger.info("✅ Pinned backlink comment posted on Short!")
-        except Exception as e:
-            logger.info(f"Short comment notice: {e}")
+        # Direct backlink comment on the Short (Disabled per user instruction)
+        pass
 
         return short_url
 
