@@ -289,13 +289,13 @@ class DJVisualEngine:
                 f"• 100% NONSTOP DANCE HITS •"
             ]
             sub_texts = [
-                "320 KBPS ULTRA HD | HIGH VOLTAGE DROP",
+                "HIGH VOLTAGE DROP | ULTRA HD SOUND",
                 "NONSTOP DANCE PARTY | 100% HEAVY BASS",
-                "320 KBPS HD MASTER | FULL BASS BLAST",
+                "FULL BASS BLAST | ULTRA HD SOUND",
                 "TOP VIRAL TRACKS | SUPERHIT NONSTOP",
                 "ROADSHOW COMPETITION | ULTRA DROP MIX",
                 "JBL SOUND BEATS | 100% HARD HIT",
-                "320 KBPS HD SOUND | ELECTRO DANCE DROP"
+                "ELECTRO DANCE DROP | FULL BASS"
             ]
         elif p == "nagpuri":
             main_titles = [
@@ -327,9 +327,9 @@ class DJVisualEngine:
                 f"• TAPA TAP HARD BASS MIX •"
             ]
             sub_texts = [
-                "320 KBPS HD MASTER | FULL ROADSHOW VIBRATION",
+                "FULL ROADSHOW VIBRATION | NONSTOP DANCE",
                 "PURE THETH STYLE | NONSTOP DANCE BLAST",
-                "320 KBPS ULTRA HD | WEDDING DANCE SPECIAL",
+                "WEDDING DANCE SPECIAL | ROADSHOW VIBRATION",
                 "SUPERHIT DJ TRACKS | 100% CLEAR MASTER",
                 "TAPA TAP BASS BEATS | ROADSHOW MIX",
                 "JHARKHANDI SADRI HITS | 100% DANCE DHAMAKA",
@@ -388,7 +388,7 @@ class DJVisualEngine:
                 "CG X NAGPURI X BHOJPURI | MANDAR HARD BASS",
                 "RECORD TOD MANDAR BEAT | FULL TAPORI DANCE",
                 "FULL PICKUP ROADSHOW | CG MANDAR MIX",
-                "KHATARNAK BASS | MANDAR STEP NONSTOP 320 KBPS",
+                "KHATARNAK BASS | MANDAR STEP NONSTOP",
                 "PARDA PHOD MANDAR VIBRATION | 100% ROADSHOW"
             ]
         elif p == "dj_nan_say_karwan":
@@ -418,9 +418,9 @@ class DJVisualEngine:
                 f"• SHADI SPECIAL SADRI DANCE •"
             ]
             sub_texts = [
-                "320 KBPS HD MASTER | FULL SADRI DANCE BLAST",
+                "FULL SADRI DANCE BLAST | ROADSHOW SPECIAL",
                 "PURE SADRI STYLE | NONSTOP ROADSHOW MIX",
-                "320 KBPS ULTRA HD | WEDDING DANCE SPECIAL",
+                "WEDDING DANCE SPECIAL | ROADSHOW VIBRATION",
                 "SADRI LOVERS SPECIAL | 100% CLEAR MASTER",
                 "SUPERHIT SADRI TRACKS | COMPETITION BEATS",
                 "JHARKHANDI SADRI HITS | 100% DANCE DHAMAKA"
@@ -438,8 +438,8 @@ class DJVisualEngine:
                 f"• TOP TRENDING {clean_name} •"
             ]
             sub_texts = [
-                "320 KBPS ULTRA HD MASTER | FULL BASS",
-                "320 KBPS HD SOUND | NONSTOP DANCE"
+                "ULTRA HD MASTER | FULL BASS",
+                "PURE SOUND | NONSTOP DANCE"
             ]
 
         tag_text = custom_tag or random.choice(tags)
@@ -862,7 +862,7 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
                     t_cur = t_next
         else:
             brand = self.profile.upper().replace("_", " ")
-            unit = f"🎵 {brand} NONSTOP REMIX   ✦   🔥 320 KBPS HD MASTER   ✦   "
+            unit = f"🎵 {brand} NONSTOP REMIX   ✦   🔥 PURE HD MASTER   ✦   "
             w_unit = len(unit) * 15
             cycle_time = max(4.0, round(w_unit / speed, 2))
             train = unit * 6
@@ -1162,7 +1162,7 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
         t_draw.rounded_rectangle([60, height - 380, width - 60, height - 160], radius=28, fill=(10, 12, 18, 245), outline=(255, 255, 255, 200), width=3)
         t_draw.text((cx, height - 325), "🎧 FULL NONSTOP MIX IS LIVE! 🔥", fill=(255, 255, 255, 255), font=font_cta, anchor="mm")
         t_draw.text((cx, height - 265), "👇 LINK IN PINNED COMMENT & DESC 👇", fill=(*neon_c, 255), font=font_cta_sub, anchor="mm")
-        t_draw.text((cx, height - 210), "⭐ 320 KBPS HD MASTER • 100% HEAVY BASS ⭐", fill=(200, 210, 230, 220), font=font_cta_sub, anchor="mm")
+        t_draw.text((cx, height - 210), "⭐ PURE HD MASTER • 100% HEAVY BASS ⭐", fill=(200, 210, 230, 220), font=font_cta_sub, anchor="mm")
 
         base_frame = Image.alpha_composite(base_img, top_layer)
 

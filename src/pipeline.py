@@ -70,7 +70,7 @@ class DJProductionPipeline:
         # STEP 2: Audio Normalization & Smooth 'Wooosh' Transition Assembly
         # -----------------------------------------------------------------
         logger.info("[STEP 2/4] Assembling Nonstop mix with smooth 'Wooosh' transitions...")
-        audio_out_name = f"{self.profile}_master_mix.mp3"
+        audio_out_name = f"{self.profile}_master_mix.wav"
         master_audio_path, tracklist_path, chapters = self.audio_engine.assemble_nonstop_mix(
             tracks=tracks,
             crossfade_sec=1.5,

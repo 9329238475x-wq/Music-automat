@@ -119,72 +119,47 @@ class DJAudioEngine:
         in_file: str,
         out_file: str,
         track_index: int,
-        cut_intro_sec: float = 10.0,
-        cut_outro_sec: float = 15.0,
+        cut_intro_sec: float = 50.0,
+        cut_outro_sec: float = 30.0,
         fade_sec: float = 1.5,
-        pitch_factor: float = 1.05
+        speed_factor: float = 1.05
     ) -> bool:
         """
-        Processes an individual song for the nonstop DJ mix:
-        - Track 1 starts from 0s (intro not cut); subsequent tracks trim leading 10s.
-        - Trims trailing 15s to eliminate outros / promo announcements from all tracks.
-        - Bass is kept 100% PURE, RAW & UNTOUCHED (Zero frequency filtering or sub-bass choking).
-        - Natural DJ Pitch & Speed boost (+5% / 1.05x) for full Anti-Fingerprint / Copyright Claim bypass.
-        - Mastered to crystal clear commercial club standard (-13.0 LUFS, -1.5 dBTP, LRA 9.0) with brickwall peak limiter.
+        Processes an individual song per user specification:
+        - Track 1 starts from 0.0s (intro untouched); subsequent tracks cut leading 50s.
+        - Trims trailing 30s from all tracks to eliminate outros / promos.
+        - Speed only: +5% speed (atempo=1.05), Pitch 100% untouched, Bass 100% pure & untouched.
+        - No frequency damping (Pairy filter removed).
+        - No loudnorm and no limiter (original dynamic punch & volume preserved).
         """
         raw_dur = self._get_audio_duration(in_file)
-        if raw_dur < 30.0:
-            logger.warning(f"Track too short ({raw_dur:.1f}s), skipping trim: {in_file}")
-            start_s = 0.0
-            end_s = raw_dur
+        if raw_dur < (cut_intro_sec + cut_outro_sec + 15.0):
+            # Track is short: safe proportional trimming
+            start_s = 0.0 if track_index == 1 else min(10.0, raw_dur * 0.1)
+            end_s = max(start_s + 15.0, raw_dur - min(10.0, raw_dur * 0.1))
         else:
-            # Track 1 starts from 0.0s (no intro cut); subsequent tracks skip intro 10s
+            # Track 1 starts from 0.0s (no intro cut); subsequent tracks skip intro 50s
             start_s = cut_intro_sec if track_index > 1 else 0.0
             end_s = max(start_s + 15.0, raw_dur - cut_outro_sec)
 
-        # Pitch & Speed: Default 1.05 (+5% Speed & Natural DJ Pitch for Copyright Protection)
-        setting_pitch = float(self.settings.get("audio", {}).get("pitch_factor", 1.05))
-        env_pitch = os.environ.get("DJ_PITCH_FACTOR")
-        eff_pitch = float(env_pitch) if env_pitch else (setting_pitch or pitch_factor)
+        # Speed only: +5% speed (atempo=1.05), Pitch & Bass 100% UNTOUCHED
+        setting_speed = float(self.settings.get("audio", {}).get("speed_factor", 1.05))
+        env_speed = os.environ.get("DJ_SPEED_FACTOR")
+        eff_speed = float(env_speed) if env_speed else (setting_speed or speed_factor)
 
-        # Precision Equalizer: Only active if configured in settings (default 0.0 = untouched)
-        pairy_db = float(self.settings.get("audio", {}).get("pairy_damping_db", -5.0))
-        pairy_freq = int(self.settings.get("audio", {}).get("pairy_frequency_hz", 8800))
+        # Smooth Fade-in: 1.5s fade-in on new tracks
+        fade_in_d = fade_sec if track_index > 1 else 0.5
 
-        # Vocals: 100% PURE & UNTOUCHED (Zero vocal reduction / ducking, 0 dB)
-        vocal_db = float(self.settings.get("audio", {}).get("vocal_reduction_db", 0.0))
-        vocal_freq = int(self.settings.get("audio", {}).get("vocal_center_freq_hz", 1600))
-        vocal_q = float(self.settings.get("audio", {}).get("vocal_q_width", 1.1))
-
-        # Smooth Professional Volume Swell: After wooosh.wav transition, new song swells smoothly over 1.5s
-        fade_in_sec = float(self.settings.get("audio", {}).get("fade_in_duration", 1.5))
-        fade_in_d = fade_in_sec if track_index > 1 else 0.5
-
-        # Commercial DJ Loudness Normalization with full dynamic range preservation (No bass choking or distortion)
-        target_lufs = float(self.settings.get("audio", {}).get("target_lufs", -13.0))
-        true_peak = float(self.settings.get("audio", {}).get("true_peak", -1.5))
-        lra = float(self.settings.get("audio", {}).get("loudness_range", 9.0))
-
-        # Assemble clean filter parts (Original Bass & True Frequency Response 100% Intact)
+        # Pure, clean filter chain: trim + fade-in + 5% speed only (no loudnorm, no limiter, no pitch change)
         filter_parts = [
             f"atrim=start={start_s:.2f}:end={end_s:.2f}",
             "asetpts=PTS-STARTPTS",
             f"afade=t=in:st=0:d={fade_in_d:.2f}"
         ]
 
-        # Only apply pitch modification if user explicitly configured it away from 1.0
-        if abs(eff_pitch - 1.0) > 0.001:
-            filter_parts.append(f"asetrate=44100*{eff_pitch:.4f}")
-            filter_parts.append("aresample=44100:resample_cutoff=1.0:precision=28:filter_type=kaiser:dither_method=triangular")
+        if abs(eff_speed - 1.0) > 0.001:
+            filter_parts.append(f"atempo={eff_speed:.4f}")
 
-        if pairy_db != 0:
-            filter_parts.append(f"equalizer=f={pairy_freq}:t=q:w=1.4:g={pairy_db:.1f}")
-
-        if vocal_db != 0:
-            filter_parts.append(f"equalizer=f={vocal_freq}:t=q:w={vocal_q:.2f}:g={vocal_db:.1f}")
-
-        filter_parts.append(f"loudnorm=I={target_lufs:.1f}:TP={true_peak:.1f}:LRA={lra:.1f}:linear=true")
-        filter_parts.append(f"alimiter=limit={true_peak:.1f}dB:attack=5:release=50:asc=1")
         filter_parts.append("aformat=sample_fmts=s16:sample_rates=44100:channel_layouts=stereo")
 
         filter_chain = ",".join(filter_parts)
@@ -203,7 +178,7 @@ class DJAudioEngine:
         self,
         tracks: List[Dict[str, Any]],
         crossfade_sec: float = 1.5,
-        output_name: str = "master_mix.mp3"
+        output_name: str = "master_mix.wav"
     ) -> Tuple[str, str, List[Dict[str, Any]]]:
         """
         Assembles all tracks into a continuous, seamless nonstop DJ mix:
@@ -244,8 +219,8 @@ class DJAudioEngine:
                     in_file=src_audio,
                     out_file=norm_audio,
                     track_index=i,
-                    cut_intro_sec=10.0,
-                    cut_outro_sec=15.0,
+                    cut_intro_sec=50.0,
+                    cut_outro_sec=30.0,
                     fade_sec=crossfade_sec
                 )
                 if not ok:
@@ -327,27 +302,22 @@ class DJAudioEngine:
 
             mix_inputs = "".join([f"[base]"] + [f"[{w}]" for w in wooosh_labels])
             filter_parts.append(
-                f"{mix_inputs}amix=inputs={len(wooosh_labels) + 1}:normalize=0:duration=first[pre_limit]"
-            )
-            filter_parts.append(
-                f"[pre_limit]alimiter=limit={target_tp:.1f}dB:attack=5:release=50:asc=1[final_mix]"
+                f"{mix_inputs}amix=inputs={len(wooosh_labels) + 1}:normalize=0:duration=first[{final_audio_label}]"
             )
         else:
-            filter_parts.append(
-                f"[base]alimiter=limit={target_tp:.1f}dB:attack=5:release=50:asc=1[final_mix]"
-            )
+            final_audio_label = "base"
 
         filter_complex = ";".join(filter_parts)
+
+        # Output uncompressed lossless WAV or clean audio (320k MP3 re-encoding removed)
+        audio_codec = ["-c:a", "pcm_s16le"] if master_output_path.lower().endswith(".wav") else ["-c:a", "libmp3lame", "-q:a", "0", "-ar", "44100"]
 
         cmd = [
             "ffmpeg", "-y",
             *inputs,
             "-filter_complex", filter_complex,
             "-map", f"[{final_audio_label}]",
-            "-c:a", "libmp3lame",
-            "-b:a", "320k",
-            "-q:a", "0",
-            "-ar", "44100",
+            *audio_codec,
             master_output_path
         ]
 
@@ -368,13 +338,13 @@ class DJAudioEngine:
         with open(list_file, "w", encoding="utf-8") as f:
             for t in tracks:
                 f.write(f"file '{t['norm_path']}'\n")
+        audio_codec = ["-c:a", "pcm_s16le"] if out_path.lower().endswith(".wav") else ["-c:a", "libmp3lame", "-q:a", "0"]
         cmd = [
             "ffmpeg", "-y",
             "-f", "concat",
             "-safe", "0",
             "-i", list_file,
-            "-c:a", "libmp3lame",
-            "-b:a", "320k",
+            *audio_codec,
             out_path
         ]
         subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)

@@ -270,10 +270,10 @@ class YouTubeUploader:
                 f"🔥 {song1} X {song2} - Nonstop Theth Nagpuri DJ Remix {year} 💃 Dance Dhamaka",
                 f"⚡ {song1} | New Trending Nagpuri DJ Song {year} 🔥 Nonstop Dance Mix ft. {top_dj}",
                 f"💥 Theth Nagpuri Superhit DJ Remix {year} Nonstop | {song1} x {song2} 🔊",
-                f"🎧 {song1} - Nonstop Nagpuri DJ Dance Mix {year} | 320kbps HD Roadshow Special 💃",
+                f"🎧 {song1} - Nonstop Nagpuri DJ Dance Mix {year} | Nonstop Roadshow Special 💃",
                 f"💃 New Nagpuri DJ Remix {year} 🔥 {song1} X {song2} | Theth Jharkhandi Nonstop Mix ⚡"
             ]
-            flavor_text = "Authentic Theth Nagpuri, regional Jharkhandi party dance mix with 320 kbps HD bass"
+            flavor_text = "Authentic Theth Nagpuri, regional Jharkhandi party dance mix with High Energy Bass"
             hashtags = f"#nagpuridj #thethnagpuri #newnagpurisong{year} #nonstopnagpuridj #{song1.replace(' ', '')} #{song2.replace(' ', '')} #djremix{year}"
             profile_queries = [
                 f"new nagpuri dj remix {year}",
@@ -293,7 +293,7 @@ class YouTubeUploader:
                 f"🎧 Studio Beat Nagpuri Nonstop DJ Song {year} 🔥 {song1} x {song2} | Studio Master",
                 f"💃 Superhit Studio Nagpuri DJ Mix {year} | {song1} X {song2} | Nonstop Roadshow Special",
                 f"⚡ {song1} - New Studio Nagpuri DJ Remix {year} 💃 Theth Jharkhandi Dhamaka 🔊",
-                f"💥 Studio Beat Nonstop Mix {year} 🔥 {song1} x {song2} x {song3} | 320kbps HD Dance"
+                f"💥 Studio Beat Nonstop Mix {year} 🔥 {song1} x {song2} x {song3} | Nonstop HD Dance"
             ]
             flavor_text = "Studio Beat Nagpuri high-definition dance mixes compiled with crystal clear master audio"
             hashtags = f"#studioworknagpuri #nagpuristudioremix #thethnagpuri #nonstopnagpuridj #{song1.replace(' ', '')} #{song2.replace(' ', '')} #djremix{year}"
@@ -350,7 +350,7 @@ class YouTubeUploader:
             if self.profile == "vibration":
                 title = f"🔥 {s1_single} - CG Mandar Beat DJ Remix {year} 💃"
             else:
-                title = f"🔥 {s1_single} - Nonstop {genre_name} {year} 💃 | 320kbps HD Mix"
+                title = f"🔥 {s1_single} - Nonstop {genre_name} {year} 💃 | Nonstop HD Mix"
 
         import re
         title = re.sub(r"[<>]", "", title).strip()
@@ -605,7 +605,7 @@ Thank you for your love and support! ❤️
                     body={
                         "snippet": {
                             "title": target_title,
-                            "description": f"Official Nonstop DJ Dance Mixes compiled in 320 kbps HD sound for {self.profile.upper()}."
+                            "description": f"Official Nonstop DJ Dance Mixes compiled in High Quality Sound for {self.profile.upper()}."
                         },
                         "status": {
                             "privacyStatus": "public"

@@ -91,19 +91,11 @@
     }
   },
   "audio": {
-    "bitrate": "320k",
-    "sample_rate": 44100,
-    "pitch_factor": 1.05,
-    "target_lufs": -13.0,
-    "true_peak": -1.5,
-    "loudness_range": 9.0,
+    "speed_factor": 1.05,
+    "cut_intro_sec": 50.0,
+    "cut_outro_sec": 30.0,
     "transition_sound": "assets/wooosh.wav",
     "crossfade_duration": 1.5,
-    "pairy_damping_db": -5.0,
-    "pairy_frequency_hz": 8800,
-    "vocal_reduction_db": 0.0,
-    "vocal_center_freq_hz": 1600,
-    "vocal_q_width": 1.1,
     "fade_in_duration": 1.5
   },
   "video": {
