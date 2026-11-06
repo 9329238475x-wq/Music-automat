@@ -96,22 +96,24 @@ class DJVisualEngine:
         darkness: float = 0.25
     ) -> str:
         """
-        Creates a 1920x1080 collage grid with RED/NEON COLORED GRID BORDERS around each thumbnail.
-        - Each thumbnail maintains strict 16:9 aspect ratio.
-        - Thumbnails are repeated if needed (never cropped).
-        - Random neon colors for each thumbnail border.
+        Creates a dense 1920x1080 uniform White-Grid Thumbnail Collage (10 cols x 8 rows = 80 cells).
+        - Crisp, pure white grid borders (outline=(255, 255, 255)) around every single cell.
+        - Exactly identical dimensions across all cells with original song thumbnails fitted cleanly.
+        - Distributed channel logo badge cells for professional branding.
+        - Darkness=0.0 produces vibrant full-brightness YouTube thumbnail; darkness>0 produces video visualizer background.
         """
         if out_path is None:
             out_path = os.path.join(self.output_dir, "thumbnail_wall.jpg")
 
-        logger.info(f"Generating 1920x1080 Thumbnail Wall Collage with NEON GRID BORDERS from {len(thumb_paths)} thumbnails...")
+        logger.info(f"Generating 1920x1080 White-Grid Thumbnail Wall (10x8 = 80 cells) from {len(thumb_paths)} thumbnails...")
         width, height = 1920, 1080
-        wall = Image.new("RGB", (width, height), (10, 12, 18))
+        # Canvas initialized with pure white so all grid seams are 100% solid white
+        wall = Image.new("RGB", (width, height), (255, 255, 255))
+        draw = ImageDraw.Draw(wall)
 
         valid_thumbs = [p for p in thumb_paths if p and os.path.exists(p)]
         if not valid_thumbs:
             # Fallback gradient background if no thumbnails
-            draw = ImageDraw.Draw(wall)
             for y in range(height):
                 r = int(15 + 10 * (y / height))
                 g = int(18 + 15 * (y / height))
@@ -120,67 +122,80 @@ class DJVisualEngine:
             wall.save(out_path, quality=95)
             return out_path
 
-        # Determine grid dimensions (e.g. 5 cols x 4 rows = 20 cells, or 6x4 = 24)
-        n = len(valid_thumbs)
-        cols = 5 if n <= 20 else 6
-        rows = math.ceil(n / cols)
-        if rows < 3:
-            rows = 3
+        # Reference grid specification: 10 columns x 8 rows = 80 uniform cells
+        cols = 10
+        rows = 8
+        border_width = 3
 
-        # Border thickness for neon grid lines
-        border_width = 4
+        cell_w = width // cols  # Exactly 192 px
+        cell_h = height // rows  # Exactly 135 px
 
-        cell_w = math.ceil(width / cols)
-        cell_h = math.ceil(height / rows)
-        
-        # Thumbnail size inside the cell (accounting for borders)
-        thumb_w = cell_w - (2 * border_width)
-        thumb_h = cell_h - (2 * border_width)
+        thumb_w = cell_w - (2 * border_width)  # 186 px
+        thumb_h = cell_h - (2 * border_width)  # 129 px
 
-        # Place thumbnails into grid with neon borders
+        # Pre-cache fitted images of all valid song thumbnails
+        cached_thumbs = []
+        for tp in valid_thumbs:
+            try:
+                raw_img = Image.open(tp).convert("RGB")
+                fitted = ImageOps.fit(raw_img, (thumb_w, thumb_h), Image.Resampling.LANCZOS, centering=(0.5, 0.5))
+                cached_thumbs.append(fitted)
+            except Exception as e:
+                logger.debug(f"Could not load thumbnail {tp}: {e}")
+
+        if not cached_thumbs:
+            cached_thumbs = [Image.new("RGB", (thumb_w, thumb_h), (25, 25, 35))]
+
+        # Prepare channel logo badge tile (placed in a few symmetrical cells)
+        fitted_logo_tile = None
+        if self.logo_path and os.path.exists(self.logo_path):
+            try:
+                l_img = Image.open(self.logo_path).convert("RGBA")
+                tile_bg = Image.new("RGB", (thumb_w, thumb_h), (18, 20, 28))
+                contained_logo = ImageOps.contain(l_img, (thumb_w - 24, thumb_h - 14), Image.Resampling.LANCZOS)
+                lx = (thumb_w - contained_logo.width) // 2
+                ly = (thumb_h - contained_logo.height) // 2
+                tile_bg.paste(contained_logo, (lx, ly), contained_logo)
+                fitted_logo_tile = tile_bg
+            except Exception as e:
+                logger.debug(f"Could not prepare logo tile: {e}")
+
+        # Symmetrical cell positions for logo badges (e.g. 6 cells across 80 grid cells)
+        logo_cells = {12, 17, 34, 45, 62, 67} if fitted_logo_tile else set()
+
         idx = 0
         for r in range(rows):
             for c in range(cols):
-                t_path = valid_thumbs[idx % len(valid_thumbs)]
-                try:
-                    # Open thumbnail
-                    img = Image.open(t_path).convert("RGB")
-                    
-                    # Maintain 16:9 aspect ratio - fit inside thumb_w x thumb_h without cropping
-                    # Use ImageOps.fit which pads if necessary
-                    img = ImageOps.fit(img, (thumb_w, thumb_h), Image.Resampling.LANCZOS, centering=(0.5, 0.5))
-                    
-                    # Get random neon color for this thumbnail's border
-                    border_color = self._get_random_neon_color()
-                    
-                    # Calculate position with border
-                    cell_x = c * cell_w
-                    cell_y = r * cell_h
-                    img_x = cell_x + border_width
-                    img_y = cell_y + border_width
-                    
-                    # Draw neon border (rectangle around thumbnail)
-                    draw = ImageDraw.Draw(wall)
-                    draw.rectangle(
-                        [cell_x, cell_y, cell_x + cell_w - 1, cell_y + cell_h - 1],
-                        outline=border_color,
-                        width=border_width
-                    )
-                    
-                    # Paste thumbnail inside border
-                    wall.paste(img, (img_x, img_y))
-                    
-                except Exception as e:
-                    logger.debug(f"Failed to load thumb {t_path}: {e}")
-                idx += 1
+                cell_idx = r * cols + c
+                cell_x = c * cell_w
+                cell_y = r * cell_h
+                img_x = cell_x + border_width
+                img_y = cell_y + border_width
 
-        # Apply subtle dark shade (5-8% black overlay + vignette)
-        overlay = Image.new("RGBA", (width, height), (0, 0, 0, int(255 * darkness)))
-        wall_rgba = wall.convert("RGBA")
-        combined = Image.alpha_composite(wall_rgba, overlay).convert("RGB")
+                if cell_idx in logo_cells and fitted_logo_tile:
+                    wall.paste(fitted_logo_tile, (img_x, img_y))
+                else:
+                    t_img = cached_thumbs[idx % len(cached_thumbs)]
+                    wall.paste(t_img, (img_x, img_y))
+                    idx += 1
 
-        combined.save(out_path, quality=95)
-        logger.info(f"Thumbnail wall with NEON GRID BORDERS saved at {out_path}")
+                # Draw crisp, solid pure white border rectangle around each cell
+                draw.rectangle(
+                    [cell_x, cell_y, cell_x + cell_w - 1, cell_y + cell_h - 1],
+                    outline=(255, 255, 255),
+                    width=border_width
+                )
+
+        # Apply darkness only when requested (e.g. for video background behind spectrum)
+        if darkness > 0.01:
+            overlay = Image.new("RGBA", (width, height), (0, 0, 0, int(255 * darkness)))
+            wall_rgba = wall.convert("RGBA")
+            final_img = Image.alpha_composite(wall_rgba, overlay).convert("RGB")
+        else:
+            final_img = wall
+
+        final_img.save(out_path, quality=98)
+        logger.info(f"✅ White-Grid Thumbnail Wall saved at {out_path}")
         return out_path
 
     def _get_bold_font(self, size: int):
@@ -223,298 +238,24 @@ class DJVisualEngine:
         tracks: Optional[List[Dict[str, Any]]] = None
     ) -> str:
         """
-        Creates a viral, ultra-high-CTR 1920x1080 YouTube Thumbnail Poster:
-        - Bold, pure white typography with deep black drop-shadow & solid black outline
-          guarantees 100% readability on all mobile screens and dark/light YouTube feeds.
-        - Automatically rotates from high-CTR viral titles & hooks (e.g. 'BHOJPURI TRENDING NONSTOP',
-          'TRENDING BHOJPURI NONSTOP', etc.) so every video gets a unique, click-magnet thumbnail!
-        - Dynamically auto-scales font sizes to fit perfectly without clipping.
-        - Includes the channel's glowing circular logo emblem for instant brand recognition!
+        Creates the official YouTube Thumbnail Poster:
+        - If tracks with thumbnails are available, generates the crisp, full-brightness White-Grid Wall (zero text obstruction).
+        - Perfectly matches high-CTR DJ mix aesthetics with pure white borders and original song artwork.
         """
         if out_path is None:
             out_path = os.path.join(self.output_dir, f"{self.profile}_youtube_thumbnail.jpg")
 
-        width, height = 1920, 1080
-        cx, cy = width // 2, height // 2
+        import shutil
+        if tracks:
+            thumb_paths = [t.get("thumb_path") for t in tracks if t.get("thumb_path")]
+            if thumb_paths:
+                return self.create_thumbnail_wall(thumb_paths, out_path=out_path, darkness=0.0)
 
+        # Fallback if no individual tracks passed: use bg_wall_path
         if os.path.exists(bg_wall_path):
-            base = Image.open(bg_wall_path).convert("RGBA")
-            if base.size != (width, height):
-                base = ImageOps.fit(base, (width, height))
-        else:
-            base = Image.new("RGBA", (width, height), (12, 14, 22, 255))
-
-        # Multi-layer Glowing 3D Subtitle Text Renderer (Pure White + Deep Black Glow & Solid Stroke, NO black patti)
-        glow_layer = Image.new("RGBA", (width, height), (0, 0, 0, 0))
-        glow_draw = ImageDraw.Draw(glow_layer)
-
-        shadow_layer = Image.new("RGBA", (width, height), (0, 0, 0, 0))
-        shadow_draw = ImageDraw.Draw(shadow_layer)
-
-        text_layer = Image.new("RGBA", (width, height), (0, 0, 0, 0))
-        text_draw = ImageDraw.Draw(text_layer)
-
-        # Dynamic, auto-rotating high-CTR viral titles & tags pool
-        from datetime import datetime
-        year = datetime.now().year
-        p = self.profile.lower()
-
-        if p == "edm":
-            main_titles = [
-                "BHOJPURI TRENDING NONSTOP",
-                "TRENDING BHOJPURI NONSTOP",
-                "SUPERHIT BHOJPURI DANCE MIX",
-                "VIRAL BHOJPURI EDM DROP",
-                "NONSTOP PARTY BLAST",
-                "HARD BASS EDM DROP",
-                "HIGH VOLTAGE BHOJPURI MIX",
-                "BHOJPURI ROADSHOW DROP",
-                "DANCE PARTY DHAMAKA",
-                "SUPERHIT CLUB DANCE MIX",
-                "CIRCUIT STYLE EDM DROP",
-                "JBL SOUND HARD BASS DROP",
-                "NONSTOP DANCE PARTY MIX",
-                "ALL BHOJPURI VIRAL SONGS",
-                "SUPERHIT BARAAT DANCE MIX",
-                "HARD BASS EDM SPECIAL"
-            ]
-            tags = [
-                f"• BHOJPURI EDM DROP {year} •",
-                f"• TOP TRENDING BHOJPURI •",
-                f"• VIRAL DANCE SPECIAL {year} •",
-                f"• ROADSHOW COMPETITION {year} •",
-                f"• HIGH VOLTAGE EDM DROP •",
-                f"• SUPERHIT PARTY SPECIAL •",
-                f"• JBL SOUND HARD BASS •",
-                f"• 100% NONSTOP DANCE HITS •"
-            ]
-            sub_texts = [
-                "HIGH VOLTAGE DROP | ULTRA HD SOUND",
-                "NONSTOP DANCE PARTY | 100% HEAVY BASS",
-                "FULL BASS BLAST | ULTRA HD SOUND",
-                "TOP VIRAL TRACKS | SUPERHIT NONSTOP",
-                "ROADSHOW COMPETITION | ULTRA DROP MIX",
-                "JBL SOUND BEATS | 100% HARD HIT",
-                "ELECTRO DANCE DROP | FULL BASS"
-            ]
-        elif p == "nagpuri":
-            main_titles = [
-                "THETH NAGPURI TRENDING NONSTOP",
-                "TRENDING NAGPURI DANCE MIX",
-                "NONSTOP THETH NAGPURI",
-                "THETH NAGPURI SUPERHIT MIX",
-                "VIRAL ROADSHOW NAGPURI MIX",
-                "SUPERHIT NAGPURI NONSTOP",
-                "HARD DANCE THETH NAGPURI",
-                "TOP TRENDING NAGPURI MIX",
-                "DHAMAKA DANCE NONSTOP",
-                "JHARKHANDI SADRI DJ REMIX",
-                "TAPA TAP HARD BASS NONSTOP",
-                "SHADI SPECIAL NAGPURI MIX",
-                "ROADSHOW COMPETITION SPECIAL",
-                "PURULIA X THEATH NAGPURI",
-                "KHORTHA X NAGPURI DANCE MIX",
-                "ALL THETH MIXING JUKEBOX"
-            ]
-            tags = [
-                f"• {year} THETH NAGPURI SPECIAL •",
-                f"• SUPERHIT ROADSHOW DANCE •",
-                f"• VIRAL NAGPURI HITS {year} •",
-                f"• TOP THETH DANCE PICKS •",
-                f"• SHADI MEIN DJ BAJI SPECIAL •",
-                f"• ALL TIME FAVORITE NAGPURI •",
-                f"• JHARKHANDI DHAMAKA {year} •",
-                f"• TAPA TAP HARD BASS MIX •"
-            ]
-            sub_texts = [
-                "FULL ROADSHOW VIBRATION | NONSTOP DANCE",
-                "PURE THETH STYLE | NONSTOP DANCE BLAST",
-                "WEDDING DANCE SPECIAL | ROADSHOW VIBRATION",
-                "SUPERHIT DJ TRACKS | 100% CLEAR MASTER",
-                "TAPA TAP BASS BEATS | ROADSHOW MIX",
-                "JHARKHANDI SADRI HITS | 100% DANCE DHAMAKA",
-                "FULL ROADSHOW SPECIAL | NONSTOP DANCE MIX"
-            ]
-        elif p == "vibration":
-            s1_name = ""
-            s2_name = ""
-            if tracks and len(tracks) > 0:
-                s1_name = self._clean_ticker_title(tracks[0].get("title", ""), tracks[0].get("remixer", ""))
-                if len(tracks) > 1:
-                    s2_name = self._clean_ticker_title(tracks[1].get("title", ""), tracks[1].get("remixer", ""))
-
-            main_titles = [
-                "MANDAR X TAPORI MIX",
-                "FULL MANDAR BEAT",
-                "CG MANDAR VIBRATION",
-                "SPEAKER PHOD MANDAR",
-                "MANDAR X TAPORI DANCE",
-                "CG TAPORI VIBRATION",
-                "RECORD TOD MANDAR MIX",
-                "RECORD TOD TAPORI BEAT",
-                "CG TAPORI DANCE",
-                "MANDAR STEP ROADSHOW",
-                "CG X NAGPURI MANDAR",
-                "FULL MANDAR HARD BASS",
-                "PARDA PHOD MANDAR BEAT",
-                "CHHATTISGARHI MANDAR MIX",
-                "KHATARNAK MANDAR BASS",
-                "TANDAV MANDAR VIBRATION",
-                "CG X BHOJPURI DHAMAKA",
-                "PICKUP ROADSHOW DHAMAKA"
-            ]
-            if s1_name:
-                if s2_name:
-                    main_titles.append(f"{s1_name[:16].upper()} X {s2_name[:14].upper()}")
-                main_titles.append(f"{s1_name[:20].upper()} (MANDAR MIX)")
-                main_titles.append(f"{s1_name[:20].upper()} (TAPORI VIBRATION)")
-
-            tags = [
-                f"• CG MANDAR BEAT SPECIAL {year} •",
-                f"• MANDAR X TAPORI VIBRATION •",
-                f"• CG X NAGPURI X BHOJPURI {year} •",
-                f"• ROADSHOW COMPETITION SPECIAL •",
-                f"• SPEAKER PHOD MANDAR MIX •",
-                f"• 100% RECORD TOD MANDAR BEAT •",
-                f"• CHHATTISGARHIYA MANDAR DANCE •",
-                f"• CG TAPORI DANCE MIX •",
-                f"• PICKUP DJ MANDAR COMPETITION •"
-            ]
-
-            sub_texts = [
-                "CG MANDAR BEAT | TAPORI VIBRATION | 100% DANCE",
-                "SPEAKER PHOD MANDAR | ROADSHOW COMPETITION",
-                "MANDAR X TAPORI STYLE | FULL DANCE DHAMAKA",
-                "CG X NAGPURI X BHOJPURI | MANDAR HARD BASS",
-                "RECORD TOD MANDAR BEAT | FULL TAPORI DANCE",
-                "FULL PICKUP ROADSHOW | CG MANDAR MIX",
-                "KHATARNAK BASS | MANDAR STEP NONSTOP",
-                "PARDA PHOD MANDAR VIBRATION | 100% ROADSHOW"
-            ]
-        elif p == "dj_nan_say_karwan":
-            main_titles = [
-                "SADRI TRENDING NONSTOP",
-                "TRENDING SADRI NAGPURI MIX",
-                "NONSTOP SADRI DJ DANCE MIX",
-                "SADRI LOVERS REMIX 2026",
-                "SUPERHIT SADRI NAGPURI MIX",
-                "VIRAL SADRI ROADSHOW BLAST",
-                "SADRI DHAMAKA DANCE MIX",
-                "SADRI X NAGPURI SUPERHIT",
-                "OLD IS GOLD SADRI REMIX",
-                "SHADI DANCE SADRI SPECIAL",
-                "JHARKHANDI SADRI NONSTOP",
-                "SADRI COMPETITION DANCE MIX",
-                "NEW TRENDING SADRI DJ SONG",
-                "TAPA TAP SADRI DANCE BLAST"
-            ]
-            tags = [
-                f"• {year} SADRI NAGPURI SPECIAL •",
-                f"• SUPERHIT SADRI DJ REMIX •",
-                f"• VIRAL SADRI DANCE HITS •",
-                f"• SADRI LOVERS ROADSHOW •",
-                f"• ALL TIME SADRI FAVORITES •",
-                f"• JHARKHANDI SADRI DHAMAKA •",
-                f"• SHADI SPECIAL SADRI DANCE •"
-            ]
-            sub_texts = [
-                "FULL SADRI DANCE BLAST | ROADSHOW SPECIAL",
-                "PURE SADRI STYLE | NONSTOP ROADSHOW MIX",
-                "WEDDING DANCE SPECIAL | ROADSHOW VIBRATION",
-                "SADRI LOVERS SPECIAL | 100% CLEAR MASTER",
-                "SUPERHIT SADRI TRACKS | COMPETITION BEATS",
-                "JHARKHANDI SADRI HITS | 100% DANCE DHAMAKA"
-            ]
-        else:
-            clean_name = p.replace("_", " ").upper()
-            main_titles = [
-                f"{clean_name} TRENDING NONSTOP",
-                f"TRENDING {clean_name} DANCE MIX",
-                "NONSTOP DJ DANCE MIX",
-                f"SUPERHIT {clean_name} SPECIAL"
-            ]
-            tags = [
-                f"• {clean_name} SPECIAL {year} •",
-                f"• TOP TRENDING {clean_name} •"
-            ]
-            sub_texts = [
-                "ULTRA HD MASTER | FULL BASS",
-                "PURE SOUND | NONSTOP DANCE"
-            ]
-
-        tag_text = custom_tag or random.choice(tags)
-        main_title = custom_title or random.choice(main_titles)
-        sub_text = custom_sub or random.choice(sub_texts)
-
-        # Dynamic font scaler: guarantees text NEVER overflows 1920 canvas width
-        def get_fitting_font(text: str, default_size: int, max_w: int):
-            size = default_size
-            font = self._get_bold_font(size)
-            bbox = text_draw.textbbox((0, 0), text, font=font)
-            tw = bbox[2] - bbox[0]
-            if tw > max_w and tw > 0:
-                scaled_size = max(int(default_size * (max_w / tw)), 40)
-                font = self._get_bold_font(scaled_size)
-            return font
-
-        font_tag = get_fitting_font(tag_text, 52, 1550)
-        font_main = get_fitting_font(main_title, 135, 1680)
-        font_sub = get_fitting_font(sub_text, 46, 1650)
-
-        # Place Channel Logo Emblem at top center if available
-        logo_y_offset = 205
-        if self.logo_path and os.path.exists(self.logo_path):
-            try:
-                logo_img = Image.open(self.logo_path).convert("RGBA")
-                logo_dim = 160
-                logo_img = logo_img.resize((logo_dim, logo_dim), Image.Resampling.LANCZOS)
-                
-                # Draw circular white & black emblem border with soft black shadow
-                border_img = Image.new("RGBA", (logo_dim + 24, logo_dim + 24), (0, 0, 0, 0))
-                b_draw = ImageDraw.Draw(border_img)
-                b_draw.ellipse([2, 2, logo_dim + 21, logo_dim + 21], fill=(0, 0, 0, 240), outline=(0, 0, 0, 255), width=6)
-                b_draw.ellipse([5, 5, logo_dim + 18, logo_dim + 18], fill=(0, 0, 0, 240), outline=(255, 255, 255, 255), width=4)
-                
-                logo_x = cx - logo_dim // 2
-                logo_y = logo_y_offset
-                base.paste(border_img, (logo_x - 12, logo_y - 12), border_img)
-                base.paste(logo_img, (logo_x, logo_y), logo_img)
-                text_start_y = logo_y + logo_dim + 30
-            except Exception as e:
-                logger.warning(f"Failed to place logo on thumbnail: {e}")
-                text_start_y = 330
-        else:
-            text_start_y = 330
-
-        # Subtitle-Style Multi-Layer Glowing Text (Pure White + Deep Black Glow & Solid Stroke)
-        def add_centered_subtitle_text(text: str, y: int, font, stroke_w: int = 12, shadow_off: int = 8, glow_w: int = 24):
-            bbox = text_draw.textbbox((0, 0), text, font=font)
-            tw = bbox[2] - bbox[0]
-            tx = cx - tw // 2
-            # 1. Soft Black Glowing Halo (radiating around text)
-            glow_draw.text((tx, y), text, font=font, fill=(0, 0, 0, 255), stroke_width=glow_w, stroke_fill=(0, 0, 0, 255))
-            # 2. Deep 3D Drop Shadow
-            shadow_draw.text((tx + shadow_off, y + shadow_off + 2), text, font=font, fill=(0, 0, 0, 230), stroke_width=stroke_w + 2, stroke_fill=(0, 0, 0, 230))
-            # 3. Solid Sharp Black Outline + Pure White Text (Classic Subtitle Look)
-            text_draw.text((tx, y), text, font=font, fill=(255, 255, 255, 255), stroke_width=stroke_w, stroke_fill=(0, 0, 0, 255))
-
-        # Render 3 high-impact lines:
-        add_centered_subtitle_text(tag_text, text_start_y, font_tag, stroke_w=8, shadow_off=6, glow_w=20)
-        add_centered_subtitle_text(main_title, text_start_y + 80, font_main, stroke_w=14, shadow_off=10, glow_w=30)
-        add_centered_subtitle_text(sub_text, text_start_y + 250, font_sub, stroke_w=8, shadow_off=6, glow_w=20)
-
-        # Apply soft blur to ambient black glow layer
-        glow_layer = glow_layer.filter(ImageFilter.GaussianBlur(radius=8))
-
-        # Composite layers directly onto base image (zero black patti box)
-        base = Image.alpha_composite(base, glow_layer)
-        base = Image.alpha_composite(base, shadow_layer)
-        base = Image.alpha_composite(base, text_layer)
-
-        final_rgb = base.convert("RGB")
-        final_rgb.save(out_path, quality=98)
-        logger.info(f"✅ High-CTR YouTube Thumbnail Poster created at {out_path}")
-        return out_path
+            shutil.copy2(bg_wall_path, out_path)
+            return out_path
+        return bg_wall_path
 
     def _extract_audio_fft(
         self,

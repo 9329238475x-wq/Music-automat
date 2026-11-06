@@ -11,6 +11,7 @@ env/
 output/
 downloads/
 temp/
+data/
 *.mp3
 *.mp4
 *.wav
